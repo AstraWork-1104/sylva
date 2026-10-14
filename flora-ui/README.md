@@ -7,9 +7,9 @@
 
 ## Как открыть настоящий интерфейс (не исходный код)
 
-**[Скачать весь рабочий макет ZIP](https://github.com/AstraWork-1104/sylva/archive/refs/heads/flora-ui.zip)**
+**Скачать весь рабочий макет:** выберите ветку `flora-ui` и нажмите **Code → Download ZIP** в GitHub.
 
-1. Нажмите ссылку выше, чтобы скачать ZIP-архив ветки.
+1. Скачайте ZIP-архив ветки через **Code → Download ZIP**.
 2. Распакуйте архив.
 3. Откройте **`flora-ui/Flora-UI.html`** двойным щелчком через Chrome или Edge.
 
