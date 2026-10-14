@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flora UI - Interactive Design Workspace</title>
+  <meta name="description" content="Editable interactive interface prototype for Flora, 3ds Max 2026 and Corona 14">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<div class="stage">
+  <div class="desktop-window" id="floraApp">
+    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora 1.0 <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
+    <div class="application">
+      <header class="top-header">
+        <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
+        <nav class="workspace-nav" aria-label="Application workspace">
+          <button type="button" class="workspace-tab active" data-workspace="catalog">Catalog</button>
+          <button type="button" class="workspace-tab" data-workspace="scatter">Scatter <span class="future-dot" title="Concept design"></span></button>
+        </nav>
+        <span class="fill"></span>
+        <button class="toolbar-button" type="button" id="libraryButton">Library...</button>
+        <button class="toolbar-button" type="button" id="refreshButton">Refresh</button>
+        <a href="./material-manager.html" target="flora-material-manager" title="Material Manager - open separate window" aria-label="Open Material Manager" class="toolbar-button icon-button manager-link" id="managerButton">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
+        </a>
+        <button class="toolbar-button icon-button" type="button" title="Settings" aria-label="Open settings" id="settingsButton">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9 7 7m10 10 2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        </button>
+        <span class="app-version">3ds Max 2026 · Corona 14</span>
+      </header>
+
+      <section id="catalogWorkspace" class="workspace-container">
+        <nav class="catalog-nav" aria-label="Catalog sections">
+          <div id="catalogTabs" class="catalog-tabs"></div>
+          <span class="fill"></span>
+          <button id="addCatalogButton" class="toolbar-button">Add Catalog</button>
+        </nav>
+        <main class="catalog-body">
+          <aside class="sidebar">
+            <div class="sidebar-heading" id="sidebarHeading">FOLDERS</div>
+            <div id="sidebarContent" class="sidebar-content" role="tree"></div>
+            <div id="sidebarFooter" class="sidebar-footer">F:/001_Model/Maxtree</div>
+          </aside>
+          <section class="library-area">
+            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div id="contentTag" class="content-tag" hidden>Imported .floracat</div></div>
+            <div class="search-toolbar">
+              <div class="search-holder"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="modelSearch" type="search" placeholder="Search by name, species, attributes..." autocomplete="off" aria-label="Search plant models"></div>
+              <select id="sortSelect" aria-label="Sort models"><option value="asc">Name A-Z</option><option value="desc">Name Z-A</option></select>
+              <button type="button" class="toolbar-button icon-button active" id="gridButton" title="Grid View" aria-label="Grid view"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+              <button type="button" class="toolbar-button icon-button" id="listButton" title="List View" aria-label="List view"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+              <span id="modelCount" class="model-count">72 models</span>
+            </div>
+            <div class="results-shell">
+              <div id="modelGrid" class="model-grid" role="list" aria-label="Plant models"></div>
+              <aside id="propertiesPanel" class="properties-panel"><div class="properties-header"><span>Property</span><span>Value</span></div><div id="propertyRows" class="property-rows"><p class="empty-property">Select a model to inspect its properties.</p></div></aside>
+            </div>
+          </section>
+        </main>
+        <footer class="statusbar">
+          <span class="selected-pill" id="selectionCount">0 selected</span><span id="statusHint">Drag selected models into 3ds Max viewport</span>
+          <span class="fill"></span><span class="footer-label">PROXY VIEW</span>
+          <div class="segmented" id="proxyControls"><button type="button" data-proxy="Geometry">Geometry</button><button type="button" data-proxy="Point Cloud" class="active">Point Cloud</button></div>
+          <span class="ready"><span class="live-dot"></span> Proxies added</span>
+        </footer>
+      </section>
+
+      <section id="scatterWorkspace" class="workspace-container" hidden>
+        <nav class="catalog-nav scatter-nav">
+          <div class="catalog-tabs" id="scatterTabs">
+            <button class="catalog-tab active" data-scatter="spring">Spring</button>
+            <button class="catalog-tab" data-scatter="grove">Grove</button>
+            <button class="catalog-tab" data-scatter="biome">Biome</button>
+          </div><span class="fill"></span><span class="future-label">CONCEPT DESIGN · NOT YET IMPLEMENTED IN 3DS MAX</span>
+        </nav>
+        <div class="scatter-main">
+          <aside class="scatter-source panel">
+            <div class="label-caps">PLANT SOURCES</div>
+            <h2>Flora Library</h2>
+            <p>Choose models to distribute</p>
+            <div id="scatterPlants" class="source-list"></div>
+            <button type="button" id="addScatterPlants" class="primary wide">+ Add Plants</button>
+            <div class="scatter-note">The selected sources are Corona Proxy instances. Demo controls do not create scene objects.</div>
+          </aside>
+          <section class="scatter-content panel">
+            <div class="scatter-heading"><div><div class="eyebrow">SCATTER / <span id="scatterModeName">SPRING</span></div><h1 id="scatterHeading">Spring <span>Quick Placement</span></h1><p id="scatterDescription">Create a local planting composition from editable Corona Proxy instances.</p></div><span class="future-label">PROPOSED UI</span></div>
+            <div class="scatter-content-grid">
+              <div class="scatter-form">
+                <div class="field-group"><label for="surfaceInput">Target Surface</label><div class="field-row"><input id="surfaceInput" value="Landscape_001" aria-label="Target Surface"><button class="mini-button" id="selectSurface">Pick</button></div></div>
+                <div class="field-group"><label for="areaSelect">Area</label><select id="areaSelect"><option>Entire Surface</option><option>Brush</option><option>Closed Spline</option></select></div>
+                <div class="field-group"><label for="distributionSelect">Distribution</label><select id="distributionSelect"><option>Random Distribution</option><option>Cluster Distribution</option></select></div>
+                <div class="field-group"><label for="densityRange">Density <small>plants / m²</small></label><div class="range-row"><input type="range" id="densityRange" min="1" max="20" value="7"><output id="densityNumber">7</output></div></div>
+                <div class="field-group"><label for="orientationSelect">Orientation</label><select id="orientationSelect"><option>World Z</option><option>Surface Normal</option></select></div>
+                <div class="two-fields"><div class="field-group"><label for="seedInput">Seed</label><input type="number" id="seedInput" value="42"></div><div class="field-group"><label for="variationInput">Scale variation</label><select id="variationInput"><option>± 15%</option><option>± 25%</option><option>None</option></select></div></div>
+                <div class="field-group"><label class="inline-check"><input type="checkbox" id="autoDensity"> Auto Density</label></div>
+              </div>
+              <div class="scatter-preview"><div class="preview-top"><strong>Distribution Preview</strong><span id="distributionInfo">Random · 7 plants/m²</span></div><svg id="scatterMap" viewBox="0 0 400 350" role="img" aria-label="Illustrative plant distribution preview"></svg><span class="preview-foot">Illustrative placement · no scene changes</span></div>
+            </div>
+            <div class="scatter-actions"><span id="scatterHelper" class="subtle-text">One-time instances. Apply ends procedural editing.</span><span class="fill"></span><button id="scatterDelete" type="button" class="toolbar-button">Delete Set</button><button id="scatterGenerate" type="button" class="toolbar-button">Generate Preview</button><button id="scatterApply" type="button" class="primary">Apply</button></div>
+          </section>
+        </div>
+        <footer class="statusbar"><span class="selected-pill">Scatter Preview</span><span id="scatterFootNote">Spring · Quick Placement</span><span class="fill"></span><span class="future-label">INTERFACE CONCEPT ONLY</span></footer>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header"><h2 id="modalTitle">Settings</h2><button type="button" id="closeModal" class="close-button" aria-label="Close">×</button></div>
+    <div id="modalBody"></div>
+    <div class="modal-footer"><button id="modalCancel" class="toolbar-button">Cancel</button><button id="modalConfirm" class="primary">Done</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
