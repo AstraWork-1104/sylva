@@ -27,6 +27,94 @@
 .is-hidden{display:none!important}
 @media (max-width:900px){body{padding:0}.shell{min-height:700px;max-height:none;padding:7px}.sidebar{flex-basis:220px;padding:13px}.content{padding:10px;gap:10px}.relink-main{padding:13px}.work-main{padding:15px;gap:13px}.data-table td,.data-table th{padding-left:8px;padding-right:8px}.scope>label{display:none}}
 @media (max-width:690px){.shell{min-height:100vh;max-height:none}.content{flex:1}.titlebar{padding:0 10px}.eyebrow{display:none}.window-controls{gap:12px}.toolbar{flex-wrap:wrap}.scope{width:100%;justify-content:space-between}.scope>label{display:block}.scope-buttons button{padding:8px}.tabs{flex:1}.tabs button{min-width:0;padding:0 10px}.body.relink-mode{flex-direction:column}.sidebar{flex:auto;min-height:280px}.tip{margin-top:8px}.relink-main{min-height:600px}.work-main{min-height:750px}.stats{grid-template-columns:repeat(2,1fr)}.work-intro{align-items:flex-start;flex-direction:column}.scope-indicator{align-self:flex-end}.data-table{min-width:640px}.endrow{flex-wrap:wrap}.work-actions{flex-wrap:wrap}.footer{font-size:8px}}
+
+/* Flora 1.0 tactile depth - companion Material Manager */
+.shell{
+  box-shadow:0 22px 52px rgba(0,0,0,.36),inset 0 1px 0 rgba(219,251,217,.06);
+}
+.window{
+  box-shadow:inset 0 1px 0 rgba(221,251,215,.075);
+}
+.titlebar{
+  background:linear-gradient(180deg,#202e39 0%,#1a2630 100%);
+  box-shadow:inset 0 1px 0 rgba(240,253,252,.07);
+}
+.toolbar{
+  background:linear-gradient(180deg,#1b2e20 0%,#16271c 65%,#132219 100%);
+  border-color:#36553e;
+  box-shadow:inset 0 1px 0 rgba(223,249,209,.095),
+             inset 0 -1px 0 rgba(0,0,0,.27),
+             0 2px 7px rgba(0,0,0,.15);
+}
+.surface,.datacard{
+  box-shadow:inset 0 1px 0 rgba(225,253,218,.062),
+             inset 0 -1px 0 rgba(0,0,0,.22),
+             0 2px 7px rgba(0,0,0,.12);
+}
+.tabs button,.scope-buttons button{
+  transition:background .14s ease,box-shadow .14s ease,transform .1s ease;
+}
+.tabs button.active,.scope-buttons button.active{
+  background:linear-gradient(180deg,#43734b 0%,#345d3c 53%,#294d31 100%);
+  border-color:#5c8555;
+  color:#e1f8d1;
+  box-shadow:inset 0 1px 0 rgba(237,255,224,.21),
+             inset 0 -1px 0 rgba(0,0,0,.29),
+             0 2px 6px rgba(0,0,0,.24);
+  text-shadow:0 1px 1px rgba(0,0,0,.2);
+}
+.tabs button:active,.scope-buttons button:active{transform:translateY(1px)}
+.secondary,.primary,.add-root,.root-form button{
+  background:linear-gradient(180deg,#2b4531 0%,#203929 56%,#1b3023 100%);
+  border-color:#476b4b;
+  box-shadow:inset 0 1px 0 rgba(236,255,224,.13),
+             inset 0 -1px 0 rgba(0,0,0,.27),
+             0 2px 5px rgba(0,0,0,.26);
+  text-shadow:0 1px 1px rgba(0,0,0,.2);
+  transition:background .14s ease,box-shadow .14s ease,transform .1s ease;
+}
+.primary,.add-root{
+  background:linear-gradient(180deg,#48784e 0%,#376440 55%,#2f5438 100%);
+  border-color:#639360;
+  color:#e4f8d7;
+  box-shadow:inset 0 1px 0 rgba(243,255,229,.2),
+             inset 0 -1px 1px rgba(0,0,0,.3),
+             0 2px 7px rgba(0,0,0,.25);
+}
+.secondary:hover,.root-form button:hover{
+  background:linear-gradient(180deg,#35583d,#264330);
+}
+.primary:hover,.add-root:hover{
+  background:linear-gradient(180deg,#528456,#3f7049 55%,#345e3d);
+}
+.secondary:active,.primary:active,.add-root:active,.root-form button:active{
+  transform:translateY(1px);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.33);
+}
+.root,.scope-indicator,.stat{
+  background:linear-gradient(165deg,#24412d 0%,#1e3426 100%);
+  box-shadow:inset 0 1px 0 rgba(230,255,219,.085),
+             inset 0 -1px 0 rgba(0,0,0,.22),
+             0 2px 6px rgba(0,0,0,.13);
+}
+.scope-buttons{
+  background:linear-gradient(180deg,#0e1a13,#192c1d);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.29);
+}
+.filter{
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.17),
+             0 1px 0 rgba(231,255,222,.04);
+}
+.data-table th{
+  background:linear-gradient(180deg,#294534,#21382b);
+  box-shadow:inset 0 1px 0 rgba(225,252,212,.055);
+}
+.footer{
+  border-top-color:#34573c;
+  background:linear-gradient(180deg,rgba(41,71,48,.23),rgba(14,29,19,.22));
+  box-shadow:inset 0 1px 0 rgba(230,255,218,.07);
+}
+
 </style>
 </head>
 <body>
