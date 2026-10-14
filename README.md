@@ -1,2 +1,7 @@
-# sylva
-Procedural planting plugin for 3ds Max and Corona
+# Flora
+
+Flora - плагин для 3ds Max 2026 и Corona Renderer 14.
+
+**Рабочий интерактивный макет интерфейса** находится в ветке `flora-ui`, папка `flora-ui/`. Откройте `Flora-UI.html` после скачивания ZIP ветки.
+
+Этот репозиторий используется исключительно для проекта Flora. Функциональные прототипы в браузере не заменяют установленный плагин 3ds Max.
