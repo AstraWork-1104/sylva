@@ -1,9 +1,9 @@
-# sylva - Flora UI Workspace
+# Flora - UI Workspace
 
-Этот branch хранит самостоятельный рабочий дизайн-прототип Flora. Исходный код плагина 3ds Max не изменяется.
+Рабочий интерактивный макет **Flora** для 3ds Max 2026 и Corona Renderer 14.
 
-**[Открыть рабочую папку макета → flora-ui](./flora-ui/README.md)**
+[Открыть папку интерфейса](./flora-ui/README.md)
 
-Для быстрого просмотра скачайте [Flora-UI.html](./flora-ui/Flora-UI.html) и откройте в браузере. Экран включает Explorer, Favorites, Landscape, Scatter (концепты) и отдельный Material Manager. Все источники находятся в `flora-ui/`.
+Для запуска: выберите ветку `flora-ui`, скачайте её через меню **Code → Download ZIP**, распакуйте и откройте `flora-ui/Flora-UI.html` в браузере. Отдельное окно Material Manager входит в макет.
 
-Настоящий код плагина живёт отдельно от этой UI-работы; тестовые файлы остались только в архивной ветке `flora-ui-connection-test-20261014`.
+Функции Scatter, Relink, очистки материалов и управления импортом в этом HTML являются интерфейсными прототипами и не изменяют сцену 3ds Max.
