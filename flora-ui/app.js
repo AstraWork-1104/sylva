@@ -274,7 +274,8 @@ function properties(){
   }).join("");
   return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'"><span>'+ (collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+items+'</section>';
  }).join("");
- container.innerHTML=groups+'<div class="property-hint">Concept data • geometry values are illustrative until Model Analyzer integration.</div>';
+ const status=state.catalog==="explorer"?(state.explorerDataFiles.length?((botanicalNames[m.family])?'<div class="description-status">Botanical description: available (sample species data)</div>':'<div class="description-status missing">Botanical description: not available for this model</div>'):'<div class="description-status missing">No descriptions imported · illustrative species labels</div>'):"";
+ container.innerHTML=status+groups+'<div class="property-hint">Concept data • geometry values are illustrative until Model Analyzer integration.</div>';
  renderPropertyCustomize();
 }
 function renderPropertyCustomize(){
