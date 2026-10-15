@@ -220,13 +220,15 @@ $("#sidebarContent").addEventListener("click",e=>{
  if(e.target.closest("#addFavCollection"))showModal("newCollection");
 });
 $("#modelGrid").addEventListener("click",e=>{
+ const add=e.target.closest("[data-addbasket]");
+ if(add){e.preventDefault();e.stopPropagation();addModelsToBasket([add.dataset.addbasket]);return;}
  const fav=e.target.closest("[data-favorite]");
  if(fav){const id=fav.dataset.favorite;if(state.favorites.has(id))state.favorites.delete(id);else state.favorites.add(id);save();render();return;}
  const card=e.target.closest(".model-card");
  if(card)selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey);
 });
 $("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
-$("#modelGrid").addEventListener("dragstart",e=>{const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
+$("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
@@ -245,7 +247,17 @@ window.addEventListener("keydown",e=>{if(e.key==="Escape")hideModal()});
 function showModal(kind){
  state.workingModal=kind;modal.hidden=false;
  const body=$("#modalBody"),title=$("#modalTitle"),confirm=$("#modalConfirm");
- if(kind==="settings"){
+ if(kind==="basketClear"){
+  title.textContent="Clear Basket?";confirm.textContent="Clear Basket";
+  body.innerHTML='<div class="modal-body-section"><p>Remove all models from the Basket? Favorites, library files, installed catalogs and scene objects remain unchanged.</p></div>';
+ }else if(kind==="basketImport"){
+  title.textContent="Import Basket - Preview";confirm.textContent="Close Preview";
+  const count=[...state.basket.values()].filter(Boolean).length;
+  body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
+ }else if(kind==="explorerData"){
+  title.textContent="Explorer Plant Data";confirm.textContent="Add to Preview";
+  body.innerHTML='<div class="modal-body-section"><h3>Attach information .floracat</h3><input type="file" multiple accept=".floracat" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
+ }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Save Settings";
   body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
  }else if(kind==="library"){
@@ -261,6 +273,13 @@ function showModal(kind){
 }
 $("#modalConfirm").addEventListener("click",()=>{
  const kind=state.workingModal;
+ if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
+ if(kind==="basketImport"){toast("No objects imported - preview only. Basket kept intact.")}
+ if(kind==="explorerData"){
+  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floracat file first.");return}
+  if(files.some(f=>!f.name.toLowerCase().endsWith(".floracat"))){toast("Only .floracat files are supported.");return}
+  state.explorerDataFiles.push(...files.map(f=>f.name));save();render();toast(files.length+" info file(s) selected for Explorer preview.");
+ }
  if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
