@@ -36,14 +36,14 @@
           <span class="fill"></span>
           <button id="addCatalogButton" class="toolbar-button">Add Catalog</button>
         </nav>
-        <main class="catalog-body">
+        <main class="catalog-body" id="catalogBody">
           <aside class="sidebar">
             <div class="sidebar-heading" id="sidebarHeading">FOLDERS</div>
             <div id="sidebarContent" class="sidebar-content" role="tree"></div>
             <div id="sidebarFooter" class="sidebar-footer">F:/001_Model/Maxtree</div>
           </aside>
           <section class="library-area">
-            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div id="contentTag" class="content-tag" hidden>Imported .floracat</div></div>
+            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div class="content-actions"><button id="explorerInfoButton" type="button" class="toolbar-button" title="Attach plant descriptions to Explorer models">Import Plant Data</button><div id="explorerInfoStatus" class="explorer-info-status" hidden></div><div id="contentTag" class="content-tag" hidden>Imported .floracat</div></div></div>
             <div class="search-toolbar">
               <div class="search-holder"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="modelSearch" type="search" placeholder="Search by name, species, attributes..." autocomplete="off" aria-label="Search plant models"></div>
               <select id="sortSelect" aria-label="Sort models"><option value="asc">Name A-Z</option><option value="desc">Name Z-A</option></select>
@@ -57,13 +57,36 @@
             </div>
           </section>
         </main>
-        <footer class="statusbar">
+        <footer class="statusbar" id="catalogFooter">
           <span class="selected-pill" id="selectionCount">0 selected</span><span id="statusHint">Drag selected models into 3ds Max viewport</span>
           <span class="fill"></span><span class="footer-label">PROXY VIEW</span>
           <div class="segmented" id="proxyControls"><button type="button" data-proxy="Geometry">Geometry</button><button type="button" data-proxy="Point Cloud" class="active">Point Cloud</button></div>
           <span class="ready"><span class="live-dot"></span> Proxies added</span>
         </footer>
       </section>
+      <section id="basketWorkspace" class="basket-workspace" hidden aria-labelledby="basketHeading">
+        <div class="basket-top">
+          <div>
+            <div class="basket-eyebrow">FLORA / CATALOG</div>
+            <h1 id="basketHeading">Import Basket <span id="basketCount" class="basket-heading-count">0 plants</span></h1>
+            <p>Collect models from Explorer, Favorites and installed catalogs. Import uses the existing Flora workflow in 3ds Max.</p>
+          </div>
+          <button type="button" class="toolbar-button" id="basketClear">Clear Basket</button>
+        </div>
+        <div class="basket-toolbar">
+          <div class="basket-toolbar-info"><strong id="basketSummary">0 models in basket</strong><span>Checked models will participate in the batch import</span></div>
+          <label class="basket-size-control" for="basketTileSize">Tile size <input id="basketTileSize" type="range" min="136" max="250" step="2" value="176"><output id="basketTileValue" for="basketTileSize">176 px</output></label>
+        </div>
+        <div id="basketGrid" class="basket-grid" role="list" aria-label="Models in import basket"></div>
+        <footer class="statusbar basket-footer">
+          <span class="selected-pill" id="basketSelectedCount">0 checked</span>
+          <span class="basket-footer-hint">Origin: 0, 0, 0 · Layer: Flora Import · Original model names</span>
+          <span class="fill"></span>
+          <span class="basket-demo-label">UI PROTOTYPE</span>
+          <button id="basketImport" type="button" class="primary" disabled>Import</button>
+        </footer>
+      </section>
+
 
     </div>
   </div>
@@ -75,6 +98,10 @@
     <div id="modalBody"></div>
     <div class="modal-footer"><button id="modalCancel" class="toolbar-button">Cancel</button><button id="modalConfirm" class="primary">Done</button></div>
   </div>
+</div>
+
+<div id="plantContextMenu" class="plant-context-menu" role="menu" hidden>
+  <button type="button" id="contextAddBasket" role="menuitem">Add to Basket</button>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
