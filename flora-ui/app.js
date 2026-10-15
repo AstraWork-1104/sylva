@@ -135,6 +135,76 @@ function render(){
  info.textContent=state.explorerDataFiles.length+" info file(s) selected - preview only";
  if(basket)renderBasket();else{folderList();renderModels()}
 }
+
+/* Basket is an interactive browser preview; no actual 3ds Max scene operations. */
+function addModelsToBasket(ids){
+ let added=0;
+ for(const id of [...new Set(ids)]){
+  if(!models.some(m=>m.id===id)||state.basket.has(id))continue;
+  state.basket.set(id,true);added++;
+ }
+ save();showCatalogTabs();
+ if(state.catalog==="basket")renderBasket();else renderModels();
+ toast(added?added+" model"+(added===1?"":"s")+" added to Basket":"Selected models are already in Basket.");
+}
+function basketTargetIds(id){
+ return state.selected.has(id)&&state.selected.size>1?[...state.selected]:[id];
+}
+function renderBasket(){
+ const grid=$("#basketGrid");
+ grid.style.setProperty("--basket-card-size",state.basketTileSize+"px");
+ $("#basketTileSize").value=state.basketTileSize;
+ $("#basketTileValue").textContent=state.basketTileSize+" px";
+ const entries=[...state.basket].map(([id,checked])=>({model:models.find(m=>m.id===id),checked})).filter(x=>x.model);
+ const selected=entries.filter(x=>x.checked).length;
+ $("#basketCount").textContent=entries.length+" plant"+(entries.length===1?"":"s");
+ $("#basketSummary").textContent=entries.length+" models in Basket";
+ $("#basketSelectedCount").textContent=selected+" checked";
+ $("#basketImport").disabled=selected===0;
+ $("#basketClear").disabled=entries.length===0;
+ grid.innerHTML=entries.length?entries.map(({model:m,checked})=>
+  '<article class="basket-card" role="listitem" data-basketid="'+clean(m.id)+'">'+
+  '<div class="basket-preview">'+leafSVG(m)+
+  '<label class="basket-check" title="Include in import"><input type="checkbox" data-basketcheck="'+clean(m.id)+'" '+(checked?'checked':'')+' aria-label="Include '+clean(m.id)+' in import"><span>Include</span></label>'+
+  '<button type="button" class="basket-remove" data-basketremove="'+clean(m.id)+'" title="Remove from Basket" aria-label="Remove '+clean(m.id)+'">×</button></div>'+
+  '<div class="basket-card-title" title="'+clean(m.id)+'">'+clean(m.id)+'</div>'+
+  '<div class="basket-card-description">'+clean(m.botanical)+'</div>'+
+  '</article>').join(""):
+  '<div class="basket-empty"><strong>Basket is empty</strong><p>Add plants from Explorer, Favorites or a catalog with the hover icon, right-click menu, or Shift + right-click.</p></div>';
+}
+$("#basketGrid").addEventListener("change",e=>{
+ const el=e.target.closest("[data-basketcheck]");if(!el)return;
+ state.basket.set(el.dataset.basketcheck,el.checked);save();renderBasket();
+});
+$("#basketGrid").addEventListener("click",e=>{
+ const button=e.target.closest("[data-basketremove]");if(!button)return;
+ state.basket.delete(button.dataset.basketremove);save();render();
+});
+$("#basketTileSize").addEventListener("input",e=>{
+ state.basketTileSize=Number(e.target.value);save();renderBasket();
+});
+$("#basketClear").addEventListener("click",()=>showModal("basketClear"));
+$("#basketImport").addEventListener("click",()=>{if([...state.basket.values()].some(Boolean))showModal("basketImport")});
+$("#explorerInfoButton").addEventListener("click",()=>showModal("explorerData"));
+const contextMenu=$("#plantContextMenu");
+let contextIds=[];
+function hideContextMenu(){contextMenu.hidden=true;contextIds=[]}
+$("#modelGrid").addEventListener("contextmenu",e=>{
+ const card=e.target.closest(".model-card");
+ if(!card)return;
+ e.preventDefault();e.stopPropagation();
+ const id=card.dataset.model,ids=basketTargetIds(id);
+ if(e.shiftKey){hideContextMenu();addModelsToBasket(ids);return}
+ contextIds=ids;
+ $("#contextAddBasket").textContent="Add to Basket"+(ids.length>1?" ("+ids.length+" models)":"");
+ contextMenu.hidden=false;
+ contextMenu.style.left=Math.max(6,Math.min(e.clientX,window.innerWidth-214))+"px";
+ contextMenu.style.top=Math.max(6,Math.min(e.clientY,window.innerHeight-62))+"px";
+});
+$("#contextAddBasket").addEventListener("click",()=>{const ids=[...contextIds];hideContextMenu();addModelsToBasket(ids)});
+document.addEventListener("click",e=>{if(!e.target.closest("#plantContextMenu"))hideContextMenu()});
+window.addEventListener("blur",hideContextMenu);
+
 function selectModel(id,index,shift,ctrl){
  const ids=visibleModels().map(m=>m.id);
  if(shift && state.lastClicked>=0){if(!ctrl)state.selected.clear();const a=Math.min(state.lastClicked,index),b=Math.max(state.lastClicked,index);for(let i=a;i<=b;i++)state.selected.add(ids[i]);}
