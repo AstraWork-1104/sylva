@@ -379,7 +379,7 @@ function render(){
  showCatalogTabs();
  $("#explorerInfoButton").hidden=state.catalog!=="explorer";
  const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
- info.textContent=state.explorerDataFiles.length+" info file(s) selected - preview only";
+ info.textContent=state.explorerDataFiles.length?"Descriptions selected: "+state.explorerDataFiles.length+" file(s) · demo":"No descriptions imported";
  if(basket)renderBasket();else{folderList();renderModels()} renderFilterControls();
 }
 
@@ -522,6 +522,12 @@ const modal=$("#modalBackdrop");
 function hideModal(){modal.hidden=true;state.workingModal=null}
 $("#closeModal").addEventListener("click",hideModal);
 $("#modalCancel").addEventListener("click",hideModal);
+$("#modalBody").addEventListener("click",e=>{
+ const b=e.target.closest("[data-open-analyzer]");if(!b)return;
+ if(typeof window.openFloraAnalyzer==="function")window.openFloraAnalyzer();
+ else window.open("./model-analyzer.html","flora-model-analyzer","popup=yes,width=1170,height=830,resizable=yes,scrollbars=yes");
+});
+
 modal.addEventListener("click",e=>{if(e.target===modal)hideModal()});
 window.addEventListener("keydown",e=>{if(e.key==="Escape")hideModal()});
 function showModal(kind){
@@ -535,11 +541,11 @@ function showModal(kind){
   const count=[...state.basket.values()].filter(Boolean).length;
   body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
  }else if(kind==="explorerData"){
-  title.textContent="Explorer Plant Data";confirm.textContent="Add to Preview";
+  title.textContent="Import Descriptions";confirm.textContent="Add to Preview";
   body.innerHTML='<div class="modal-body-section"><h3>Attach information .floracat</h3><input type="file" multiple accept=".floracat" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
  }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Save Settings";
-  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
+  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Analyze source model geometry or attach botanically descriptive information files.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
   body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="F:/001_Model/Maxtree" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
