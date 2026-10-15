@@ -210,7 +210,7 @@ function visibleModels(){
   const flowering=["Shrubs","Flowerbed Plants"].includes(m.type);
   if(state.filterFlower&&(state.filterFlower==="yes")!==flowering)return false;
   if(state.filterMinHeight&&m.height<Number(state.filterMinHeight))return false;
-  if(state.usageSelected.size&&![...state.usageSelected].some(x=>modelUses(m).includes(x)))return false;
+  if(state.usageSelected.size&&![...state.usageSelected].some(x=>modelUses(m).includes(x)||(x==="Rain Gardens"&&state.usageMore.includes(x)&&["Shrubs","Flowerbed Plants"].includes(m.type))))return false;
   return true;
  });
  const q=state.search.trim().toLowerCase();
@@ -369,6 +369,11 @@ function renderModels(){
  else{const meta=collections.find(x=>x.id===state.catalog);title=meta?.label||"Catalog";path="Imported / "+title;}
  $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;
  $("#contentTag").hidden=["explorer","favorites"].includes(state.catalog);
+ const intro=$("#collectionDescription");intro.hidden=!getTheme();
+ if(getTheme()){
+  const purpose=getTheme().name==="City"?"Urban and residential landscaping":getTheme().name==="Forest"?"Layered woodland planting":"Designed outdoor planting";
+  intro.innerHTML='<strong>Purpose:</strong> '+clean(purpose)+' <span> · Sample compatible plant groups, not automatic planting or an approved botanical recommendation.</span>';
+ }
  $("#modelCount").textContent=arr.length+" models";
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
@@ -570,7 +575,7 @@ $("#modalConfirm").addEventListener("click",()=>{
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
   const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracat file first.");return}
-  const id="cat-"+Date.now();collections.push({id,label:file.name.replace(/\.floracat$/i,""),builtin:false});state.catalog=id;state.category="Shrubs";state.selected.clear();render();toast("Added a preview tab. Catalog database was not imported.");
+  const id="cat-"+Date.now();const name=file.name.replace(/\.floracat$/i,"");collections.push({id,label:name,builtin:false});themes[id]={name,sections:[{name:"Example Space Types",items:["Sample Planting Composition","Mixed Planting Scheme"]}]};state.catalog=id;state.themeSelection="Sample Planting Composition";state.themeExpanded.add("Example Space Types");state.selected.clear();render();toast("Catalog added to dropdown as a demo. Source database was not parsed.");
  }
  if(kind==="newCollection"){const v=$("#collectionNameInput").value.trim();if(!v)return;state.favCollections.push(v);save();state.favFilter=v;render();toast("Collection created. Drag model assignment is planned for Flora.");}
  hideModal();
