@@ -30,7 +30,7 @@ const models=plants.flatMap(([bot,genus,type,num,color,height],group)=>Array.fro
 })));
 const favoritesStorage=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-favorites")||"[]")}catch{return []}};
 const readCollections=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-collections")||'["My Garden","Courtyard","Park Ideas"]')}catch{return ["My Garden","Courtyard","Park Ideas"]}};
-const state={view:"catalog",catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),proxy:"Point Cloud",scatter:"spring",scatterSources:new Set([0,1,2]),settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
+const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings))}catch{}};
@@ -146,7 +146,6 @@ $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderM
 $("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
 $("#listButton").addEventListener("click",()=>{state.grid=false;$("#listButton").classList.add("active");$("#gridButton").classList.remove("active");renderModels()});
 $("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(!b)return;state.proxy=b.dataset.proxy;state.settings.proxy=state.proxy;save();$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x===b));properties();toast("Proxy view: "+state.proxy+" (prototype setting)")});
-$$("[data-workspace]").forEach(b=>b.addEventListener("click",()=>{state.view=b.dataset.workspace;$$("[data-workspace]").forEach(x=>x.classList.toggle("active",x===b));$("#catalogWorkspace").hidden=state.view!=="catalog";$("#scatterWorkspace").hidden=state.view!=="scatter";if(state.view==="scatter")renderScatter()}));
 $("#refreshButton").addEventListener("click",()=>{render();toast("Catalog preview refreshed. Local 3ds Max files are not scanned in the browser.")});
 $("#settingsButton").addEventListener("click",()=>showModal("settings"));
 $("#libraryButton").addEventListener("click",()=>showModal("library"));
@@ -185,48 +184,7 @@ $("#modalConfirm").addEventListener("click",()=>{
  if(kind==="newCollection"){const v=$("#collectionNameInput").value.trim();if(!v)return;state.favCollections.push(v);save();state.favFilter=v;render();toast("Collection created. Drag model assignment is planned for Flora.");}
  hideModal();
 });
-function scatterSourceList(){
- $("#scatterPlants").innerHTML=plants.slice(0,8).map(([bot,genus,type,,color],i)=>'<label class="source-item"><input type="checkbox" data-scatterplant="'+i+'" '+(state.scatterSources.has(i)?'checked':'')+'><span class="source-swatch" style="color:'+color+'">✿</span><span><strong>'+clean(genus)+'</strong><small>'+clean(bot)+'</small></span></label>').join("");
-}
-$("#scatterPlants").addEventListener("change",e=>{if(e.target.matches("[data-scatterplant]")){const n=Number(e.target.dataset.scatterplant);if(e.target.checked)state.scatterSources.add(n);else state.scatterSources.delete(n);renderScatterMap()}});
-const scatterInfo={
- spring:{subtitle:"Quick Placement",desc:"Create a local planting composition from editable Corona Proxy instances.",note:"One-time instances. Apply ends procedural editing."},
- grove:{subtitle:"Editable Distribution",desc:"Edit a controlled planting layout using a scene Helper and manual Update.",note:"Managed instance distribution. Preserve manually edited plants when updating."},
- biome:{subtitle:"Large-Scale Distribution",desc:"Plan forests and large landscapes using the native Chaos Scatter engine.",note:"Chaos Scatter controls depend on its actual API; this is only a concept."}
-};
-$$("[data-scatter]").forEach(b=>b.addEventListener("click",()=>{state.scatter=b.dataset.scatter;renderScatter()}));
-function renderScatter(){
- const info=scatterInfo[state.scatter];$$("[data-scatter]").forEach(b=>b.classList.toggle("active",b.dataset.scatter===state.scatter));
- $("#scatterModeName").textContent=state.scatter.toUpperCase();
- $("#scatterHeading").innerHTML=clean(state.scatter[0].toUpperCase()+state.scatter.slice(1))+" <span>"+clean(info.subtitle)+"</span>";
- $("#scatterDescription").textContent=info.desc;
- $("#scatterHelper").textContent=info.note;
- $("#scatterFootNote").textContent=state.scatter[0].toUpperCase()+state.scatter.slice(1)+" · "+info.subtitle;
- $("#scatterApply").textContent=state.scatter==="grove"?"Update":state.scatter==="biome"?"Create Scatter":"Apply";
- renderScatterMap();
-}
-function renderScatterMap(){
- const mode=$("#distributionSelect").value,amount=Number($("#densityRange").value),seed=Number($("#seedInput").value)||42;
- $("#densityNumber").textContent=amount;
- $("#distributionInfo").textContent=(mode.startsWith("Cluster")?"Cluster":"Random")+" · "+amount+" plants/m²";
- let points='';
- const n=Math.min(225,Math.round(amount*11)),source=[...state.scatterSources];
- for(let i=0;i<n;i++){
-  const rand=k=>{let n=Math.sin((i*17+seed+k*31)*47.777)*7531.22;return n-Math.floor(n)};
-  let x=24+rand(1)*352,y=22+rand(2)*306;
-  if(mode.startsWith("Cluster")){const cluster=i%5,cx=[95,265,160,315,205][cluster],cy=[80,115,220,255,165][cluster];x=Math.max(18,Math.min(384,cx+(rand(3)-.5)*120));y=Math.max(18,Math.min(334,cy+(rand(4)-.5)*90))}
-  const palette=source.length?plants[source[i%source.length]][4]:"#9fc59a";
-  points+='<g transform="translate('+x.toFixed(2)+' '+y.toFixed(2)+')"><circle r="'+(4+rand(5)*4).toFixed(1)+'" fill="#243a29" stroke="#719d63" stroke-width=".9"/><circle r="'+(1.5+rand(6)*2).toFixed(1)+'" fill="'+palette+'"/></g>';
- }
- $("#scatterMap").innerHTML='<rect x="9" y="9" width="382" height="332" rx="14" fill="#1c3223" stroke="#36583e"/><path d="M40 55 C110 10 190 38 240 60 S350 66 370 120 M30 205 C100 180 132 285 215 295 S338 240 380 275" stroke="#3f6045" stroke-width="2" fill="none"/><path d="M60 330 Q130 190 180 85 T365 12" fill="none" stroke="#3c573d" stroke-width="7" opacity=".35"/>'+points;
-}
-$("#densityRange").addEventListener("input",renderScatterMap);
-$("#seedInput").addEventListener("input",renderScatterMap);
-$("#distributionSelect").addEventListener("change",renderScatterMap);
-$("#selectSurface").addEventListener("click",()=>toast("Surface picker is a design concept. Pick geometry in 3ds Max."));
-$("#addScatterPlants").addEventListener("click",()=>toast("Choose source plants from the list above. Full library picker is planned."));
-["scatterGenerate","scatterApply","scatterDelete"].forEach(id=>$("#"+id).addEventListener("click",()=>{renderScatterMap();toast("Scatter / "+state.scatter+": concept preview only. No objects created in 3ds Max.")}));
 state.proxy=state.settings.proxy||"Point Cloud";
 $$("[data-proxy]").forEach(x=>x.classList.toggle("active",x.dataset.proxy===state.proxy));
-render();scatterSourceList();renderScatter();
+render();
 })();
