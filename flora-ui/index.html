@@ -17,7 +17,6 @@
         <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
         <nav class="workspace-nav" aria-label="Application workspace">
           <button type="button" class="workspace-tab active" data-workspace="catalog">Catalog</button>
-          <button type="button" class="workspace-tab" data-workspace="scatter">Scatter <span class="future-dot" title="Concept design"></span></button>
         </nav>
         <span class="fill"></span>
         <button class="toolbar-button" type="button" id="libraryButton">Library...</button>
@@ -66,42 +65,6 @@
         </footer>
       </section>
 
-      <section id="scatterWorkspace" class="workspace-container" hidden>
-        <nav class="catalog-nav scatter-nav">
-          <div class="catalog-tabs" id="scatterTabs">
-            <button class="catalog-tab active" data-scatter="spring">Spring</button>
-            <button class="catalog-tab" data-scatter="grove">Grove</button>
-            <button class="catalog-tab" data-scatter="biome">Biome</button>
-          </div><span class="fill"></span><span class="future-label">CONCEPT DESIGN · NOT YET IMPLEMENTED IN 3DS MAX</span>
-        </nav>
-        <div class="scatter-main">
-          <aside class="scatter-source panel">
-            <div class="label-caps">PLANT SOURCES</div>
-            <h2>Flora Library</h2>
-            <p>Choose models to distribute</p>
-            <div id="scatterPlants" class="source-list"></div>
-            <button type="button" id="addScatterPlants" class="primary wide">+ Add Plants</button>
-            <div class="scatter-note">The selected sources are Corona Proxy instances. Demo controls do not create scene objects.</div>
-          </aside>
-          <section class="scatter-content panel">
-            <div class="scatter-heading"><div><div class="eyebrow">SCATTER / <span id="scatterModeName">SPRING</span></div><h1 id="scatterHeading">Spring <span>Quick Placement</span></h1><p id="scatterDescription">Create a local planting composition from editable Corona Proxy instances.</p></div><span class="future-label">PROPOSED UI</span></div>
-            <div class="scatter-content-grid">
-              <div class="scatter-form">
-                <div class="field-group"><label for="surfaceInput">Target Surface</label><div class="field-row"><input id="surfaceInput" value="Landscape_001" aria-label="Target Surface"><button class="mini-button" id="selectSurface">Pick</button></div></div>
-                <div class="field-group"><label for="areaSelect">Area</label><select id="areaSelect"><option>Entire Surface</option><option>Brush</option><option>Closed Spline</option></select></div>
-                <div class="field-group"><label for="distributionSelect">Distribution</label><select id="distributionSelect"><option>Random Distribution</option><option>Cluster Distribution</option></select></div>
-                <div class="field-group"><label for="densityRange">Density <small>plants / m²</small></label><div class="range-row"><input type="range" id="densityRange" min="1" max="20" value="7"><output id="densityNumber">7</output></div></div>
-                <div class="field-group"><label for="orientationSelect">Orientation</label><select id="orientationSelect"><option>World Z</option><option>Surface Normal</option></select></div>
-                <div class="two-fields"><div class="field-group"><label for="seedInput">Seed</label><input type="number" id="seedInput" value="42"></div><div class="field-group"><label for="variationInput">Scale variation</label><select id="variationInput"><option>± 15%</option><option>± 25%</option><option>None</option></select></div></div>
-                <div class="field-group"><label class="inline-check"><input type="checkbox" id="autoDensity"> Auto Density</label></div>
-              </div>
-              <div class="scatter-preview"><div class="preview-top"><strong>Distribution Preview</strong><span id="distributionInfo">Random · 7 plants/m²</span></div><svg id="scatterMap" viewBox="0 0 400 350" role="img" aria-label="Illustrative plant distribution preview"></svg><span class="preview-foot">Illustrative placement · no scene changes</span></div>
-            </div>
-            <div class="scatter-actions"><span id="scatterHelper" class="subtle-text">One-time instances. Apply ends procedural editing.</span><span class="fill"></span><button id="scatterDelete" type="button" class="toolbar-button">Delete Set</button><button id="scatterGenerate" type="button" class="toolbar-button">Generate Preview</button><button id="scatterApply" type="button" class="primary">Apply</button></div>
-          </section>
-        </div>
-        <footer class="statusbar"><span class="selected-pill">Scatter Preview</span><span id="scatterFootNote">Spring · Quick Placement</span><span class="fill"></span><span class="future-label">INTERFACE CONCEPT ONLY</span></footer>
-      </section>
     </div>
   </div>
 </div>
