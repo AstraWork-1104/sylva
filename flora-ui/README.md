@@ -10,7 +10,7 @@
 2. Нажмите **Code → Download ZIP**, распакуйте архив.
 3. Откройте **`flora-ui/Flora-UI.html`** в браузере.
 
-Этот HTML полностью автономен. В нём находятся основной Catalog, Explorer, Favorites, подключаемые каталоги, Scatter (концепт) и окно Material Manager с вкладками Relink, Textures, Materials. Содержимое является **интерактивным прототипом**, а не исполняемым кодом для изменения сцены 3ds Max.
+Этот HTML полностью автономен. В нём находятся основной Catalog, Explorer, Favorites, подключаемые каталоги и окно Material Manager с вкладками Relink, Textures, Materials. Содержимое является **интерактивным прототипом**, а не исполняемым кодом для изменения сцены 3ds Max.
 
 GitHub Blob и Raw показывают исходный HTML или скачивают его, но не запускают визуальный интерфейс в браузере GitHub.
 
@@ -36,7 +36,6 @@ flora-ui/
 - Catalog: Explorer, Favorites, Landscape / .floracat, Grid/List, поиск, сортировка, выбор растений и панель свойств.
 - Material Manager: независимые Relink, Textures, Materials.
 - Settings: в том числе Use Scene Materials.
-- Scatter: Spring, Grove, Biome как будущие режимы.
 
 Данные растений и результаты операций в браузере - демонстрационные. Никакие действия макета не меняют файлы библиотек и сцену Max.
 
