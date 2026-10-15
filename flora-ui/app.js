@@ -380,7 +380,7 @@ function render(){
  $("#explorerInfoButton").hidden=state.catalog!=="explorer";
  const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
  info.textContent=state.explorerDataFiles.length+" info file(s) selected - preview only";
- if(basket)renderBasket();else{folderList();renderModels()}
+ if(basket)renderBasket();else{folderList();renderModels()} renderFilterControls();
 }
 
 /* Basket is an interactive browser preview; no actual 3ds Max scene operations. */
@@ -478,6 +478,37 @@ $("#modelGrid").addEventListener("click",e=>{
 });
 $("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
 $("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
+/* Search filters: landscaping categories are data-driven; not permanent UI tabs. */
+function renderUsageCategories(){
+ const q=$("#usageSearch").value.trim().toLowerCase();
+ $("#usageCategories").innerHTML=[...useCategories,...(state.usageMore.length?[["Additional Categories",state.usageMore]]:[])].map(([group,items])=>{
+  const match=items.filter(x=>x.toLowerCase().includes(q));
+  if(!match.length)return "";
+  return '<div class="usage-category-group"><div class="usage-category-title">'+clean(group)+' <span>'+match.length+'</span></div>'+
+   '<div class="usage-category-items">'+match.map(name=>'<label class="usage-category-item"><input type="checkbox" data-usecategory="'+clean(name)+'" '+(state.usageSelected.has(name)?'checked':'')+'><span>'+clean(name)+'</span></label>').join("")+'</div></div>';
+ }).join("");
+}
+function renderFilterControls(){
+ const options=[...new Set(models.map(m=>m.type))].sort();
+ $("#filterType").innerHTML='<option value="">All types</option>'+options.map(v=>'<option value="'+clean(v)+'">'+clean(v)+'</option>').join("");
+ $("#filterType").value=state.filterType;$("#filterFoliage").value=state.filterFoliage;
+ $("#filterFlower").value=state.filterFlower;$("#filterMinHeight").value=state.filterMinHeight;
+ const total=state.usageSelected.size+[state.filterType,state.filterFoliage,state.filterFlower,state.filterMinHeight].filter(Boolean).length;
+ $("#filterCount").textContent=total?"("+total+")":"";
+ $("#filterButton").classList.toggle("active",total>0);
+ renderUsageCategories();
+}
+$("#filterButton").addEventListener("click",()=>{const p=$("#filterPanel");p.hidden=!p.hidden;$("#filterButton").setAttribute("aria-expanded",String(!p.hidden));if(!p.hidden)renderFilterControls()});
+$("#resetFilters").addEventListener("click",()=>{state.usageSelected.clear();state.filterType="";state.filterFoliage="";state.filterFlower="";state.filterMinHeight="";state.selected.clear();renderFilterControls();renderModels()});
+$("#usageSearch").addEventListener("input",renderUsageCategories);
+$("#usageCategories").addEventListener("change",e=>{const x=e.target.closest("[data-usecategory]");if(!x)return;if(x.checked)state.usageSelected.add(x.dataset.usecategory);else state.usageSelected.delete(x.dataset.usecategory);state.selected.clear();renderFilterControls();renderModels()});
+[["filterType","filterType"],["filterFoliage","filterFoliage"],["filterFlower","filterFlower"],["filterMinHeight","filterMinHeight"]].forEach(([id,key])=>$("#"+id).addEventListener("input",e=>{state[key]=e.target.value;state.selected.clear();renderFilterControls();renderModels()}));
+$("#addDemoCategory").addEventListener("click",()=>{
+ const label="Rain Gardens";
+ if(!state.usageMore.includes(label))state.usageMore.push(label);
+ renderUsageCategories();toast("Category added to this preview. Imported botanical data can extend this list.");
+});
+
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
