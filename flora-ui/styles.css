@@ -196,3 +196,7 @@ button:disabled{opacity:.43;cursor:not-allowed}
  .content-heading{align-items:flex-start;flex-wrap:wrap}
  .content-actions{max-width:100%}
 }
+
+.composition-intro{font-size:10px;color:#a3baa5;background:#1c2f22;border:1px solid #35543e;border-radius:6px;padding:8px 10px;line-height:1.5}
+.composition-intro strong{color:#cde6bf}
+.composition-intro span{color:#8ca590}
