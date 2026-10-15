@@ -200,3 +200,6 @@ button:disabled{opacity:.43;cursor:not-allowed}
 .composition-intro{font-size:10px;color:#a3baa5;background:#1c2f22;border:1px solid #35543e;border-radius:6px;padding:8px 10px;line-height:1.5}
 .composition-intro strong{color:#cde6bf}
 .composition-intro span{color:#8ca590}
+
+.description-status{border:1px solid #3c6645;color:#baddb6;background:#213b2a;border-radius:5px;font-size:9px;line-height:1.4;padding:7px;margin:6px 0 11px}
+.description-status.missing{border-color:#52553d;color:#c6c295;background:#2b2d22}
