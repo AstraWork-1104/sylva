@@ -219,13 +219,132 @@ function visibleModels(){
  if(state.sort==="desc")arr.reverse();
  return arr;
 }
-function properties(){
- const selectedModel=models.find(m=>state.selected.has(m.id));
- const container=$("#propertyRows");
- if(!selectedModel){container.innerHTML='<p class="empty-property">Select a model to inspect its properties.</p>';return;}
- const rows=[["File",selectedModel.id],["Botanical",selectedModel.botanical],["Category",selectedModel.type],["Height",selectedModel.height+" cm"],["Width",selectedModel.width+" cm"],["Season",selectedModel.season],["Renderer","Corona 14"],["Proxy",state.proxy]];
- container.innerHTML=rows.map(([k,v])=>'<div class="property-row"><span>'+clean(k)+'</span><span>'+clean(v)+'</span></div>').join("");
+function propertyValue(key,m){
+ const names=botanicalNames[m.family]||["Not available",m.family];
+ const info={
+  model:m.id+".max",ru:names[0],en:names[1],lat:m.botanical,type:m.type,
+  foliage:["Acer","Hydrangea","Cuphea"].includes(m.family)?"Green / seasonal color":"Green",
+  density:m.type.includes("Trees")?"Medium":"Dense",
+  flowering:["Shrubs","Flowerbed Plants"].includes(m.type)?"Yes":"No",
+  flowerColor:["Flowerbed Plants","Shrubs"].includes(m.type)?"Varies":"Not available",
+  flowerHabit:"Seasonal (example)",
+  uses:modelUses(m),description:"Representative species information; replace with imported descriptions.",
+  keywords:[m.family,m.type].join(", "),
+  height:m.height+" cm",width:m.width+" cm",length:Math.round(m.width*.82)+" cm",
+  diameter:m.width+" cm",base:Math.round(m.width*.38)+" cm",
+  width10:Math.round(m.width*.45)+" cm",widestAt:Math.round(m.height*.58)+" cm",
+  vertices:(18000+m.imageSeed*147).toLocaleString(),polygons:(9000+m.imageSeed*73).toLocaleString(),
+  triangles:(18500+m.imageSeed*151).toLocaleString(),materials:"CoronaPhysicalMtl",
+  textures:"4 maps (example)"
+ };
+ return info[key]??"Not available";
 }
+function similarHTML(m){
+ const others=models.filter(x=>x.family!==m.family&&x.type===m.type).slice(0,3);
+ return '<div class="similar-plant-block">'+others.map(x=>'<button type="button" class="similar-plant-item" data-similar="'+clean(x.id)+'">'+leafSVG(x)+'<span>'+clean(x.botanical)+'</span></button>').join("")+
+ '<div class="property-hint">Other models present in this sample library</div></div>';
+}
+function properties(){
+ const container=$("#propertyRows");
+ const m=models.find(x=>state.selected.has(x.id));
+ const theme=getTheme();
+ if(!m){
+  if(theme){
+   const ids=visibleModels(),use=theme.name==="City"?"Urban and landscape spaces":theme.name==="Forest"?"Woodland planting":"Landscape planting";
+   container.innerHTML='<div class="composition-properties"><div class="property-group-title">COLLECTION OVERVIEW</div>'+
+    '<div class="property-row"><span>Name</span><span>'+clean(state.themeSelection)+'</span></div>'+
+    '<div class="property-row"><span>Purpose</span><span>'+clean(use)+'</span></div>'+
+    '<div class="property-row"><span>Description</span><span>Illustrative grouping of compatible plants for a designed space. No automated placement.</span></div>'+
+    '<div class="property-row"><span>Available models</span><span>'+ids.length+'</span></div>'+
+    '<div class="property-row"><span>Plant layers</span><span>'+roles.map(r=>clean(r.key)).join("<br>")+'</span></div></div>';
+  }else container.innerHTML='<p class="empty-property">Select a plant model to inspect properties.</p>';
+  renderPropertyCustomize();return;
+ }
+ const groups=propDefs.map(([group,defs])=>{
+  const fields=[...defs].sort((a,b)=>state.propOrder.indexOf(a[0])-state.propOrder.indexOf(b[0])).filter(d=>state.propVisible.includes(d[0]));
+  if(!fields.length)return "";
+  const collapsed=state.propCollapsed.has(group);
+  const items=collapsed?"":fields.map(([key,label])=>{
+   if(key==="similar")return '<div class="property-special"><div class="property-special-name">Similar Plants</div>'+similarHTML(m)+'</div>';
+   const value=propertyValue(key,m);
+   return '<div class="property-row"><span>'+clean(label)+'</span><span>'+
+    (Array.isArray(value)?'<div class="property-tags">'+value.map(v=>'<span class="property-tag">'+clean(v)+'</span>').join("")+'</div>':
+      (value==="Not available"?'<i class="property-missing">Not available</i>':clean(value)))+
+    '</span></div>';
+  }).join("");
+  return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'"><span>'+ (collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+items+'</section>';
+ }).join("");
+ container.innerHTML=groups+'<div class="property-hint">Concept data • geometry values are illustrative until Model Analyzer integration.</div>';
+ renderPropertyCustomize();
+}
+function renderPropertyCustomize(){
+ const panel=$("#propertiesCustomPanel");
+ panel.hidden=!state.propCustomize;
+ $("#propertiesCustomize").classList.toggle("active",state.propCustomize);
+ if(!state.propCustomize)return;
+ panel.innerHTML='<div class="property-custom-top"><strong>Customize Properties</strong><button type="button" data-propaction="close">×</button></div>'+
+ '<div class="property-custom-actions"><button type="button" data-propaction="default">Reset to Default</button><button type="button" data-propaction="all">Show All</button></div>'+
+ propDefs.map(([group,items])=>'<div class="property-custom-group"><div>'+clean(group)+'</div>'+
+ [...items].sort((a,b)=>state.propOrder.indexOf(a[0])-state.propOrder.indexOf(b[0])).map(([key,label])=>'<div class="property-custom-field" draggable="true" data-propitem="'+clean(key)+'">'+
+ '<label><input type="checkbox" data-propvisible="'+clean(key)+'" '+(state.propVisible.includes(key)?'checked':'')+'>'+clean(label)+'</label>'+
+ '<span class="property-order-controls"><button type="button" data-propmove="'+clean(key)+'" data-dir="-1" title="Move up">↑</button><button type="button" data-propmove="'+clean(key)+'" data-dir="1" title="Move down">↓</button></span></div>').join("")+'</div>').join("")+
+ '<p class="property-hint">Drag a row or use arrows to change field order. Saved locally.</p>';
+}
+$("#propertiesCustomize").addEventListener("click",()=>{state.propCustomize=!state.propCustomize;renderPropertyCustomize()});
+$("#propertyRows").addEventListener("click",e=>{
+ const group=e.target.closest("[data-propgroup]");
+ if(group){const name=group.dataset.propgroup;if(state.propCollapsed.has(name))state.propCollapsed.delete(name);else state.propCollapsed.add(name);prefWrite("properties-collapsed",[...state.propCollapsed]);properties();return}
+ const similar=e.target.closest("[data-similar]");
+ if(similar){state.selected=new Set([similar.dataset.similar]);renderModels()}
+});
+$("#propertiesCustomPanel").addEventListener("change",e=>{
+ const box=e.target.closest("[data-propvisible]");if(!box)return;
+ const key=box.dataset.propvisible;
+ if(box.checked&&!state.propVisible.includes(key))state.propVisible.push(key);
+ else if(!box.checked)state.propVisible=state.propVisible.filter(x=>x!==key);
+ prefWrite("properties-visible",state.propVisible);properties();
+});
+$("#propertiesCustomPanel").addEventListener("click",e=>{
+ const move=e.target.closest("[data-propmove]");
+ if(move){
+  const key=move.dataset.propmove,i=state.propOrder.indexOf(key);
+  const group=propDefs.find(([_,defs])=>defs.some(d=>d[0]===key));
+  const next=i+Number(move.dataset.dir);
+  if(group&&next>=0&&next<state.propOrder.length&&group[1].some(d=>d[0]===state.propOrder[next])){
+   [state.propOrder[i],state.propOrder[next]]=[state.propOrder[next],state.propOrder[i]];
+   prefWrite("properties-order",state.propOrder);properties();
+  }
+  return;
+ }
+ const a=e.target.closest("[data-propaction]");if(!a)return;
+ if(a.dataset.propaction==="close")state.propCustomize=false;
+ if(a.dataset.propaction==="all")state.propVisible=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));
+ if(a.dataset.propaction==="default"){state.propVisible=propDefault();state.propOrder=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));state.propCollapsed=new Set(["Geometry & Technical"]);prefWrite("properties-order",state.propOrder);prefWrite("properties-collapsed",[...state.propCollapsed]);}
+ prefWrite("properties-visible",state.propVisible);properties();
+});
+let draggedProperty=null;
+$("#propertiesCustomPanel").addEventListener("dragstart",e=>{const row=e.target.closest("[data-propitem]");draggedProperty=row?.dataset.propitem||null});
+$("#propertiesCustomPanel").addEventListener("dragover",e=>{if(e.target.closest("[data-propitem]"))e.preventDefault()});
+$("#propertiesCustomPanel").addEventListener("drop",e=>{
+ const row=e.target.closest("[data-propitem]");if(!row||!draggedProperty)return;
+ e.preventDefault();const key=row.dataset.propitem;
+ if(propDefs.some(([_,defs])=>defs.some(d=>d[0]===key)&&defs.some(d=>d[0]===draggedProperty))){
+  state.propOrder=state.propOrder.filter(x=>x!==draggedProperty);
+  state.propOrder.splice(state.propOrder.indexOf(key),0,draggedProperty);
+  prefWrite("properties-order",state.propOrder);properties();
+ }
+ draggedProperty=null;
+});
+(function(){
+ const resizer=$("#propertiesResize"),shell=$("#resultsShell");
+ shell.style.setProperty("--properties-width",state.propWidth+"px");
+ let moving=false;
+ function resize(x){const width=Math.max(180,Math.min(440,shell.getBoundingClientRect().right-x-3));state.propWidth=width;shell.style.setProperty("--properties-width",width+"px");}
+ resizer.addEventListener("pointerdown",e=>{moving=true;e.preventDefault();resizer.setPointerCapture?.(e.pointerId)});
+ resizer.addEventListener("pointermove",e=>{if(moving)resize(e.clientX)});
+ resizer.addEventListener("pointerup",()=>{if(moving){moving=false;prefWrite("properties-width",state.propWidth)}});
+ resizer.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="ArrowRight"){state.propWidth=Math.max(180,Math.min(440,state.propWidth+(e.key==="ArrowLeft"?12:-12)));shell.style.setProperty("--properties-width",state.propWidth+"px");prefWrite("properties-width",state.propWidth);e.preventDefault()}});
+})();
 function modelCard(m,i){
  const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
  return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 2 11h10l2-11H5zM8 9l4-6 4 6M9 13v4m6-4v4"/></svg>')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
