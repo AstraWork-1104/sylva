@@ -128,7 +128,6 @@ function renderModels(){
 function render(){
  const basket=state.catalog==="basket";
  $("#catalogBody").hidden=basket;$("#catalogFooter").hidden=basket;$("#basketWorkspace").hidden=!basket;
- $("#addCatalogButton").hidden=basket;
  showCatalogTabs();
  $("#explorerInfoButton").hidden=state.catalog!=="explorer";
  const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
