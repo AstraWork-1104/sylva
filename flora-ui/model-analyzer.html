@@ -76,7 +76,8 @@ function begin(){
   if(index>=jobs.length){clearInterval(timer);timer=null;$("#start").disabled=false;$("#exportResults").disabled=rows.length===0;$("#status").textContent="Completed - demo results";$("#currentFile").textContent="Illustrative scan finished. In 3ds Max the scene would remain empty.";$("#summary").textContent=rows.length+" demo results ready for CSV export";return}
   const job=jobs[index],model=job.model,folder=job.folder.split("-")[0],name="MT_PM_V"+(34+Number(folder))+"_"+model[0]+"_"+String(job.n+1).padStart(2,"0")+".max";
   $("#currentFile").textContent=name;
-  if(index%17===11){skipped++;$("#log").textContent="Skipped example: "+name+" (unsupported or missing mesh)."}
+  if(index%29===23){errors++;$("#log").textContent="Example error: "+name+" (could not analyze source mesh).";}
+  else if(index%17===11){skipped++;$("#log").textContent="Skipped example: "+name+" (unsupported or missing mesh)."}
   else{const h=model[2]+job.n*7,w=Math.round(h*.62);rows.push([name,h,w,Math.round(w*.8),w,Math.round(w*.34),Math.round(w*.46),Math.round(h*.57),18000+index*213,9200+index*107,18400+index*214,1,4]);}
   index++;const percent=Math.round(100*index/jobs.length);
   $("#percent").textContent=percent+"%";$("#progressFill").style.width=percent+"%";output();
