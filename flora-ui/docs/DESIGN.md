@@ -23,7 +23,6 @@
 
 Material Manager сохраняет отдельные вкладки Relink, Textures, Materials. Общий \`Processing Scope\` показывается только в Textures и Materials, а не в Relink.
 
-Scatter - Spring (Quick Placement), Grove (Editable Distribution), Biome (Large-Scale Distribution). В интерфейсе они отмечены как будущие функции.
 
 ## Обслуживание
 
