@@ -7,6 +7,7 @@ const repoKey = "flora-ui-design-v1";
 const collections = [
   {id:"explorer",label:"Explorer",builtin:true},
   {id:"favorites",label:"★ Favorites",builtin:true},
+  {id:"basket",label:"Basket",builtin:true},
   {id:"landscape",label:"Landscape",builtin:false}
 ];
 const plants = [
@@ -30,10 +31,16 @@ const models=plants.flatMap(([bot,genus,type,num,color,height],group)=>Array.fro
 })));
 const favoritesStorage=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-favorites")||"[]")}catch{return []}};
 const readCollections=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-collections")||'["My Garden","Courtyard","Park Ideas"]')}catch{return ["My Garden","Courtyard","Park Ideas"]}};
-const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
+const readBasket=()=>{try{
+ const saved=JSON.parse(localStorage.getItem(repoKey+"-basket")||"[]");
+ return new Map(Array.isArray(saved)?saved.filter(x=>x&&typeof x.id==="string"&&models.some(m=>m.id===x.id)).map(x=>[x.id,x.checked!==false]):[]);
+}catch{return new Map()}};
+const readDataFiles=()=>{try{const a=JSON.parse(localStorage.getItem(repoKey+"-explorer-info")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string").slice(0,40):[]}catch{return []}};
+const readTileSize=()=>{try{return Math.max(136,Math.min(250,Number(localStorage.getItem(repoKey+"-basket-size"))||176))}catch{return 176}};
+const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings))}catch{}};
+const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings));localStorage.setItem(repoKey+"-basket",JSON.stringify([...state.basket].map(([id,checked])=>({id,checked}))));localStorage.setItem(repoKey+"-basket-size",String(state.basketTileSize));localStorage.setItem(repoKey+"-explorer-info",JSON.stringify(state.explorerDataFiles))}catch{}};
 let toastTimer;
 function toast(message){const el=$("#toast");el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,4400)}
 function iconFolder(){return '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7V5h6l2 3h10v12H3z"/></svg>'}
@@ -64,7 +71,7 @@ function leafSVG(model) {
  }).join("");
  return '<svg viewBox="0 0 200 186" xmlns="http://www.w3.org/2000/svg" aria-label="'+clean(model.botanical)+' preview illustration"><defs><radialGradient id="ground'+model.imageSeed+'"><stop stop-color="#1b211e"/><stop offset="1" stop-color="#1b211e" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="163" rx="79" ry="12" fill="url(#ground'+model.imageSeed+')"/><g>'+stems+leaves+petals+'</g><g stroke="#536052" stroke-width="1.2" opacity=".55"><path d="M181 18v144M178 48h4M178 91h4M178 134h4"/></g><g font-family="Arial,sans-serif" font-size="8" fill="#657167"><text x="166" y="50">30</text><text x="166" y="94">20</text><text x="166" y="137">10</text></g></svg>';
 }
-function showCatalogTabs(){const host=$("#catalogTabs");host.innerHTML=collections.map(c=>'<button class="catalog-tab '+(state.catalog===c.id?'active':'')+'" data-catalog="'+clean(c.id)+'">'+clean(c.label)+'</button>').join("");}
+function showCatalogTabs(){const host=$("#catalogTabs");host.innerHTML=collections.map(c=>'<button class="catalog-tab '+(state.catalog===c.id?'active':'')+'" data-catalog="'+clean(c.id)+'">'+clean(c.label)+(c.id==="basket"?'<span class="basket-tab-count" '+(state.basket.size?'':'hidden')+'>'+state.basket.size+'</span>':'')+'</button>').join("");}
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
  if(state.catalog==="explorer"){
@@ -106,8 +113,8 @@ function renderModels(){
  const arr=visibleModels(),host=$("#modelGrid");
  host.classList.toggle("list-view",!state.grid);
  host.innerHTML=arr.length?arr.map((m,i)=>{
- const fav=state.favorites.has(m.id),selected=state.selected.has(m.id);
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
+ const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'▣')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
  }).join(""):'<div class="empty-state">No plants match the current filter.<br>Try another category or search.</div>';
  let title,path;
  if(state.catalog==="explorer"){title="Maxtree - Plant Models Vol "+state.folder;path="F:\\001_Model\\Maxtree\\Maxtree - Plant Models Vol "+state.folder;}
@@ -118,7 +125,16 @@ function renderModels(){
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
 }
-function render(){showCatalogTabs();folderList();renderModels()}
+function render(){
+ const basket=state.catalog==="basket";
+ $("#catalogBody").hidden=basket;$("#catalogFooter").hidden=basket;$("#basketWorkspace").hidden=!basket;
+ $("#addCatalogButton").hidden=basket;
+ showCatalogTabs();
+ $("#explorerInfoButton").hidden=state.catalog!=="explorer";
+ const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
+ info.textContent=state.explorerDataFiles.length+" info file(s) selected - preview only";
+ if(basket)renderBasket();else{folderList();renderModels()}
+}
 function selectModel(id,index,shift,ctrl){
  const ids=visibleModels().map(m=>m.id);
  if(shift && state.lastClicked>=0){if(!ctrl)state.selected.clear();const a=Math.min(state.lastClicked,index),b=Math.max(state.lastClicked,index);for(let i=a;i<=b;i++)state.selected.add(ids[i]);}
