@@ -16,3 +16,65 @@
 @media(max-width:1100px){.model-grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr))}.results-shell{grid-template-columns:minmax(0,1fr) 125px}.catalog-body{grid-template-columns:160px minmax(0,1fr)}.app-version{font-size:9px}}
 @media(max-width:790px){.stage{padding:0}.desktop-window{height:100vh;min-height:620px;border-radius:0}.application{padding:7px}.workspace-nav{margin-left:6px}.workspace-tab{padding:7px}.app-version{display:none}.top-header{gap:5px;padding:5px}.toolbar-button{padding:7px}.catalog-body{grid-template-columns:136px minmax(0,1fr);gap:6px}.results-shell{grid-template-columns:1fr}.properties-panel{display:none}.model-grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr))}.catalog-nav{padding:3px}.library-area{padding:10px}.future-label{white-space:normal}}
 @media(max-width:540px){.sidebar{display:none}.catalog-body{grid-template-columns:1fr}.top-header .toolbar-button:not(.icon-button){font-size:0;width:33px;height:33px}.top-header #libraryButton:after{content:'L';font-size:12px}.top-header #refreshButton:after{content:'↻';font-size:15px}.statusbar #statusHint,.footer-label{display:none}.catalog-nav{gap:2px}.catalog-tab{padding:8px}.model-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.model-count{display:none}.search-toolbar select{width:90px}.brand-title{font-size:15px}.workspace-tab{font-size:10px;padding:6px}}
+
+
+/* Flora Import Basket - same flat surfaces and proportions as the Catalog. */
+[hidden]{display:none!important}
+.content-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.explorer-info-status{font-size:9px;color:#92ba90;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.basket-tab-count{display:inline-grid;place-items:center;margin-left:7px;min-width:18px;height:18px;padding:0 4px;border-radius:4px;background:#294831;color:#b9e296;font-size:10px;font-weight:700}
+.catalog-tab.active .basket-tab-count{background:#24442d;color:#dff4ca}
+.model-card{position:relative}
+.basket-add-button{position:absolute;top:12px;right:12px;z-index:1;width:27px;height:27px;display:grid;place-items:center;border:1px solid #527354;border-radius:5px;background:#203b29;color:#d2e7c7;cursor:pointer;opacity:0;transition:opacity .12s ease,background .12s ease}
+.model-card:hover .basket-add-button,.model-card:focus-within .basket-add-button,.basket-add-button.is-added{opacity:1}
+.basket-add-button:hover,.basket-add-button:focus-visible{background:#315c3a;color:#f0ffdf}
+.basket-add-button.is-added{color:#b5e58b}
+.model-grid.list-view .basket-add-button{position:static;order:5;flex:0 0 27px;opacity:1;margin-left:3px}
+.plant-context-menu{position:fixed;z-index:240;min-width:192px;padding:4px;border:1px solid #49694a;border-radius:7px;background:#172a1e;box-shadow:0 8px 20px #0007}
+.plant-context-menu button{width:100%;border:0;background:transparent;color:#d5ead0;text-align:left;padding:10px 12px;border-radius:4px;font-size:11px;cursor:pointer}
+.plant-context-menu button:hover{background:#2b4d34}
+.basket-workspace{display:flex;flex:1;flex-direction:column;min-height:0;gap:9px}
+.basket-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px 15px;background:linear-gradient(125deg,#142119,#132018);border:1px solid var(--border);border-radius:8px}
+.basket-eyebrow{font-size:9px;letter-spacing:1.1px;color:#8ead90;margin-bottom:7px}
+.basket-top h1{font-size:19px;font-weight:700;color:#e0ecdc;margin:0 0 5px}
+.basket-heading-count{font-size:11px;font-weight:500;color:#91b698;margin-left:9px}
+.basket-top p{font-size:11px;color:#91a994;margin:0;line-height:1.5}
+.basket-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;background:#14231a;border:1px solid var(--border);border-radius:8px;padding:11px 15px}
+.basket-toolbar-info{display:flex;flex-direction:column;gap:3px}
+.basket-toolbar-info strong{font-weight:650;font-size:12px;color:#d7ebcf}
+.basket-toolbar-info span{font-size:10px;color:#8fad95}
+.basket-size-control{display:flex;align-items:center;gap:11px;font-size:11px;color:#b0c8af;white-space:nowrap}
+.basket-size-control input[type=range]{width:130px;accent-color:#a2d77e;cursor:pointer}
+.basket-size-control output{font-size:10px;color:#a8c79f;min-width:39px;text-align:right}
+.basket-grid{--basket-card-size:176px;flex:1;min-height:0;overflow:auto;align-content:start;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--basket-card-size)),1fr));grid-auto-rows:max-content;gap:10px;padding:12px;background:#14221a;border:1px solid var(--border);border-radius:8px}
+.basket-card{min-width:0;background:#1b3023;border:1px solid #35533e;border-radius:8px;padding:7px}
+.basket-card:hover{border-color:#6a9264}
+.basket-preview{position:relative;aspect-ratio:1.14;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:5px;background:radial-gradient(ellipse at 48% 78%,#313832,#252b2a 69%)}
+.basket-preview svg{width:100%;height:100%}
+.basket-check{position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:4px;background:#192d21ed;border:1px solid #44654a;border-radius:5px;padding:5px 6px;color:#e1f0d9;font-size:10px;cursor:pointer}
+.basket-check input{width:14px;height:14px;margin:0;accent-color:#a3d77e}
+.basket-remove{position:absolute;top:7px;right:7px;border:1px solid #4b6650;width:25px;height:25px;background:#1a2c21e8;border-radius:5px;color:#b3ccb2;font-size:20px;line-height:18px;cursor:pointer}
+.basket-remove:hover{background:#50312f;color:#f9d2c9;border-color:#8d514c}
+.basket-card-title{padding:8px 2px 0;color:#dcebd8;font-weight:650;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.basket-card-description{padding:4px 2px 3px;color:#91ac97;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.basket-empty{grid-column:1/-1;justify-self:center;align-self:center;max-width:390px;text-align:center;color:#93b49b;padding:40px 12px}
+.basket-empty strong{font-size:16px;color:#d0e1ca}
+.basket-empty p{font-size:11px;line-height:1.7}
+.basket-footer{padding:8px 11px;min-height:49px;gap:10px}
+.basket-footer-hint{font-size:10px;color:#95ac95}
+.basket-demo-label{font-size:9px;color:#a7aa79;letter-spacing:.5px}
+button:disabled{opacity:.43;cursor:not-allowed}
+@media(max-width:790px){
+ .basket-top{padding:13px}
+ .basket-toolbar{flex-wrap:wrap}
+ .basket-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--basket-card-size)),1fr))}
+ .basket-footer-hint{display:none}
+}
+@media(max-width:540px){
+ .basket-size-control{width:100%;justify-content:space-between}
+ .basket-size-control input[type=range]{width:95px}
+ .basket-top h1{font-size:16px}
+ .basket-demo-label{display:none}
+ .content-actions{gap:4px}
+ #explorerInfoButton{font-size:10px;padding:7px}
+}
