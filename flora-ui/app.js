@@ -8,7 +8,9 @@ const collections = [
   {id:"explorer",label:"Explorer",builtin:true},
   {id:"favorites",label:"★ Favorites",builtin:true},
   {id:"basket",label:"Basket",builtin:true},
-  {id:"landscape",label:"Landscape",builtin:false}
+  {id:"landscape",label:"Landscape",builtin:false},
+  {id:"city",label:"City",builtin:false},
+  {id:"forest",label:"Forest",builtin:false}
 ];
 const plants = [
  ["Catharanthus roseus","Catharanthus","Flowerbed Plants",6,"#df83c1",65],
@@ -38,6 +40,80 @@ const readBasket=()=>{try{
 const readDataFiles=()=>{try{const a=JSON.parse(localStorage.getItem(repoKey+"-explorer-info")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string").slice(0,40):[]}catch{return []}};
 const readTileSize=()=>{try{return Math.max(136,Math.min(250,Number(localStorage.getItem(repoKey+"-basket-size"))||176))}catch{return 176}};
 const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
+
+/* Concept design v2: data is illustrative, not a definitive thematic catalog file schema. */
+const themes={
+ city:{name:"City",sections:[
+  {name:"Courtyards",items:["Modern Residential Courtyard","Shaded Courtyard","Natural Courtyard"]},
+  {name:"Streets & Boulevards",items:["Urban Street Planting","Boulevard Planting","Green Median"]},
+  {name:"Lawn Areas",items:["Open Lawn with Trees","Ornamental Lawn","Meadow Lawn"]},
+  {name:"Parks & Squares",items:["Formal City Park","Natural Park","Walking Areas"]}
+ ]},
+ forest:{name:"Forest",sections:[
+  {name:"Woodland Types",items:["Coniferous Forest","Deciduous Forest","Forest Edge","Forest Clearing"]},
+  {name:"Planting Layers",items:["Mixed Woodland Understory","Shade-Tolerant Groundcover"]}
+ ]},
+ landscape:{name:"Landscape",sections:[
+  {name:"Designed Gardens",items:["Contemporary Garden","Seasonal Flower Garden","Naturalistic Garden"]},
+  {name:"Open Spaces",items:["Meadow & Grasslands","Mixed Border"]}
+ ]}
+};
+const roles=[
+ {key:"Trees",title:"TREES",types:["Deciduous Trees"]},
+ {key:"Shrubs & Low Conifers",title:"SHRUBS & LOW CONIFERS",types:["Shrubs","Coniferous Trees"]},
+ {key:"Perennials & Groundcovers",title:"PERENNIALS & GROUNDCOVERS",types:["Flowerbed Plants","Ornamental Grasses"]}
+];
+const useCategories=[
+ ["Decorative & Designed Planting",["Lawns","Flowerbeds","Mixed Borders","Border Planting","Groundcovers","Ornamental Grasses","Shrubs","Hedges","Urban Trees","Avenue Planting","Specimen Accents","Container Planting","Vertical Planting","Interior Planting","Conifer Planting","Ornamental Perennials","Low-Growing Conifers","Flowering Shrubs","Bulbs","Palms"]],
+ ["Natural & Wild Vegetation",["Field Vegetation","Forest Vegetation","Forest Understory","Wild Shrubs","Steppe Vegetation","Coastal Vegetation","Aquatic Vegetation","Tropical Vegetation","Desert Vegetation","Ferns"]]
+];
+function modelUses(m){
+ const type=m.type;
+ if(type==="Deciduous Trees")return ["Urban Trees","Avenue Planting","Specimen Accents","Forest Vegetation"];
+ if(type==="Coniferous Trees")return ["Conifer Planting","Low-Growing Conifers","Forest Vegetation"];
+ if(type==="Shrubs")return ["Shrubs","Hedges","Flowering Shrubs","Forest Understory"];
+ if(type==="Ornamental Grasses")return ["Ornamental Grasses","Lawns","Steppe Vegetation","Mixed Borders"];
+ return ["Flowerbeds","Groundcovers","Ornamental Perennials","Mixed Borders"];
+}
+const botanicalNames={
+ Acer:["Клён пальчатый","Japanese maple"],Betula:["Берёза повислая","Silver birch"],
+ Juniperus:["Можжевельник","Common juniper"],Picea:["Ель европейская","Norway spruce"],
+ Hydrangea:["Гортензия","Hydrangea"],Lavandula:["Лаванда","Lavender"],
+ Miscanthus:["Мискантус","Miscanthus"],Pennisetum:["Пеннисетум","Fountain grass"]
+};
+function getTheme(){return themes[state.catalog]}
+function getRole(m){return roles.find(r=>r.types.includes(m.type))?.title||"OTHER PLANTS"}
+function themeIds(){
+ if(!getTheme())return [];
+ const seed=(state.themeSelection||"").length;
+ return models.filter((m,i)=>((i+seed)%4!==0 || state.themeSelection?.includes("Forest"))).map(m=>m.id);
+}
+const propDefs=[
+ ["Basic Information",[
+  ["model","Model file",true],["ru","Russian name",false],["en","English name",true],["lat","Latin name",true],["type","Plant type",true]]],
+ ["Visual Characteristics",[
+  ["foliage","Foliage color",true],["density","Canopy density",false],["flowering","Flowering",false],["flowerColor","Flower color",false],["flowerHabit","Flowering pattern",false],
+  ["uses","Landscaping uses",true],["description","Visual description",false],["keywords","Search keywords",false],["similar","Similar Plants",true]]],
+ ["Geometry & Technical",[
+  ["height","Height",true],["width","Width",true],["length","Length",false],["diameter","Maximum diameter",false],["base","Base width",false],
+  ["width10","Width at 10% height",false],["widestAt","Height of max width",false],["vertices","Vertices",false],
+  ["polygons","Polygons",false],["triangles","Triangles",false],["materials","Materials",false],["textures","Textures",false]]]
+];
+const propDefault=()=>propDefs.flatMap(([_,items])=>items.filter(a=>a[2]).map(a=>a[0]));
+const prefRead=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(repoKey+"-"+key));return v??fallback}catch{return fallback}};
+const prefWrite=(key,v)=>{try{localStorage.setItem(repoKey+"-"+key,JSON.stringify(v))}catch{}};
+
+state.themeSelection="Modern Residential Courtyard";
+state.themeExpanded=new Set(["Courtyards","Woodland Types","Designed Gardens"]);
+state.usageSelected=new Set();
+state.usageMore=[];
+state.filterType="";state.filterFoliage="";state.filterFlower="";state.filterMinHeight="";
+state.propWidth=prefRead("properties-width",240);
+state.propVisible=prefRead("properties-visible",propDefault());
+state.propOrder=prefRead("properties-order",propDefs.flatMap(([_,items])=>items.map(x=>x[0])));
+state.propCollapsed=new Set(prefRead("properties-collapsed",["Geometry & Technical"]));
+state.propCustomize=false;
+state.themeMode=false;
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings));localStorage.setItem(repoKey+"-basket",JSON.stringify([...state.basket].map(([id,checked])=>({id,checked}))));localStorage.setItem(repoKey+"-basket-size",String(state.basketTileSize));localStorage.setItem(repoKey+"-explorer-info",JSON.stringify(state.explorerDataFiles))}catch{}};
