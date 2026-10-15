@@ -201,12 +201,20 @@ function folderList(){
 }
 function visibleModels(){
  let arr=models.filter(m=>{
-  if(state.catalog==="favorites")return state.favorites.has(m.id);
-  if(state.catalog==="explorer")return true;
-  return m.type===state.category;
+  if(state.catalog==="favorites"&&!state.favorites.has(m.id))return false;
+  if(getTheme()&&!themeIds().includes(m.id))return false;
+  if(!getTheme()&&!["explorer","favorites","basket"].includes(state.catalog)&&m.type!==state.category)return false;
+  if(state.filterType&&m.type!==state.filterType)return false;
+  const colored=["Acer","Hydrangea","Cuphea","Lavandula","Catharanthus","Clerodendrum"].includes(m.family);
+  if(state.filterFoliage&&(state.filterFoliage==="Colored")!==colored)return false;
+  const flowering=["Shrubs","Flowerbed Plants"].includes(m.type);
+  if(state.filterFlower&&(state.filterFlower==="yes")!==flowering)return false;
+  if(state.filterMinHeight&&m.height<Number(state.filterMinHeight))return false;
+  if(state.usageSelected.size&&![...state.usageSelected].some(x=>modelUses(m).includes(x)))return false;
+  return true;
  });
  const q=state.search.trim().toLowerCase();
- if(q)arr=arr.filter(m=>[m.id,m.botanical,m.type,m.family].some(x=>x.toLowerCase().includes(q)));
+ if(q)arr=arr.filter(m=>[m.id,m.botanical,m.type,m.family,...(botanicalNames[m.family]||[]),...modelUses(m)].some(x=>String(x).toLowerCase().includes(q)));
  arr=[...arr].sort((a,b)=>a.id.localeCompare(b.id));
  if(state.sort==="desc")arr.reverse();
  return arr;
@@ -218,19 +226,31 @@ function properties(){
  const rows=[["File",selectedModel.id],["Botanical",selectedModel.botanical],["Category",selectedModel.type],["Height",selectedModel.height+" cm"],["Width",selectedModel.width+" cm"],["Season",selectedModel.season],["Renderer","Corona 14"],["Proxy",state.proxy]];
  container.innerHTML=rows.map(([k,v])=>'<div class="property-row"><span>'+clean(k)+'</span><span>'+clean(v)+'</span></div>').join("");
 }
+function modelCard(m,i){
+ const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 2 11h10l2-11H5zM8 9l4-6 4 6M9 13v4m6-4v4"/></svg>')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
+}
 function renderModels(){
  const arr=visibleModels(),host=$("#modelGrid");
  host.classList.toggle("list-view",!state.grid);
- host.innerHTML=arr.length?arr.map((m,i)=>{
- const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 2 11h10l2-11H5zM8 9l4-6 4 6M9 13v4m6-4v4"/></svg>')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
- }).join(""):'<div class="empty-state">No plants match the current filter.<br>Try another category or search.</div>';
+ if(getTheme()){
+  const grouped=roles.map(r=>{
+   const subset=arr.filter(m=>getRole(m)===r.title);
+   if(!subset.length)return "";
+   return '<div class="role-heading">'+clean(r.title)+' <span>'+subset.length+' models</span></div>'+subset.map(m=>modelCard(m,arr.indexOf(m))).join("");
+  }).join("");
+  host.innerHTML=grouped||'<div class="empty-state">No plants match your selected filters.</div>';
+ }else{
+  host.innerHTML=arr.length?arr.map((m,i)=>modelCard(m,i)).join(""):'<div class="empty-state">No plants match the current filter.</div>';
+ }
  let title,path;
  if(state.catalog==="explorer"){title="Maxtree - Plant Models Vol "+state.folder;path="F:\\001_Model\\Maxtree\\Maxtree - Plant Models Vol "+state.folder;}
  else if(state.catalog==="favorites"){title=state.favFilter;path="Favorites / Saved plants";}
- else{const meta=collections.find(c=>c.id===state.catalog);title=state.category;path=(meta?.label||"Catalog")+" / "+state.category;}
- $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;$("#contentTag").hidden=["explorer","favorites"].includes(state.catalog);
- $("#modelCount").textContent=(state.catalog==="explorer"?72:arr.length)+" models";
+ else if(getTheme()){title=state.themeSelection;path=getTheme().name+" / "+getTheme().sections.find(x=>x.items.includes(state.themeSelection))?.name+" / "+state.themeSelection;}
+ else{const meta=collections.find(x=>x.id===state.catalog);title=meta?.label||"Catalog";path="Imported / "+title;}
+ $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;
+ $("#contentTag").hidden=["explorer","favorites"].includes(state.catalog);
+ $("#modelCount").textContent=arr.length+" models";
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
 }
