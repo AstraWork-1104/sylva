@@ -10,9 +10,6 @@
 | Material Manager / Relink | Корни поиска, таблица, статусы, предварительный результат | Согласованный будущий инструмент |
 | Material Manager / Textures | Сводка групп дубликатов и выбор карт | Согласованный будущий инструмент |
 | Material Manager / Materials | Сравнение CoronaPhysicalMtl / CoronaLegacyMtl | Подлежит проверке реализуемости |
-| Scatter / Spring | Выбор растений и поверхности, плотность, preview, Generate/Apply | Концепция, пока не реализована |
-| Scatter / Grove | Управляемое распределение с Update | Концепция, пока не реализована |
-| Scatter / Biome | Интерфейс над Chaos Scatter | Концепция, пока не реализована |
 
 ## Ограничения демо
 
