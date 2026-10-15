@@ -147,7 +147,33 @@ function leafSVG(model) {
  }).join("");
  return '<svg viewBox="0 0 200 186" xmlns="http://www.w3.org/2000/svg" aria-label="'+clean(model.botanical)+' preview illustration"><defs><radialGradient id="ground'+model.imageSeed+'"><stop stop-color="#1b211e"/><stop offset="1" stop-color="#1b211e" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="163" rx="79" ry="12" fill="url(#ground'+model.imageSeed+')"/><g>'+stems+leaves+petals+'</g><g stroke="#536052" stroke-width="1.2" opacity=".55"><path d="M181 18v144M178 48h4M178 91h4M178 134h4"/></g><g font-family="Arial,sans-serif" font-size="8" fill="#657167"><text x="166" y="50">30</text><text x="166" y="94">20</text><text x="166" y="137">10</text></g></svg>';
 }
-function showCatalogTabs(){const host=$("#catalogTabs");host.innerHTML=collections.map(c=>'<button class="catalog-tab '+(state.catalog===c.id?'active':'')+'" data-catalog="'+clean(c.id)+'">'+clean(c.label)+(c.id==="basket"?'<span class="basket-tab-count" '+(state.basket.size?'':'hidden')+'>'+state.basket.size+'</span>':'')+'</button>').join("");}
+function showCatalogTabs(){
+ const builtin=collections.filter(x=>["explorer","favorites","basket"].includes(x.id));
+ $("#catalogTabs").innerHTML=builtin.map(x=>'<button class="catalog-tab '+(state.catalog===x.id?'active':'')+'" data-catalog="'+clean(x.id)+'">'+clean(x.label)+(x.id==="basket"?'<span class="basket-tab-count" '+(state.basket.size?'':'hidden')+'>'+state.basket.size+'</span>':'')+'</button>').join("");
+ const thematic=!builtin.some(x=>x.id===state.catalog);
+ const selected=collections.find(x=>x.id===state.catalog);
+ $("#catalogsButton").classList.toggle("active",thematic);
+ $("#catalogsButton").innerHTML='Catalogs <span aria-hidden="true">▾</span>'+(thematic?'<small class="catalog-selected-name">'+clean(selected?.label||"")+'</small>':'');
+ $("#catalogsMenu").innerHTML='<div class="catalog-menu-heading">INSTALLED CATALOGS</div>'+
+ collections.filter(x=>!builtin.includes(x)).map(x=>'<button type="button" role="menuitem" class="catalog-menu-item '+(x.id===state.catalog?'active':'')+'" data-catalog="'+clean(x.id)+'"><span class="catalog-menu-dot"></span>'+clean(x.label)+'</button>').join("")+
+ '<div class="catalog-menu-divider"></div><button type="button" class="catalog-menu-add" id="addCatalogButton">+ Add Catalog</button>';
+}
+function closeCatalogMenu(){$("#catalogsMenu").hidden=true;$("#catalogsButton").setAttribute("aria-expanded","false")}
+$("#catalogsButton").addEventListener("click",()=>{
+ const menu=$("#catalogsMenu");menu.hidden=!menu.hidden;$("#catalogsButton").setAttribute("aria-expanded",String(!menu.hidden));
+});
+$("#catalogsMenu").addEventListener("click",e=>{
+ if(e.target.closest("#addCatalogButton")){closeCatalogMenu();showModal("catalog");return}
+ const b=e.target.closest("[data-catalog]");if(!b)return;
+ selectCatalog(b.dataset.catalog);closeCatalogMenu();
+});
+document.addEventListener("click",e=>{if(!e.target.closest("#catalogsDropdown"))closeCatalogMenu()});
+function selectCatalog(id){
+ if(id===state.catalog)return;
+ state.catalog=id;state.selected.clear();state.search="";$("#modelSearch").value="";
+ if(themes[id]){state.themeSelection=themes[id].sections[0].items[0];state.themeExpanded.add(themes[id].sections[0].name);}
+ hideContextMenu();render();
+}
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
  if(state.catalog==="explorer"){
@@ -158,12 +184,19 @@ function folderList(){
   host.innerHTML='<button class="tree-item '+(state.favFilter==="All Favorites"?'active':'')+'" data-fav="All Favorites"><span class="twisty">★</span><span class="tree-name">All Favorites</span></button>'+
    state.favCollections.map(f=>'<button class="tree-item child '+(state.favFilter===f?'active':'')+'" data-fav="'+clean(f)+'"><span class="twisty">›</span>'+iconFolder()+'<span class="tree-name">'+clean(f)+'</span></button>').join("")+
    '<button class="sidebar-section-button" id="addFavCollection">+ New Collection</button>';
+ }else if(getTheme()){
+  const theme=getTheme();
+  head.textContent="COLLECTIONS";foot.textContent=theme.name+" / Curated combinations";
+  host.innerHTML=theme.sections.map(section=>{
+   const expanded=state.themeExpanded.has(section.name);
+   return '<button type="button" class="tree-item theme-section" data-theme-section="'+clean(section.name)+'"><span class="twisty">'+(expanded?'⌄':'›')+'</span>'+iconFolder()+'<span class="tree-name">'+clean(section.name)+'</span></button>'+
+    (expanded?section.items.map(item=>'<button type="button" class="tree-item theme-composition '+(state.themeSelection===item?'active':'')+'" data-theme-comp="'+clean(item)+'"><span class="theme-composition-mark">◈</span><span class="tree-name">'+clean(item)+'</span></button>').join(""):"");
+  }).join("");
  }else{
-  head.textContent="CATEGORIES";foot.textContent=state.catalog==="landscape"?"Landscape / Local catalog":"Imported catalog";
-  const cats=["Deciduous Trees","Coniferous Trees","Shrubs","Flowerbed Plants","Ornamental Grasses"];
-  host.innerHTML='<div style="font-size:10px;color:#8ea895;padding:6px 8px">Filter categories</div>'+
-  cats.map(t=>'<button class="tree-item category '+(state.category===t?'active':'')+'" data-category="'+clean(t)+'"><span class="twisty">›</span><span class="tree-name">'+clean(t)+'</span></button>').join("")+
-  (state.catalog!=="landscape"?'<div style="color:#718b78;font-size:10px;padding:12px 8px">Preview categories shown for this imported catalog.</div>':'');
+  head.textContent="CATEGORIES";foot.textContent="Imported thematic catalog preview";
+  const cats=["Garden Collections","Planting Schemes","Sample Combinations"];
+  host.innerHTML=cats.map(t=>'<button type="button" class="tree-item category '+(state.category===t?'active':'')+'" data-category="'+clean(t)+'">'+iconFolder()+'<span class="tree-name">'+clean(t)+'</span></button>').join("");
+ 
  }
 }
 function visibleModels(){
@@ -287,10 +320,12 @@ function selectModel(id,index,shift,ctrl){
  else{state.selected.clear();state.selected.add(id);state.lastClicked=index;}
  renderModels();
 }
-$("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(!b)return;state.catalog=b.dataset.catalog;state.selected.clear();state.search="";$("#modelSearch").value="";render()});
+$("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(!b)return;selectCatalog(b.dataset.catalog)});
 $("#sidebarContent").addEventListener("click",e=>{
  if(e.target.closest("[data-folder]")){state.folder=Number(e.target.closest("[data-folder]").dataset.folder);state.selected.clear();render();}
  if(e.target.closest("[data-fav]")){state.favFilter=e.target.closest("[data-fav]").dataset.fav;render();}
+ if(e.target.closest("[data-theme-section]")){const t=e.target.closest("[data-theme-section]").dataset.themeSection;if(state.themeExpanded.has(t))state.themeExpanded.delete(t);else state.themeExpanded.add(t);folderList();return;}
+ if(e.target.closest("[data-theme-comp]")){state.themeSelection=e.target.closest("[data-theme-comp]").dataset.themeComp;state.selected.clear();render();return;}
  if(e.target.closest("[data-category]")){state.category=e.target.closest("[data-category]").dataset.category;state.selected.clear();render();}
  if(e.target.closest("#addFavCollection"))showModal("newCollection");
 });
@@ -312,7 +347,7 @@ $("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data
 $("#refreshButton").addEventListener("click",()=>{render();toast("Catalog preview refreshed. Local 3ds Max files are not scanned in the browser.")});
 $("#settingsButton").addEventListener("click",()=>showModal("settings"));
 $("#libraryButton").addEventListener("click",()=>showModal("library"));
-$("#addCatalogButton").addEventListener("click",()=>showModal("catalog"));
+
 const modal=$("#modalBackdrop");
 function hideModal(){modal.hidden=true;state.workingModal=null}
 $("#closeModal").addEventListener("click",hideModal);
