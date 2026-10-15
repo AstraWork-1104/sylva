@@ -23,6 +23,68 @@
 @media(max-width:1100px){.model-grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr))}.results-shell{grid-template-columns:minmax(0,1fr) 125px}.catalog-body{grid-template-columns:160px minmax(0,1fr)}.app-version{font-size:9px}}
 @media(max-width:790px){.stage{padding:0}.desktop-window{height:100vh;min-height:620px;border-radius:0}.application{padding:7px}.workspace-nav{margin-left:6px}.workspace-tab{padding:7px}.app-version{display:none}.top-header{gap:5px;padding:5px}.toolbar-button{padding:7px}.catalog-body{grid-template-columns:136px minmax(0,1fr);gap:6px}.results-shell{grid-template-columns:1fr}.properties-panel{display:none}.model-grid{grid-template-columns:repeat(auto-fill,minmax(135px,1fr))}.catalog-nav{padding:3px}.library-area{padding:10px}.future-label{white-space:normal}}
 @media(max-width:540px){.sidebar{display:none}.catalog-body{grid-template-columns:1fr}.top-header .toolbar-button:not(.icon-button){font-size:0;width:33px;height:33px}.top-header #libraryButton:after{content:'L';font-size:12px}.top-header #refreshButton:after{content:'↻';font-size:15px}.statusbar #statusHint,.footer-label{display:none}.catalog-nav{gap:2px}.catalog-tab{padding:8px}.model-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.model-count{display:none}.search-toolbar select{width:90px}.brand-title{font-size:15px}.workspace-tab{font-size:10px;padding:6px}}
+
+
+/* Flora Import Basket - same flat surfaces and proportions as the Catalog. */
+[hidden]{display:none!important}
+.content-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.explorer-info-status{font-size:9px;color:#92ba90;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.basket-tab-count{display:inline-grid;place-items:center;margin-left:7px;min-width:18px;height:18px;padding:0 4px;border-radius:4px;background:#294831;color:#b9e296;font-size:10px;font-weight:700}
+.catalog-tab.active .basket-tab-count{background:#24442d;color:#dff4ca}
+.model-card{position:relative}
+.basket-add-button{position:absolute;top:12px;right:12px;z-index:1;width:27px;height:27px;display:grid;place-items:center;border:1px solid #527354;border-radius:5px;background:#203b29;color:#d2e7c7;cursor:pointer;opacity:0;transition:opacity .12s ease,background .12s ease}
+.model-card:hover .basket-add-button,.model-card:focus-within .basket-add-button,.basket-add-button.is-added{opacity:1}
+.basket-add-button:hover,.basket-add-button:focus-visible{background:#315c3a;color:#f0ffdf}
+.basket-add-button.is-added{color:#b5e58b}
+.model-grid.list-view .basket-add-button{position:static;order:5;flex:0 0 27px;opacity:1;margin-left:3px}
+.plant-context-menu{position:fixed;z-index:240;min-width:192px;padding:4px;border:1px solid #49694a;border-radius:7px;background:#172a1e;box-shadow:0 8px 20px #0007}
+.plant-context-menu button{width:100%;border:0;background:transparent;color:#d5ead0;text-align:left;padding:10px 12px;border-radius:4px;font-size:11px;cursor:pointer}
+.plant-context-menu button:hover{background:#2b4d34}
+.basket-workspace{display:flex;flex:1;flex-direction:column;min-height:0;gap:9px}
+.basket-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px 15px;background:linear-gradient(125deg,#142119,#132018);border:1px solid var(--border);border-radius:8px}
+.basket-eyebrow{font-size:9px;letter-spacing:1.1px;color:#8ead90;margin-bottom:7px}
+.basket-top h1{font-size:19px;font-weight:700;color:#e0ecdc;margin:0 0 5px}
+.basket-heading-count{font-size:11px;font-weight:500;color:#91b698;margin-left:9px}
+.basket-top p{font-size:11px;color:#91a994;margin:0;line-height:1.5}
+.basket-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;background:#14231a;border:1px solid var(--border);border-radius:8px;padding:11px 15px}
+.basket-toolbar-info{display:flex;flex-direction:column;gap:3px}
+.basket-toolbar-info strong{font-weight:650;font-size:12px;color:#d7ebcf}
+.basket-toolbar-info span{font-size:10px;color:#8fad95}
+.basket-size-control{display:flex;align-items:center;gap:11px;font-size:11px;color:#b0c8af;white-space:nowrap}
+.basket-size-control input[type=range]{width:130px;accent-color:#a2d77e;cursor:pointer}
+.basket-size-control output{font-size:10px;color:#a8c79f;min-width:39px;text-align:right}
+.basket-grid{--basket-card-size:176px;flex:1;min-height:0;overflow:auto;align-content:start;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--basket-card-size)),1fr));grid-auto-rows:max-content;gap:10px;padding:12px;background:#14221a;border:1px solid var(--border);border-radius:8px}
+.basket-card{min-width:0;background:#1b3023;border:1px solid #35533e;border-radius:8px;padding:7px}
+.basket-card:hover{border-color:#6a9264}
+.basket-preview{position:relative;aspect-ratio:1.14;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:5px;background:radial-gradient(ellipse at 48% 78%,#313832,#252b2a 69%)}
+.basket-preview svg{width:100%;height:100%}
+.basket-check{position:absolute;top:7px;left:7px;display:flex;align-items:center;gap:4px;background:#192d21ed;border:1px solid #44654a;border-radius:5px;padding:5px 6px;color:#e1f0d9;font-size:10px;cursor:pointer}
+.basket-check input{width:14px;height:14px;margin:0;accent-color:#a3d77e}
+.basket-remove{position:absolute;top:7px;right:7px;border:1px solid #4b6650;width:25px;height:25px;background:#1a2c21e8;border-radius:5px;color:#b3ccb2;font-size:20px;line-height:18px;cursor:pointer}
+.basket-remove:hover{background:#50312f;color:#f9d2c9;border-color:#8d514c}
+.basket-card-title{padding:8px 2px 0;color:#dcebd8;font-weight:650;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.basket-card-description{padding:4px 2px 3px;color:#91ac97;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.basket-empty{grid-column:1/-1;justify-self:center;align-self:center;max-width:390px;text-align:center;color:#93b49b;padding:40px 12px}
+.basket-empty strong{font-size:16px;color:#d0e1ca}
+.basket-empty p{font-size:11px;line-height:1.7}
+.basket-footer{padding:8px 11px;min-height:49px;gap:10px}
+.basket-footer-hint{font-size:10px;color:#95ac95}
+.basket-demo-label{font-size:9px;color:#a7aa79;letter-spacing:.5px}
+button:disabled{opacity:.43;cursor:not-allowed}
+@media(max-width:790px){
+ .basket-top{padding:13px}
+ .basket-toolbar{flex-wrap:wrap}
+ .basket-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--basket-card-size)),1fr))}
+ .basket-footer-hint{display:none}
+}
+@media(max-width:540px){
+ .basket-size-control{width:100%;justify-content:space-between}
+ .basket-size-control input[type=range]{width:95px}
+ .basket-top h1{font-size:16px}
+ .basket-demo-label{display:none}
+ .content-actions{gap:4px}
+ #explorerInfoButton{font-size:10px;padding:7px}
+}
 </style>
   
 </head>
@@ -54,14 +116,14 @@
           <span class="fill"></span>
           <button id="addCatalogButton" class="toolbar-button">Add Catalog</button>
         </nav>
-        <main class="catalog-body">
+        <main class="catalog-body" id="catalogBody">
           <aside class="sidebar">
             <div class="sidebar-heading" id="sidebarHeading">FOLDERS</div>
             <div id="sidebarContent" class="sidebar-content" role="tree"></div>
             <div id="sidebarFooter" class="sidebar-footer">F:/001_Model/Maxtree</div>
           </aside>
           <section class="library-area">
-            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div id="contentTag" class="content-tag" hidden>Imported .floracat</div></div>
+            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div class="content-actions"><button id="explorerInfoButton" type="button" class="toolbar-button" title="Attach plant descriptions to Explorer models">Import Plant Data</button><div id="explorerInfoStatus" class="explorer-info-status" hidden></div><div id="contentTag" class="content-tag" hidden>Imported .floracat</div></div></div>
             <div class="search-toolbar">
               <div class="search-holder"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="modelSearch" type="search" placeholder="Search by name, species, attributes..." autocomplete="off" aria-label="Search plant models"></div>
               <select id="sortSelect" aria-label="Sort models"><option value="asc">Name A-Z</option><option value="desc">Name Z-A</option></select>
@@ -75,12 +137,34 @@
             </div>
           </section>
         </main>
-        <footer class="statusbar">
+        <footer class="statusbar" id="catalogFooter">
           <span class="selected-pill" id="selectionCount">0 selected</span><span id="statusHint">Drag selected models into 3ds Max viewport</span>
           <span class="fill"></span><span class="footer-label">PROXY VIEW</span>
           <div class="segmented" id="proxyControls"><button type="button" data-proxy="Geometry">Geometry</button><button type="button" data-proxy="Point Cloud" class="active">Point Cloud</button></div>
           <span class="ready"><span class="live-dot"></span> Proxies added</span>
         </footer>
+      <section id="basketWorkspace" class="basket-workspace" hidden aria-labelledby="basketHeading">
+        <div class="basket-top">
+          <div>
+            <div class="basket-eyebrow">FLORA / CATALOG</div>
+            <h1 id="basketHeading">Import Basket <span id="basketCount" class="basket-heading-count">0 plants</span></h1>
+            <p>Collect models from Explorer, Favorites and installed catalogs. Import uses the existing Flora workflow in 3ds Max.</p>
+          </div>
+          <button type="button" class="toolbar-button" id="basketClear">Clear Basket</button>
+        </div>
+        <div class="basket-toolbar">
+          <div class="basket-toolbar-info"><strong id="basketSummary">0 models in basket</strong><span>Checked models will participate in the batch import</span></div>
+          <label class="basket-size-control" for="basketTileSize">Tile size <input id="basketTileSize" type="range" min="136" max="250" step="2" value="176"><output id="basketTileValue" for="basketTileSize">176 px</output></label>
+        </div>
+        <div id="basketGrid" class="basket-grid" role="list" aria-label="Models in import basket"></div>
+        <footer class="statusbar basket-footer">
+          <span class="selected-pill" id="basketSelectedCount">0 checked</span>
+          <span class="basket-footer-hint">Origin: 0, 0, 0 · Layer: Flora Import · Original model names</span>
+          <span class="fill"></span>
+          <span class="basket-demo-label">UI PROTOTYPE</span>
+          <button id="basketImport" type="button" class="primary" disabled>Import</button>
+        </footer>
+      </section>
       </section>
 
     </div>
@@ -94,6 +178,10 @@
     <div class="modal-footer"><button id="modalCancel" class="toolbar-button">Cancel</button><button id="modalConfirm" class="primary">Done</button></div>
   </div>
 </div>
+
+<div id="plantContextMenu" class="plant-context-menu" role="menu" hidden>
+  <button type="button" id="contextAddBasket" role="menuitem">Add to Basket</button>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script>/* Flora UI - interactive browser prototype. No 3ds Max or file-system integration. */
 (() => {
@@ -104,6 +192,7 @@ const repoKey = "flora-ui-design-v1";
 const collections = [
   {id:"explorer",label:"Explorer",builtin:true},
   {id:"favorites",label:"★ Favorites",builtin:true},
+  {id:"basket",label:"Basket",builtin:true},
   {id:"landscape",label:"Landscape",builtin:false}
 ];
 const plants = [
@@ -127,10 +216,16 @@ const models=plants.flatMap(([bot,genus,type,num,color,height],group)=>Array.fro
 })));
 const favoritesStorage=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-favorites")||"[]")}catch{return []}};
 const readCollections=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-collections")||'["My Garden","Courtyard","Park Ideas"]')}catch{return ["My Garden","Courtyard","Park Ideas"]}};
-const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
+const readBasket=()=>{try{
+ const saved=JSON.parse(localStorage.getItem(repoKey+"-basket")||"[]");
+ return new Map(Array.isArray(saved)?saved.filter(x=>x&&typeof x.id==="string"&&models.some(m=>m.id===x.id)).map(x=>[x.id,x.checked!==false]):[]);
+}catch{return new Map()}};
+const readDataFiles=()=>{try{const a=JSON.parse(localStorage.getItem(repoKey+"-explorer-info")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string").slice(0,40):[]}catch{return []}};
+const readTileSize=()=>{try{return Math.max(136,Math.min(250,Number(localStorage.getItem(repoKey+"-basket-size"))||176))}catch{return 176}};
+const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings))}catch{}};
+const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings));localStorage.setItem(repoKey+"-basket",JSON.stringify([...state.basket].map(([id,checked])=>({id,checked}))));localStorage.setItem(repoKey+"-basket-size",String(state.basketTileSize));localStorage.setItem(repoKey+"-explorer-info",JSON.stringify(state.explorerDataFiles))}catch{}};
 let toastTimer;
 function toast(message){const el=$("#toast");el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,4400)}
 function iconFolder(){return '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7V5h6l2 3h10v12H3z"/></svg>'}
@@ -161,7 +256,7 @@ function leafSVG(model) {
  }).join("");
  return '<svg viewBox="0 0 200 186" xmlns="http://www.w3.org/2000/svg" aria-label="'+clean(model.botanical)+' preview illustration"><defs><radialGradient id="ground'+model.imageSeed+'"><stop stop-color="#1b211e"/><stop offset="1" stop-color="#1b211e" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="163" rx="79" ry="12" fill="url(#ground'+model.imageSeed+')"/><g>'+stems+leaves+petals+'</g><g stroke="#536052" stroke-width="1.2" opacity=".55"><path d="M181 18v144M178 48h4M178 91h4M178 134h4"/></g><g font-family="Arial,sans-serif" font-size="8" fill="#657167"><text x="166" y="50">30</text><text x="166" y="94">20</text><text x="166" y="137">10</text></g></svg>';
 }
-function showCatalogTabs(){const host=$("#catalogTabs");host.innerHTML=collections.map(c=>'<button class="catalog-tab '+(state.catalog===c.id?'active':'')+'" data-catalog="'+clean(c.id)+'">'+clean(c.label)+'</button>').join("");}
+function showCatalogTabs(){const host=$("#catalogTabs");host.innerHTML=collections.map(c=>'<button class="catalog-tab '+(state.catalog===c.id?'active':'')+'" data-catalog="'+clean(c.id)+'">'+clean(c.label)+(c.id==="basket"?'<span class="basket-tab-count" '+(state.basket.size?'':'hidden')+'>'+state.basket.size+'</span>':'')+'</button>').join("");}
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
  if(state.catalog==="explorer"){
@@ -203,8 +298,8 @@ function renderModels(){
  const arr=visibleModels(),host=$("#modelGrid");
  host.classList.toggle("list-view",!state.grid);
  host.innerHTML=arr.length?arr.map((m,i)=>{
- const fav=state.favorites.has(m.id),selected=state.selected.has(m.id);
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
+ const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 2 11h10l2-11H5zM8 9l4-6 4 6M9 13v4m6-4v4"/></svg>')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
  }).join(""):'<div class="empty-state">No plants match the current filter.<br>Try another category or search.</div>';
  let title,path;
  if(state.catalog==="explorer"){title="Maxtree - Plant Models Vol "+state.folder;path="F:\\001_Model\\Maxtree\\Maxtree - Plant Models Vol "+state.folder;}
@@ -215,7 +310,86 @@ function renderModels(){
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
 }
-function render(){showCatalogTabs();folderList();renderModels()}
+function render(){
+ const basket=state.catalog==="basket";
+ $("#catalogBody").hidden=basket;$("#catalogFooter").hidden=basket;$("#basketWorkspace").hidden=!basket;
+ $("#addCatalogButton").hidden=basket;
+ showCatalogTabs();
+ $("#explorerInfoButton").hidden=state.catalog!=="explorer";
+ const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
+ info.textContent=state.explorerDataFiles.length+" info file(s) selected - preview only";
+ if(basket)renderBasket();else{folderList();renderModels()}
+}
+
+/* Basket is an interactive browser preview; no actual 3ds Max scene operations. */
+function addModelsToBasket(ids){
+ let added=0;
+ for(const id of [...new Set(ids)]){
+  if(!models.some(m=>m.id===id)||state.basket.has(id))continue;
+  state.basket.set(id,true);added++;
+ }
+ save();showCatalogTabs();
+ if(state.catalog==="basket")renderBasket();else renderModels();
+ toast(added?added+" model"+(added===1?"":"s")+" added to Basket":"Selected models are already in Basket.");
+}
+function basketTargetIds(id){
+ return state.selected.has(id)&&state.selected.size>1?[...state.selected]:[id];
+}
+function renderBasket(){
+ const grid=$("#basketGrid");
+ grid.style.setProperty("--basket-card-size",state.basketTileSize+"px");
+ $("#basketTileSize").value=state.basketTileSize;
+ $("#basketTileValue").textContent=state.basketTileSize+" px";
+ const entries=[...state.basket].map(([id,checked])=>({model:models.find(m=>m.id===id),checked})).filter(x=>x.model);
+ const selected=entries.filter(x=>x.checked).length;
+ $("#basketCount").textContent=entries.length+" plant"+(entries.length===1?"":"s");
+ $("#basketSummary").textContent=entries.length+" models in Basket";
+ $("#basketSelectedCount").textContent=selected+" checked";
+ $("#basketImport").disabled=selected===0;
+ $("#basketClear").disabled=entries.length===0;
+ grid.innerHTML=entries.length?entries.map(({model:m,checked})=>
+  '<article class="basket-card" role="listitem" data-basketid="'+clean(m.id)+'">'+
+  '<div class="basket-preview">'+leafSVG(m)+
+  '<label class="basket-check" title="Include in import"><input type="checkbox" data-basketcheck="'+clean(m.id)+'" '+(checked?'checked':'')+' aria-label="Include '+clean(m.id)+' in import"><span>Include</span></label>'+
+  '<button type="button" class="basket-remove" data-basketremove="'+clean(m.id)+'" title="Remove from Basket" aria-label="Remove '+clean(m.id)+'">×</button></div>'+
+  '<div class="basket-card-title" title="'+clean(m.id)+'">'+clean(m.id)+'</div>'+
+  '<div class="basket-card-description">'+clean(m.botanical)+'</div>'+
+  '</article>').join(""):
+  '<div class="basket-empty"><strong>Basket is empty</strong><p>Add plants from Explorer, Favorites or a catalog with the hover icon, right-click menu, or Shift + right-click.</p></div>';
+}
+$("#basketGrid").addEventListener("change",e=>{
+ const el=e.target.closest("[data-basketcheck]");if(!el)return;
+ state.basket.set(el.dataset.basketcheck,el.checked);save();renderBasket();
+});
+$("#basketGrid").addEventListener("click",e=>{
+ const button=e.target.closest("[data-basketremove]");if(!button)return;
+ state.basket.delete(button.dataset.basketremove);save();render();
+});
+$("#basketTileSize").addEventListener("input",e=>{
+ state.basketTileSize=Number(e.target.value);save();renderBasket();
+});
+$("#basketClear").addEventListener("click",()=>showModal("basketClear"));
+$("#basketImport").addEventListener("click",()=>{if([...state.basket.values()].some(Boolean))showModal("basketImport")});
+$("#explorerInfoButton").addEventListener("click",()=>showModal("explorerData"));
+const contextMenu=$("#plantContextMenu");
+let contextIds=[];
+function hideContextMenu(){contextMenu.hidden=true;contextIds=[]}
+$("#modelGrid").addEventListener("contextmenu",e=>{
+ const card=e.target.closest(".model-card");
+ if(!card)return;
+ e.preventDefault();e.stopPropagation();
+ const id=card.dataset.model,ids=basketTargetIds(id);
+ if(e.shiftKey){hideContextMenu();addModelsToBasket(ids);return}
+ contextIds=ids;
+ $("#contextAddBasket").textContent="Add to Basket"+(ids.length>1?" ("+ids.length+" models)":"");
+ contextMenu.hidden=false;
+ contextMenu.style.left=Math.max(6,Math.min(e.clientX,window.innerWidth-214))+"px";
+ contextMenu.style.top=Math.max(6,Math.min(e.clientY,window.innerHeight-62))+"px";
+});
+$("#contextAddBasket").addEventListener("click",()=>{const ids=[...contextIds];hideContextMenu();addModelsToBasket(ids)});
+document.addEventListener("click",e=>{if(!e.target.closest("#plantContextMenu"))hideContextMenu()});
+window.addEventListener("blur",hideContextMenu);
+
 function selectModel(id,index,shift,ctrl){
  const ids=visibleModels().map(m=>m.id);
  if(shift && state.lastClicked>=0){if(!ctrl)state.selected.clear();const a=Math.min(state.lastClicked,index),b=Math.max(state.lastClicked,index);for(let i=a;i<=b;i++)state.selected.add(ids[i]);}
@@ -231,13 +405,15 @@ $("#sidebarContent").addEventListener("click",e=>{
  if(e.target.closest("#addFavCollection"))showModal("newCollection");
 });
 $("#modelGrid").addEventListener("click",e=>{
+ const add=e.target.closest("[data-addbasket]");
+ if(add){e.preventDefault();e.stopPropagation();addModelsToBasket([add.dataset.addbasket]);return;}
  const fav=e.target.closest("[data-favorite]");
  if(fav){const id=fav.dataset.favorite;if(state.favorites.has(id))state.favorites.delete(id);else state.favorites.add(id);save();render();return;}
  const card=e.target.closest(".model-card");
  if(card)selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey);
 });
 $("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
-$("#modelGrid").addEventListener("dragstart",e=>{const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
+$("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
@@ -256,7 +432,17 @@ window.addEventListener("keydown",e=>{if(e.key==="Escape")hideModal()});
 function showModal(kind){
  state.workingModal=kind;modal.hidden=false;
  const body=$("#modalBody"),title=$("#modalTitle"),confirm=$("#modalConfirm");
- if(kind==="settings"){
+ if(kind==="basketClear"){
+  title.textContent="Clear Basket?";confirm.textContent="Clear Basket";
+  body.innerHTML='<div class="modal-body-section"><p>Remove all models from the Basket? Favorites, library files, installed catalogs and scene objects remain unchanged.</p></div>';
+ }else if(kind==="basketImport"){
+  title.textContent="Import Basket - Preview";confirm.textContent="Close Preview";
+  const count=[...state.basket.values()].filter(Boolean).length;
+  body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
+ }else if(kind==="explorerData"){
+  title.textContent="Explorer Plant Data";confirm.textContent="Add to Preview";
+  body.innerHTML='<div class="modal-body-section"><h3>Attach information .floracat</h3><input type="file" multiple accept=".floracat" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
+ }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Save Settings";
   body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
  }else if(kind==="library"){
@@ -272,6 +458,13 @@ function showModal(kind){
 }
 $("#modalConfirm").addEventListener("click",()=>{
  const kind=state.workingModal;
+ if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
+ if(kind==="basketImport"){toast("No objects imported - preview only. Basket kept intact.")}
+ if(kind==="explorerData"){
+  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floracat file first.");return}
+  if(files.some(f=>!f.name.toLowerCase().endsWith(".floracat"))){toast("Only .floracat files are supported.");return}
+  state.explorerDataFiles.push(...files.map(f=>f.name));save();render();toast(files.length+" info file(s) selected for Explorer preview.");
+ }
  if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
