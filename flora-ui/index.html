@@ -62,7 +62,7 @@
                 <div class="filter-content">
                   <div class="filter-controls">
                     <label>Группа растения<select id="filterGroup"><option value="">Все группы</option></select></label>
-                    <label>Категория растения<select id="filterCategory"><option value="">Все категории</option></select></label>
+                    <label>Категория растения<select id="filterCategory" disabled><option value="">Сначала выберите группу</option></select></label>
                     <fieldset class="filter-flowering"><legend>Цветение</legend><div class="filter-segments" id="filterFlowerSegments">
                       <button type="button" data-flowering="" class="active" aria-pressed="true">Все</button>
                       <button type="button" data-flowering="Да" aria-pressed="false">Да</button>
@@ -70,13 +70,18 @@
                     </div></fieldset>
                     <div class="filter-height"><div class="filter-field-label">Высота, см <small>позже</small></div><div class="filter-height-fields"><input id="filterMinHeight" type="number" min="0" placeholder="От" aria-label="Высота от" disabled><input id="filterMaxHeight" type="number" min="0" placeholder="До" aria-label="Высота до" disabled></div></div>
                   </div>
-                  <section class="filter-chip-section" aria-label="Природные среды">
-                    <div class="filter-section-heading"><strong>Природные</strong><span id="naturalSelectedCount">0/7</span></div>
-                    <div id="naturalChips" class="filter-chip-list"></div>
-                  </section>
-                  <section class="filter-chip-section" aria-label="Озеленение">
-                    <div class="filter-section-heading"><strong>Озеленение</strong><span id="landscapedSelectedCount">0/5</span></div>
-                    <div id="landscapedChips" class="filter-chip-list"></div>
+                  <section class="filter-environment" aria-label="Фильтрация по среде">
+                    <div class="filter-section-heading"><strong>Среда</strong></div>
+                    <div class="filter-environment-controls">
+                      <label>Тип среды<select id="filterEnvironment">
+                        <option value="">Все среды</option>
+                        <option value="Природные">Природные</option>
+                        <option value="Домашние">Домашние</option>
+                      </select></label>
+                      <label>Категория среды<select id="filterEnvironmentCategory" disabled>
+                        <option value="">Сначала выберите тип среды</option>
+                      </select></label>
+                    </div>
                   </section>
                 </div>
               </div>
