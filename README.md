@@ -9,3 +9,5 @@ HTML-прототип демонстрирует оформление и пов�
 Прежний ботанический FloraCat отменён; использовать SQLite FloraAtlas v1 и тематические FloraCOL. Требования к поиску, Properties, карточкам, Table View и очистке данных описаны в актуальной документации проекта.
 
 **Главный источник требований:** [Flora - Описание плагина](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). [Правила подготовки задач Codex](https://docs.google.com/document/d/14V25SqQXsu0g94dOhcydeVWaOVRo6zTAz7Ghf7KeuBM/edit).
+
+**Разделение работы:** [Инструкция для отдельного чата-архитектора](https://docs.google.com/document/d/1Ohlf7RkIipPuNebNaDxLjsZ6TSHqbooHe0jdwukpR6g/edit). Пользователь утверждает идеи и проверяет результат, архитектор формулирует задания, Codex программирует и сохраняет сборки в локальную папку пользователя, администратор поддерживает документацию. Для файлов, созданных ChatGPT, основной канал выдачи - Google Диск. Дополнительные CI/PR/Issue-процессы не обязательны.
