@@ -1,20 +1,23 @@
-# Flora - repository instructions
+# Flora - актуальные инструкции репозитория
 
-The only active UI prototype is in `flora-ui/` on the `flora-ui` branch.
+## Действующий дизайн
 
-Design baseline: the ORIGINAL flat Flora buttons and panels, not experiments with raised, embossed, beveled, glossy, satin, or tactile button styles. Do not import styles, commits, screenshots, or UI code from older branches/history. In particular, never reintroduce CSS blocks named `Flora 1.0 tactile depth`, `tactile depth / refinement`, or `Flora satin finish`.
+Ветка `flora-ui-v2`, папка `flora-ui/` - утверждённый визуальный референс. Сверяйте исходники `index.html`, `styles.css`, `app.js`; `Flora-UI.html` - автономная упаковка того же прототипа. Не использовать другие ветки и старые README как источник новых требований. GitHub доступ и официальные технические справочники разрешены по необходимости.
 
-The source files are `flora-ui/index.html`, `flora-ui/styles.css`, `flora-ui/app.js`, and `flora-ui/material-manager.html`. `flora-ui/Flora-UI.html` is their standalone offline packaging, **not** another design version. The embedded CSS must match `styles.css` exactly; embedded JavaScript must be syntactically valid.
+HTML/JS - визуальная демонстрация, а НЕ работающий плагин Autodesk 3ds Max. Настоящая Flora реализована на Python/PySide6/MAXScript, реальные данные - из индексированной .max-библиотеки и SQLite FloraAtlas v1. При переносе в PySide6 сохранять функционирующие Explorer, Favorites, Basket, Catalogs/FloraCOL, Drag & Drop, Corona Proxy/Merge, материалы и пользовательские настройки.
 
-Keep existing interface layout, controls and behavior unless a task explicitly requires changing them. Browser controls demonstrate UI only; do not represent them as functioning 3ds Max integration. Never generate UI images as a substitute for editing this repository.
+## Визуальный стиль
 
-When updating UI: inspect live sources, edit only necessary files, regenerate the standalone HTML, and verify that old tactile styles are absent.
+Сохранять спокойный тёмно-зелёный плоский дизайн без глянца, рельефа и выпуклых кнопок. Сохранять адаптивность, корректное выделение и прокрутку. Не генерировать изображения вместо редактирования реальных UI-файлов. При изменении CSS/JS синхронизировать `Flora-UI.html`, проверить JavaScript и отсутствие устаревших декоративных стилей.
 
+## Актуальная классификация и Filters
 
-Approved new UI requirements from "Flora - Описание концепции плагина" (15 October 2026):
-- Import Basket is a tab inside Catalog, beside Explorer/Favorites, not a separate window.
-- Add from model cards using the hover basket icon, right-click menu or Shift+right-click; preserve multi-selection, deduplicate model entries, keep included checkboxes, item removal, Clear Basket, and adjustable tile sizes.
-- In the installed plugin (not HTML), selected Basket models use the same merge/material/Corona Proxy pipeline as normal Flora imports, keep original model names, place each pivot at (0,0,0), and use exactly one reusable layer named "Flora Import". Confirm duplicate object names across the entire scene before import. Never fabricate alternate merge/material logic.
-- Successful real Basket import clears the entire basket; technical failure retains it. In this browser-only prototype the Import button is a preview and must NEVER claim success or clear basket.
-- Explorer's separate "Import Plant Data" input is for informational .floracat files that enrich existing .max model records without opening additional tabs. Actual SQLite parsing belongs to the plugin. "Add Catalog" installs independent thematic catalogs.
-- Scatter is not part of the current interface and must not be brought back.
+Реализованное в браузерном дизайне поведение Filters: `Группа растения` (Все группы, Деревья, Кусты, Трава) -> зависимая `Категория растения` (недоступна до выбора группы); `Тип среды` (Все среды, Природные, Домашние) -> зависимая `Категория среды` (недоступна до выбора типа); `Цветение` (Все, Да, Нет); `Высота, см` (неактивные От/До до точного анализа). Категории групп: Деревья - Лиственные, Хвойные, Пальмы; Кусты - Лиственные, Хвойные, Папоротники, Злаки, Вьющиеся, Многолетники, Суккуленты; Трава - Травы, Цветы, Почвопокровные, Луковичные. Природные среды: Лесная, Луговая, Водная, Прибрежная, Степная, Пустынная, Горная; Домашние: Улицы, Парки, Сады, Дворы, Интерьеры. Родительский выбор сбрасывает дочерний. Компоновка автоматически 4/2/1 колонка по ширине центральной панели с собственной вертикальной прокруткой при уменьшении высоты.
+
+В SQLite `natural_json` и `landscaped_json` остаются массивами нескольких значений; «Домашние» - имя UI для `landscaped_json`. `similar_json` - массив связанных `plant_id` растений из того же Atlas. Ботанический FloraCat больше не использовать, тематический FloraCOL сохранять.
+
+## Дополнительно согласованные изменения для рабочего плагина
+
+Без отдельной внутренней шапки Properties и без настройки видимости/порядка полей: раскрываемые «Названия» и «Ботанические сведения», фиксированный набор полей. Grid: модель, под ней русское и английское названия при наличии, без Vol. Table: только актуальные RU/EN/Latin, цветение, группа/категория, тип/категория среды. Поиск: filename, RU/EN/Latin и названия связанных похожих растений. Settings: очистка импортированных метаданных/каталогов с подтверждением и сохранением Favorites, коллекций, библиотеки, сцены и исходных файлов.
+
+**Не утверждать, что эти поздние изменения уже реализованы в HTML или рабочем плагине, пока они не внесены и не проверены.** Не возвращать Scatter или пакетную автоматическую генерацию превью.
