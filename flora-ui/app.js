@@ -106,6 +106,7 @@ const propDefault=()=>propDefs.flatMap(([_,items])=>items.filter(a=>a[2]).map(a=
 const prefRead=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(repoKey+"-"+key));return v??fallback}catch{return fallback}};
 const prefWrite=(key,v)=>{try{localStorage.setItem(repoKey+"-"+key,JSON.stringify(v))}catch{}};
 
+state.selected.add(models.find(m=>m.family==="Acer")?.id||models[0].id);
 state.themeSelection="Modern Residential Courtyard";
 state.themeExpanded=new Set(["Courtyards","Woodland Types","Designed Gardens"]);
 state.filterNatural=new Set();state.filterLandscaped=new Set();
@@ -541,17 +542,17 @@ function showModal(kind){
   const count=[...state.basket.values()].filter(Boolean).length;
   body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
  }else if(kind==="explorerData"){
-  title.textContent="Import Descriptions";confirm.textContent="Add to Preview";
-  body.innerHTML='<div class="modal-body-section"><h3>Attach information .floracat</h3><input type="file" multiple accept=".floracat" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
+  title.textContent="Импорт FloraAtlas";confirm.textContent="Закрыть";
+  body.innerHTML='<div class="modal-body-section"><h3>Подключить ботанический FloraAtlas v1</h3><input type="file" multiple accept=".floratlas" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
  }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Save Settings";
-  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Analyze source model geometry or attach botanically descriptive information files.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
+  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Model Analyzer now scans file names and relative paths without opening .max; botanical data comes from FloraAtlas.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
   body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="F:/001_Model/Maxtree" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
  }else if(kind==="catalog"){
   title.textContent="Add Catalog";confirm.textContent="Add to Preview";
-  body.innerHTML='<div class="modal-body-section"><h3>Import .floracat</h3><input type="file" accept=".floracat" id="catalogFile"><p>Installed catalogs are external portable SQLite .floracat files. This prototype can add a visual catalog tab, but cannot parse or install a real catalog.</p></div>';
+  body.innerHTML='<div class="modal-body-section"><h3>Import FloraCOL</h3><input type="file" accept=".floracol" id="catalogFile"><p>Thematic collections use the separate .floracol format. This prototype can add a visual catalog tab, but cannot parse or install a real catalog.</p></div>';
  }else if(kind==="newCollection"){
   title.textContent="New Favorites Collection";confirm.textContent="Create Collection";
   body.innerHTML='<div class="modal-body-section"><h3>Collection Name</h3><input id="collectionNameInput" placeholder="e.g. Riverside Garden" maxlength="55"></div>';
@@ -562,15 +563,15 @@ $("#modalConfirm").addEventListener("click",()=>{
  if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
  if(kind==="basketImport"){toast("No objects imported - preview only. Basket kept intact.")}
  if(kind==="explorerData"){
-  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floracat file first.");return}
-  if(files.some(f=>!f.name.toLowerCase().endsWith(".floracat"))){toast("Only .floracat files are supported.");return}
+  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floratlas file first.");return}
+  if(files.some(f=>!f.name.toLowerCase().endsWith(".floratlas"))){toast("Only .floratlas files are supported.");return}
   state.explorerDataFiles.push(...files.map(f=>f.name));save();render();toast(files.length+" info file(s) selected for Explorer preview.");
  }
  if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
-  const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracat file first.");return}
-  const id="cat-"+Date.now();const name=file.name.replace(/\.floracat$/i,"");collections.push({id,label:name,builtin:false});themes[id]={name,sections:[{name:"Example Space Types",items:["Sample Planting Composition","Mixed Planting Scheme"]}]};state.catalog=id;state.themeSelection="Sample Planting Composition";state.themeExpanded.add("Example Space Types");state.selected.clear();render();toast("Catalog added to dropdown as a demo. Source database was not parsed.");
+  const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracol file first.");return}
+  const id="cat-"+Date.now();const name=file.name.replace(/\.floracol$/i,"");collections.push({id,label:name,builtin:false});themes[id]={name,sections:[{name:"Example Space Types",items:["Sample Planting Composition","Mixed Planting Scheme"]}]};state.catalog=id;state.themeSelection="Sample Planting Composition";state.themeExpanded.add("Example Space Types");state.selected.clear();render();toast("Catalog added to dropdown as a demo. Source database was not parsed.");
  }
  if(kind==="newCollection"){const v=$("#collectionNameInput").value.trim();if(!v)return;state.favCollections.push(v);save();state.favFilter=v;render();toast("Collection created. Drag model assignment is planned for Flora.");}
  hideModal();
