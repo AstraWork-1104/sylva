@@ -570,7 +570,9 @@ function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
  if(state.catalog==="explorer"){
   head.textContent="FOLDERS";foot.textContent="F:/001_Model/Maxtree";
-  host.innerHTML=Array.from({length:28},(_,i)=>{const n=20+i;return '<button type="button" class="tree-item '+(state.folder===n?'active':'')+'" data-folder="'+n+'" title="Maxtree - Plant Models Vol '+n+'"><span class="twisty">›</span>'+iconFolder()+'<span class="tree-name">Maxtree - Plant Models Vol '+n+'</span></button>'}).join("");
+  const demoFolders=[1,8,9,19,21,23,27,28,34,40,41,49,51,61,63,65,66,67,69,74,77,82,83,85,86,100];
+  host.innerHTML='<button type="button" class="tree-item" data-folder="1">'+iconFolder()+'<span class="tree-name">IstWood</span></button>'+
+   demoFolders.map(n=>'<button type="button" class="tree-item '+(state.folder===n?'active':'')+'" data-folder="'+n+'">'+iconFolder()+'<span class="tree-name">MT - Volume '+n+'</span></button>').join("");
  }else if(state.catalog==="favorites"){
   head.textContent="FAVORITES";foot.textContent=state.favorites.size+" saved plants";
   host.innerHTML='<button class="tree-item '+(state.favFilter==="All Favorites"?'active':'')+'" data-fav="All Favorites"><span class="twisty">★</span><span class="tree-name">All Favorites</span></button>'+
