@@ -115,28 +115,40 @@ button:disabled{opacity:.43;cursor:not-allowed}
 .content-heading h1{white-space:normal;overflow-wrap:anywhere}
 .content-heading p{white-space:nowrap;max-width:100%}
 .content-actions{flex:0 0 auto;max-width:54%;min-width:0}
+
+/* FloraAtlas filters: compact, width-responsive layout and independent vertical scroll. */
 .filter-trigger{font-size:11px}
 #filterCount{color:#c5ecaf;font-weight:700}
-.filter-panel{border:1px solid #385741;background:#17291d;border-radius:7px;padding:12px;min-height:0;max-height:46%;overflow:auto;flex-shrink:0}
-.filter-header{display:flex;align-items:center;justify-content:space-between;gap:9px;padding-bottom:9px}
-.filter-header strong{font-size:12px;color:#dbedda}
-.filter-header button{padding:5px 10px;font-size:10px}
-.filter-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0 0 12px}
-.filter-controls label{display:flex;flex-direction:column;gap:5px;color:#a7c0a8;font-size:10px}
-.filter-controls input,.filter-controls select{width:100%;min-width:0;height:32px;padding:5px 7px;background:#1e3425;border:1px solid #35563e;color:#cfdecc}
-.filter-usage-title{display:flex;justify-content:space-between;gap:8px;font-weight:650;color:#c7d6c5;padding:0 0 8px;font-size:11px}
-.filter-usage-title span{font-weight:400;color:#849b87;font-size:10px}
-#usageSearch{border:1px solid #37593f;border-radius:5px;background:#1a3022;color:#d4e4d0;width:100%;padding:9px;margin-bottom:10px}
-.usage-categories{max-height:180px;overflow:auto}
-.usage-category-group{margin:0 0 12px}
-.usage-category-title{font-size:10px;color:#bde29e;display:flex;justify-content:space-between;padding:6px 2px}
-.usage-category-title span{color:#779983}
-.usage-category-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:3px 8px}
-.usage-category-item{font-size:10px;display:flex;align-items:center;gap:6px;padding:6px 5px;border-radius:4px;color:#b5cbb5;min-width:0;overflow-wrap:anywhere}
-.usage-category-item:hover{background:#27432f}
-.usage-category-item input{accent-color:#a1d278;flex-shrink:0}
-.filter-preview-actions{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:9px;color:#8ba78e}
-.filter-preview-actions button{padding:6px 9px;font-size:10px}
+.filter-panel{container-type:inline-size;display:flex;flex-direction:column;flex:0 1 auto;min-height:0;max-height:var(--filter-max-height,320px);overflow:hidden;border:1px solid #385741;background:#1a2c25;border-radius:7px;padding:9px 10px 7px}
+.filter-header{display:flex;flex:0 0 auto;align-items:center;gap:8px;min-height:28px;padding:0 0 7px}
+.filter-header strong{font-size:11px;color:#e0eee1}
+.filter-header button{padding:5px 9px;font-size:10px}
+.filter-active-count{background:#315b3b;color:#c4edaa;padding:3px 7px;border-radius:20px;font-size:10px;font-weight:700}
+.filter-scroll{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;min-height:0;flex:1;outline-offset:-2px}
+.filter-content{max-width:860px;padding:2px 6px 5px 0}
+.filter-controls{display:grid;grid-template-columns:repeat(4,minmax(0,190px));gap:10px;margin-bottom:11px;max-width:820px}
+.filter-controls label,.filter-height,.filter-flowering{display:flex;flex-direction:column;gap:5px;min-width:0;color:#afcbb5;font-size:10px}
+.filter-controls select,.filter-controls input{height:30px;min-width:0;width:100%;padding:5px 7px;background:#193226;border:1px solid #35543e;color:#d2e4d1;border-radius:5px;font-size:10px}
+.filter-controls input:disabled{opacity:.5;cursor:not-allowed}
+.filter-flowering{border:0;padding:0;margin:0;min-inline-size:0}
+.filter-flowering legend{margin:0 0 5px;padding:0;color:#afcbb5;font-size:10px}
+.filter-segments{display:flex;align-items:stretch;min-width:0;width:100%;background:#172c21;border:1px solid #385541;border-radius:5px;padding:2px;gap:2px;height:30px}
+.filter-segments button{flex:1;min-width:0;padding:3px 4px;border:1px solid transparent;background:transparent;color:#bdd2be;border-radius:4px;font-size:10px}
+.filter-segments button.active{border-color:#80bf70;background:#2d5336;color:#caf1b6}
+.filter-field-label{min-height:12px}
+.filter-field-label small{font-size:9px;color:#88a28d;font-weight:400;margin-left:4px}
+.filter-height-fields{display:flex;gap:5px;min-width:0}
+.filter-height-fields input{width:50%}
+.filter-chip-section{padding:10px 0;border-top:1px solid #365340}
+.filter-section-heading{display:flex;align-items:center;gap:9px;margin-bottom:8px;color:#d7e6d7;font-size:11px}
+.filter-section-heading span{font-size:9px;color:#8fac96}
+.filter-chip-list{display:flex;flex-wrap:wrap;gap:6px;max-width:840px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;min-height:27px;padding:5px 10px;border:1px solid #45634e;border-radius:999px;background:#1c3126;color:#c4d7c4;font-size:10px;line-height:1.2;white-space:nowrap}
+.filter-chip:hover{border-color:#83ad72;background:#294431}
+.filter-chip.selected{background:#2c5338;border-color:#9bdb84;color:#c8efb5}
+.filter-chip-mark{font-weight:800;color:#aeeb94}
+@container (max-width:840px){.filter-controls{grid-template-columns:repeat(2,minmax(0,195px))}}
+@container (max-width:470px){.filter-controls{grid-template-columns:minmax(0,1fr)}.filter-content{max-width:100%}.filter-chip-list{gap:5px}.filter-chip{padding:5px 8px}}
 
 /* Adjustable Properties without adding material depth to buttons. */
 .results-shell{grid-template-columns:minmax(0,1fr) var(--properties-width,240px);min-width:0}
@@ -180,13 +192,13 @@ button:disabled{opacity:.43;cursor:not-allowed}
 .property-order-controls{display:flex;gap:3px}
 .property-order-controls button{background:#29422f;color:#bcd9b2;border:1px solid #45654b;padding:1px 4px;border-radius:3px}
 .property-custom-field[draggable]{cursor:grab}
-@media(max-width:1100px){.results-shell{grid-template-columns:minmax(0,1fr) min(27%,var(--properties-width,240px))}.filter-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1100px){.results-shell{grid-template-columns:minmax(0,1fr) min(27%,var(--properties-width,240px))}}
 @media(max-width:790px){
  .results-shell{grid-template-columns:1fr;grid-template-rows:minmax(200px,1fr) minmax(170px,220px)}
  .properties-panel{display:flex!important;min-width:0}
  .properties-resize{display:none}
  .model-grid{min-height:0}
- .filter-panel{max-height:42%}
+ 
  .catalog-selected-name{max-width:70px}
  .catalogs-menu{left:auto;right:0}
 }
@@ -195,12 +207,12 @@ button:disabled{opacity:.43;cursor:not-allowed}
  .catalog-tab{padding:7px 9px;font-size:10px}
  .catalogs-trigger{font-size:10px;gap:4px}
  .catalog-selected-name{display:none}
- .filter-controls{grid-template-columns:repeat(2,minmax(0,1fr))}
- .filter-usage-title{flex-direction:column}
- .usage-category-items{grid-template-columns:repeat(2,minmax(0,1fr))}
+ 
+ 
+ 
  .search-toolbar{flex-wrap:wrap}
  .search-holder{min-width:145px}
- .filter-panel{max-height:45%}
+ 
  .content-heading{align-items:flex-start;flex-wrap:wrap}
  .content-actions{max-width:100%}
 }
@@ -211,13 +223,44 @@ button:disabled{opacity:.43;cursor:not-allowed}
 
 .description-status{border:1px solid #3c6645;color:#baddb6;background:#213b2a;border-radius:5px;font-size:9px;line-height:1.4;padding:7px;margin:6px 0 11px}
 .description-status.missing{border-color:#52553d;color:#c6c295;background:#2b2d22}
+
+
+/* Installed Flora 1.0.0.26 visual proportions (prototype only). */
+.desktop-window{width:min(100%,1680px);height:min(95vh,1000px);min-height:400px}
+.top-header .app-version{display:none}
+.catalog-body{grid-template-columns:clamp(180px,16.4vw,235px) minmax(0,1fr)}
+.library-area{padding:11px 10px 9px;gap:7px}
+.content-heading h1{font-size:16px;margin:0 0 4px}
+.content-actions{display:flex;align-items:center;gap:7px}
+.model-count{font-size:10px;color:#89ae8f;white-space:nowrap}
+.search-toolbar{padding-bottom:2px;gap:6px}
+.search-holder,.search-toolbar select{height:32px}
+.search-toolbar select{width:106px}
+.model-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,215px),1fr));gap:6px}
+.results-shell{grid-template-columns:minmax(0,1fr) var(--properties-width,225px);gap:7px}
+.properties-panel{border:1px solid #35543f;border-radius:5px;background:#13271d;min-width:170px}
+.properties-header{min-height:30px;background:#1d3627}
+.property-rows{padding:0 1px 8px}
+.property-group{margin-bottom:5px}
+.property-group-title{padding:6px;color:#c8e8bb}
+.property-row{display:grid;grid-template-columns:minmax(0,49%) minmax(0,51%);gap:0;border-bottom:1px solid #2c4935;padding:0;min-height:29px}
+.property-row>span{padding:6px 5px;font-size:10px;line-height:1.35}
+.property-row>span:first-child{border-right:1px solid #2c4935;color:#8fac99}
+.property-row>span:last-child{color:#d8e8d4}
+.property-row .property-tags{gap:3px}
+.property-tag{border:0;background:transparent;font-size:10px;color:#d8e8d4;padding:0}
+.similar-plain{font-size:10px;color:#d6e8ce;line-height:1.4;overflow-wrap:anywhere}
+.library-area.properties-hidden .results-shell{grid-template-columns:minmax(0,1fr)}
+.library-area.properties-hidden .properties-panel{display:none}
+@media (max-height:620px){.application{gap:5px}.top-header{height:38px;flex-basis:38px}.catalog-nav{flex-basis:34px}.library-area{gap:5px}.catalog-body{gap:6px}.statusbar{flex-basis:34px}}
+@media(max-width:790px){.results-shell{grid-template-columns:minmax(0,1fr) var(--properties-width,225px);grid-template-rows:minmax(0,1fr)}}
+@media(max-width:540px){.catalog-body{grid-template-columns:1fr}.sidebar{display:none}.results-shell{grid-template-columns:minmax(0,1fr) 170px}.model-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,165px),1fr))}}
 </style>
-  
 </head>
 <body>
 <div class="stage">
   <div class="desktop-window" id="floraApp">
-    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora 1.0 <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
+    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora 1.0.0.26 <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
     <div class="application">
       <header class="top-header">
         <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
@@ -252,7 +295,7 @@ button:disabled{opacity:.43;cursor:not-allowed}
             <div id="sidebarFooter" class="sidebar-footer">F:/001_Model/Maxtree</div>
           </aside>
           <section class="library-area">
-            <div class="content-heading"><div><h1 id="collectionTitle">Maxtree - Plant Models Vol 34</h1><p id="collectionPath">F:\001_Model\Maxtree\Maxtree - Plant Models Vol 34</p></div><div class="content-actions"><button id="explorerInfoButton" type="button" class="toolbar-button" title="Attach plant descriptions to Explorer models">Import Descriptions</button><div id="explorerInfoStatus" class="explorer-info-status" hidden></div><div id="contentTag" class="content-tag" hidden>Curated collection · concept</div></div></div>
+            <div class="content-heading"><div><h1 id="collectionTitle">Explorer</h1><p id="collectionPath">F:/001_Model/Maxtree</p></div><div class="content-actions"><button id="explorerInfoButton" type="button" class="toolbar-button" hidden>Import Descriptions</button><div id="explorerInfoStatus" class="explorer-info-status" hidden></div><div id="contentTag" class="content-tag" hidden>Curated collection · concept</div><span id="modelCount" class="model-count">4123 models</span></div></div>
             <div id="collectionDescription" class="composition-intro" hidden></div>
             <div class="search-toolbar">
               <div class="search-holder"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="modelSearch" type="search" placeholder="Search by name, species, attributes..." autocomplete="off" aria-label="Search plant models"></div>
@@ -260,20 +303,32 @@ button:disabled{opacity:.43;cursor:not-allowed}
               <button type="button" class="toolbar-button icon-button active" id="gridButton" title="Grid View" aria-label="Grid view"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
               <button type="button" class="toolbar-button icon-button" id="listButton" title="List View" aria-label="List view"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
               <button id="filterButton" type="button" class="toolbar-button filter-trigger" aria-expanded="false">Filters <span id="filterCount"></span></button>
-              <span id="modelCount" class="model-count">72 models</span>
+              <button id="propertyPanelButton" type="button" class="toolbar-button icon-button active" title="Show or hide Properties" aria-label="Show or hide Properties" aria-pressed="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18M15 7h6"/></svg></button>
             </div>
-            <div id="filterPanel" class="filter-panel" hidden>
-              <div class="filter-header"><strong>Filter Plants</strong><button type="button" id="resetFilters" class="toolbar-button">Clear Filters</button></div>
-              <div class="filter-controls">
-                <label>Plant type<select id="filterType"><option value="">All types</option></select></label>
-                <label>Foliage<select id="filterFoliage"><option value="">All colors</option><option>Green</option><option>Colored</option></select></label>
-                <label>Flowering<select id="filterFlower"><option value="">Any</option><option value="yes">Flowering</option><option value="no">Non-flowering</option></select></label>
-                <label>Min. height (cm)<input id="filterMinHeight" type="number" min="0" placeholder="Any"></label>
+            <div id="filterPanel" class="filter-panel" hidden aria-label="Фильтры растений">
+              <div class="filter-header"><strong>Фильтры</strong><span id="filterPanelCount" class="filter-active-count" hidden></span><span class="fill"></span><button type="button" id="resetFilters" class="toolbar-button">Сбросить</button></div>
+              <div id="filterScroll" class="filter-scroll" tabindex="0" aria-label="Прокручиваемые фильтры">
+                <div class="filter-content">
+                  <div class="filter-controls">
+                    <label>Группа растения<select id="filterGroup"><option value="">Все группы</option></select></label>
+                    <label>Категория растения<select id="filterCategory"><option value="">Все категории</option></select></label>
+                    <fieldset class="filter-flowering"><legend>Цветение</legend><div class="filter-segments" id="filterFlowerSegments">
+                      <button type="button" data-flowering="" class="active" aria-pressed="true">Все</button>
+                      <button type="button" data-flowering="Да" aria-pressed="false">Да</button>
+                      <button type="button" data-flowering="Нет" aria-pressed="false">Нет</button>
+                    </div></fieldset>
+                    <div class="filter-height"><div class="filter-field-label">Высота, см <small>позже</small></div><div class="filter-height-fields"><input id="filterMinHeight" type="number" min="0" placeholder="От" aria-label="Высота от" disabled><input id="filterMaxHeight" type="number" min="0" placeholder="До" aria-label="Высота до" disabled></div></div>
+                  </div>
+                  <section class="filter-chip-section" aria-label="Природные среды">
+                    <div class="filter-section-heading"><strong>Природные</strong><span id="naturalSelectedCount">0/7</span></div>
+                    <div id="naturalChips" class="filter-chip-list"></div>
+                  </section>
+                  <section class="filter-chip-section" aria-label="Озеленение">
+                    <div class="filter-section-heading"><strong>Озеленение</strong><span id="landscapedSelectedCount">0/5</span></div>
+                    <div id="landscapedChips" class="filter-chip-list"></div>
+                  </section>
+                </div>
               </div>
-              <div class="filter-usage-title">Landscaping uses <span>Multiple selections · dynamically extendable</span></div>
-              <input id="usageSearch" type="search" placeholder="Find landscaping categories...">
-              <div id="usageCategories" class="usage-categories"></div>
-              <div class="filter-preview-actions"><button type="button" class="toolbar-button" id="addDemoCategory">+ Simulate New Category</button><span>Demo botanical data only</span></div>
             </div>
             <div class="results-shell" id="resultsShell">
               <div id="modelGrid" class="model-grid" role="list" aria-label="Plant models"></div>
@@ -336,7 +391,7 @@ button:disabled{opacity:.43;cursor:not-allowed}
 (() => {
 "use strict";
 const $ = selector => document.querySelector(selector);
-const floraSelectAll = selector => [...document.querySelectorAll(selector)];
+const $$ = selector => [...document.querySelectorAll(selector)];
 const repoKey = "flora-ui-design-v1";
 const collections = [
   {id:"explorer",label:"Explorer",builtin:true},
@@ -397,6 +452,16 @@ const roles=[
  {key:"Shrubs & Low Conifers",title:"SHRUBS & LOW CONIFERS",types:["Shrubs","Coniferous Trees"]},
  {key:"Perennials & Groundcovers",title:"PERENNIALS & GROUNDCOVERS",types:["Flowerbed Plants","Ornamental Grasses"]}
 ];
+const floraTaxonomy={"Деревья":["Лиственные","Хвойные","Пальмы"],"Кусты":["Лиственные","Хвойные","Папоротники","Злаки","Вьющиеся","Многолетники","Суккуленты"],"Трава":["Травы","Цветы","Почвопокровные","Луковичные"]};
+const naturalCategories=["Лесная","Луговая","Водная","Прибрежная","Степная","Пустынная","Горная"];
+const landscapedCategories=["Улицы","Парки","Сады","Дворы","Интерьеры"];
+function demoBotanical(m){
+ if(m.type==="Deciduous Trees")return {group:"Деревья",category:"Лиственные",natural:["Лесная"],landscaped:["Улицы","Парки","Сады"],flowering:"Нет"};
+ if(m.type==="Coniferous Trees")return {group:"Деревья",category:"Хвойные",natural:["Лесная","Горная"],landscaped:["Парки","Сады"],flowering:"Нет"};
+ if(m.type==="Shrubs")return {group:"Кусты",category:"Лиственные",natural:["Лесная","Прибрежная"],landscaped:["Парки","Сады","Дворы"],flowering:"Да"};
+ if(m.type==="Ornamental Grasses")return {group:"Кусты",category:"Злаки",natural:["Луговая","Степная"],landscaped:["Парки","Сады"],flowering:"Нет"};
+ return {group:"Трава",category:"Цветы",natural:["Луговая"],landscaped:["Сады"],flowering:"Да"};
+}
 const useCategories=[
  ["Decorative & Designed Planting",["Lawns","Flowerbeds","Mixed Borders","Border Planting","Groundcovers","Ornamental Grasses","Shrubs","Hedges","Urban Trees","Avenue Planting","Specimen Accents","Container Planting","Vertical Planting","Interior Planting","Conifer Planting","Ornamental Perennials","Low-Growing Conifers","Flowering Shrubs","Bulbs","Palms"]],
  ["Natural & Wild Vegetation",["Field Vegetation","Forest Vegetation","Forest Understory","Wild Shrubs","Steppe Vegetation","Coastal Vegetation","Aquatic Vegetation","Tropical Vegetation","Desert Vegetation","Ferns"]]
@@ -423,29 +488,22 @@ function themeIds(){
  return models.filter((m,i)=>((i+seed)%4!==0 || state.themeSelection?.includes("Forest"))).map(m=>m.id);
 }
 const propDefs=[
- ["Basic Information",[
-  ["model","Model file",true],["ru","Russian name",false],["en","English name",true],["lat","Latin name",true],["type","Plant type",true]]],
- ["Visual Characteristics",[
-  ["foliage","Foliage color",true],["density","Canopy density",false],["flowering","Flowering",false],["flowerColor","Flower color",false],["flowerHabit","Flowering pattern",false],
-  ["uses","Landscaping uses",true],["description","Visual description",false],["keywords","Search keywords",false],["similar","Similar Plants",true]]],
- ["Geometry & Technical",[
-  ["height","Height",true],["width","Width",true],["length","Length",false],["diameter","Maximum diameter",false],["base","Base width",false],
-  ["width10","Width at 10% height",false],["widestAt","Height of max width",false],["vertices","Vertices",false],
-  ["polygons","Polygons",false],["triangles","Triangles",false],["materials","Materials",false],["textures","Textures",false]]]
+ ["Названия",[["model","Имя модели",true],["ru","Название на русском",true],["en","Название на английском",true],["lat","Название на латыни",true]]],
+ ["Ботанические сведения",[["flowering","Цветение",true],["group","Группа растения",true],["category","Категория растения",true],["natural","Природные",true],["landscaped","Озеленение",true],["similar","Похожие растения",true]]]
 ];
 const propDefault=()=>propDefs.flatMap(([_,items])=>items.filter(a=>a[2]).map(a=>a[0]));
 const prefRead=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(repoKey+"-"+key));return v??fallback}catch{return fallback}};
 const prefWrite=(key,v)=>{try{localStorage.setItem(repoKey+"-"+key,JSON.stringify(v))}catch{}};
 
+state.selected.add(models.find(m=>m.family==="Acer")?.id||models[0].id);
 state.themeSelection="Modern Residential Courtyard";
 state.themeExpanded=new Set(["Courtyards","Woodland Types","Designed Gardens"]);
-state.usageSelected=new Set();
-state.usageMore=[];
-state.filterType="";state.filterFoliage="";state.filterFlower="";state.filterMinHeight="";
-state.propWidth=prefRead("properties-width",240);
-state.propVisible=prefRead("properties-visible",propDefault());
-state.propOrder=prefRead("properties-order",propDefs.flatMap(([_,items])=>items.map(x=>x[0])));
-state.propCollapsed=new Set(prefRead("properties-collapsed",["Geometry & Technical"]));
+state.filterNatural=new Set();state.filterLandscaped=new Set();
+state.filterGroup="";state.filterCategory="";state.filterFlower="";
+state.propWidth=prefRead("properties-width",225);
+state.propVisible=prefRead("properties-visible-atlas",propDefault());
+state.propOrder=prefRead("properties-order-atlas",propDefs.flatMap(([_,items])=>items.map(x=>x[0])));
+state.propCollapsed=new Set(prefRead("properties-collapsed-atlas",[]));
 state.propCustomize=false;
 state.themeMode=false;
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
@@ -538,13 +596,13 @@ function visibleModels(){
   if(state.catalog==="favorites"&&!state.favorites.has(m.id))return false;
   if(getTheme()&&!themeIds().includes(m.id))return false;
   if(!getTheme()&&!["explorer","favorites","basket"].includes(state.catalog)&&m.type!==state.category)return false;
-  if(state.filterType&&m.type!==state.filterType)return false;
-  const colored=["Acer","Hydrangea","Cuphea","Lavandula","Catharanthus","Clerodendrum"].includes(m.family);
-  if(state.filterFoliage&&(state.filterFoliage==="Colored")!==colored)return false;
-  const flowering=["Shrubs","Flowerbed Plants"].includes(m.type);
-  if(state.filterFlower&&(state.filterFlower==="yes")!==flowering)return false;
-  if(state.filterMinHeight&&m.height<Number(state.filterMinHeight))return false;
-  if(state.usageSelected.size&&![...state.usageSelected].some(x=>modelUses(m).includes(x)||(x==="Rain Gardens"&&state.usageMore.includes(x)&&["Shrubs","Flowerbed Plants"].includes(m.type))))return false;
+  const bot=demoBotanical(m);
+  if(state.filterGroup&&bot.group!==state.filterGroup)return false;
+  if(state.filterCategory&&state.filterCategory!==bot.group+"|"+bot.category)return false;
+  if(state.filterFlower&&bot.flowering!==state.filterFlower)return false;
+  if(state.filterNatural.size&&![...state.filterNatural].some(v=>bot.natural.includes(v)))return false;
+  if(state.filterLandscaped.size&&![...state.filterLandscaped].some(v=>bot.landscaped.includes(v)))return false;
+
   return true;
  });
  const q=state.search.trim().toLowerCase();
@@ -554,29 +612,13 @@ function visibleModels(){
  return arr;
 }
 function propertyValue(key,m){
- const names=botanicalNames[m.family]||["Not available",m.family];
- const info={
-  model:m.id+".max",ru:names[0],en:names[1],lat:m.botanical,type:m.type,
-  foliage:["Acer","Hydrangea","Cuphea"].includes(m.family)?"Green / seasonal color":"Green",
-  density:m.type.includes("Trees")?"Medium":"Dense",
-  flowering:["Shrubs","Flowerbed Plants"].includes(m.type)?"Yes":"No",
-  flowerColor:["Flowerbed Plants","Shrubs"].includes(m.type)?"Varies":"Not available",
-  flowerHabit:"Seasonal (example)",
-  uses:modelUses(m),description:"Representative species information; replace with imported descriptions.",
-  keywords:[m.family,m.type].join(", "),
-  height:m.height+" cm",width:m.width+" cm",length:Math.round(m.width*.82)+" cm",
-  diameter:m.width+" cm",base:Math.round(m.width*.38)+" cm",
-  width10:Math.round(m.width*.45)+" cm",widestAt:Math.round(m.height*.58)+" cm",
-  vertices:(18000+m.imageSeed*147).toLocaleString(),polygons:(9000+m.imageSeed*73).toLocaleString(),
-  triangles:(18500+m.imageSeed*151).toLocaleString(),materials:"CoronaPhysicalMtl",
-  textures:"4 maps (example)"
- };
- return info[key]??"Not available";
-}
-function similarHTML(m){
- const others=models.filter(x=>x.family!==m.family&&x.type===m.type).slice(0,3);
- return '<div class="similar-plant-block">'+others.map(x=>'<button type="button" class="similar-plant-item" data-similar="'+clean(x.id)+'">'+leafSVG(x)+'<span>'+clean(x.botanical)+'</span></button>').join("")+
- '<div class="property-hint">Other models present in this sample library</div></div>';
+ const names=botanicalNames[m.family]||["",m.family],bot=demoBotanical(m);
+ const similar=[...new Set(models.filter(x=>x.family!==m.family&&x.type===m.type).map(x=>x.family))]
+  .slice(0,6).map(f=>(botanicalNames[f]||[])[0]||f);
+ const info={model:m.id+".max",ru:names[0]||"",en:names[1]||"",lat:m.botanical,
+  flowering:bot.flowering,group:bot.group,category:bot.category,
+  natural:bot.natural.join(", "),landscaped:bot.landscaped.join(", "),similar:similar.join(", ")};
+ return info[key]??"";
 }
 function properties(){
  const container=$("#propertyRows");
@@ -599,7 +641,7 @@ function properties(){
   if(!fields.length)return "";
   const collapsed=state.propCollapsed.has(group);
   const items=collapsed?"":fields.map(([key,label])=>{
-   if(key==="similar")return '<div class="property-special"><div class="property-special-name">Similar Plants</div>'+similarHTML(m)+'</div>';
+
    const value=propertyValue(key,m);
    return '<div class="property-row"><span>'+clean(label)+'</span><span>'+
     (Array.isArray(value)?'<div class="property-tags">'+value.map(v=>'<span class="property-tag">'+clean(v)+'</span>').join("")+'</div>':
@@ -608,9 +650,9 @@ function properties(){
   }).join("");
   return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'"><span>'+ (collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+items+'</section>';
  }).join("");
- const status=state.catalog==="explorer"?(state.explorerDataFiles.length?((botanicalNames[m.family])?'<div class="description-status">Botanical description: available (sample species data)</div>':'<div class="description-status missing">Botanical description: not available for this model</div>'):'<div class="description-status missing">No descriptions imported · illustrative species labels</div>'):"";
- container.innerHTML=status+groups+'<div class="property-hint">Concept data • geometry values are illustrative until Model Analyzer integration.</div>';
- renderPropertyCustomize();
+ container.innerHTML=groups;
+ 
+renderPropertyCustomize();
 }
 function renderPropertyCustomize(){
  const panel=$("#propertiesCustomPanel");
@@ -628,7 +670,7 @@ function renderPropertyCustomize(){
 $("#propertiesCustomize").addEventListener("click",()=>{state.propCustomize=!state.propCustomize;renderPropertyCustomize()});
 $("#propertyRows").addEventListener("click",e=>{
  const group=e.target.closest("[data-propgroup]");
- if(group){const name=group.dataset.propgroup;if(state.propCollapsed.has(name))state.propCollapsed.delete(name);else state.propCollapsed.add(name);prefWrite("properties-collapsed",[...state.propCollapsed]);properties();return}
+ if(group){const name=group.dataset.propgroup;if(state.propCollapsed.has(name))state.propCollapsed.delete(name);else state.propCollapsed.add(name);prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);properties();return}
  const similar=e.target.closest("[data-similar]");
  if(similar){state.selected=new Set([similar.dataset.similar]);renderModels()}
 });
@@ -637,7 +679,7 @@ $("#propertiesCustomPanel").addEventListener("change",e=>{
  const key=box.dataset.propvisible;
  if(box.checked&&!state.propVisible.includes(key))state.propVisible.push(key);
  else if(!box.checked)state.propVisible=state.propVisible.filter(x=>x!==key);
- prefWrite("properties-visible",state.propVisible);properties();
+ prefWrite("properties-visible-atlas",state.propVisible);properties();
 });
 $("#propertiesCustomPanel").addEventListener("click",e=>{
  const move=e.target.closest("[data-propmove]");
@@ -647,15 +689,15 @@ $("#propertiesCustomPanel").addEventListener("click",e=>{
   const next=i+Number(move.dataset.dir);
   if(group&&next>=0&&next<state.propOrder.length&&group[1].some(d=>d[0]===state.propOrder[next])){
    [state.propOrder[i],state.propOrder[next]]=[state.propOrder[next],state.propOrder[i]];
-   prefWrite("properties-order",state.propOrder);properties();
+   prefWrite("properties-order-atlas",state.propOrder);properties();
   }
   return;
  }
  const a=e.target.closest("[data-propaction]");if(!a)return;
  if(a.dataset.propaction==="close")state.propCustomize=false;
  if(a.dataset.propaction==="all")state.propVisible=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));
- if(a.dataset.propaction==="default"){state.propVisible=propDefault();state.propOrder=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));state.propCollapsed=new Set(["Geometry & Technical"]);prefWrite("properties-order",state.propOrder);prefWrite("properties-collapsed",[...state.propCollapsed]);}
- prefWrite("properties-visible",state.propVisible);properties();
+ if(a.dataset.propaction==="default"){state.propVisible=propDefault();state.propOrder=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));state.propCollapsed=new Set();prefWrite("properties-order-atlas",state.propOrder);prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);}
+ prefWrite("properties-visible-atlas",state.propVisible);properties();
 });
 let draggedProperty=null;
 $("#propertiesCustomPanel").addEventListener("dragstart",e=>{const row=e.target.closest("[data-propitem]");draggedProperty=row?.dataset.propitem||null});
@@ -666,7 +708,7 @@ $("#propertiesCustomPanel").addEventListener("drop",e=>{
  if(propDefs.some(([_,defs])=>defs.some(d=>d[0]===key)&&defs.some(d=>d[0]===draggedProperty))){
   state.propOrder=state.propOrder.filter(x=>x!==draggedProperty);
   state.propOrder.splice(state.propOrder.indexOf(key),0,draggedProperty);
-  prefWrite("properties-order",state.propOrder);properties();
+  prefWrite("properties-order-atlas",state.propOrder);properties();
  }
  draggedProperty=null;
 });
@@ -698,7 +740,7 @@ function renderModels(){
   host.innerHTML=arr.length?arr.map((m,i)=>modelCard(m,i)).join(""):'<div class="empty-state">No plants match the current filter.</div>';
  }
  let title,path;
- if(state.catalog==="explorer"){title="Maxtree - Plant Models Vol "+state.folder;path="F:\\001_Model\\Maxtree\\Maxtree - Plant Models Vol "+state.folder;}
+ if(state.catalog==="explorer"){title="Explorer";path="F:/001_Model/Maxtree";}
  else if(state.catalog==="favorites"){title=state.favFilter;path="Favorites / Saved plants";}
  else if(getTheme()){title=state.themeSelection;path=getTheme().name+" / "+getTheme().sections.find(x=>x.items.includes(state.themeSelection))?.name+" / "+state.themeSelection;}
  else{const meta=collections.find(x=>x.id===state.catalog);title=meta?.label||"Catalog";path="Imported / "+title;}
@@ -717,7 +759,7 @@ function render(){
  const basket=state.catalog==="basket";
  $("#catalogBody").hidden=basket;$("#catalogFooter").hidden=basket;$("#basketWorkspace").hidden=!basket;
  showCatalogTabs();
- $("#explorerInfoButton").hidden=state.catalog!=="explorer";
+ $("#explorerInfoButton").hidden=true;
  const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
  info.textContent=state.explorerDataFiles.length?"Descriptions selected: "+state.explorerDataFiles.length+" file(s) · demo":"No descriptions imported";
  if(basket)renderBasket();else{folderList();renderModels()} renderFilterControls();
@@ -818,42 +860,50 @@ $("#modelGrid").addEventListener("click",e=>{
 });
 $("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
 $("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
-/* Search filters: landscaping categories are data-driven; not permanent UI tabs. */
-function renderUsageCategories(){
- const q=$("#usageSearch").value.trim().toLowerCase();
- $("#usageCategories").innerHTML=[...useCategories,...(state.usageMore.length?[["Additional Categories",state.usageMore]]:[])].map(([group,items])=>{
-  const match=items.filter(x=>x.toLowerCase().includes(q));
-  if(!match.length)return "";
-  return '<div class="usage-category-group"><div class="usage-category-title">'+clean(group)+' <span>'+match.length+'</span></div>'+
-   '<div class="usage-category-items">'+match.map(name=>'<label class="usage-category-item"><input type="checkbox" data-usecategory="'+clean(name)+'" '+(state.usageSelected.has(name)?'checked':'')+'><span>'+clean(name)+'</span></label>').join("")+'</div></div>';
- }).join("");
+/* FloraAtlas v1 filters: simulated data, never represents local 3ds Max analysis. */
+function chipHTML(items,selected,kind){
+ return items.map(n=>'<button type="button" class="filter-chip '+(selected.has(n)?'selected':'')+
+ '" data-filter-chip="'+kind+'" data-chip-value="'+clean(n)+'" aria-pressed="'+selected.has(n)+'">'+clean(n)+
+ (selected.has(n)?'<span class="filter-chip-mark" aria-hidden="true">✓</span>':'')+'</button>').join("");
 }
 function renderFilterControls(){
- const options=[...new Set(models.map(m=>m.type))].sort();
- $("#filterType").innerHTML='<option value="">All types</option>'+options.map(v=>'<option value="'+clean(v)+'">'+clean(v)+'</option>').join("");
- $("#filterType").value=state.filterType;$("#filterFoliage").value=state.filterFoliage;
- $("#filterFlower").value=state.filterFlower;$("#filterMinHeight").value=state.filterMinHeight;
- const total=state.usageSelected.size+[state.filterType,state.filterFoliage,state.filterFlower,state.filterMinHeight].filter(Boolean).length;
+ const group=$("#filterGroup"),category=$("#filterCategory");
+ group.innerHTML='<option value="">Все группы</option>'+Object.keys(floraTaxonomy).map(n=>'<option value="'+clean(n)+'">'+clean(n)+'</option>').join("");
+ group.value=state.filterGroup;
+ const cats=Object.entries(floraTaxonomy).filter(([g])=>!state.filterGroup||g===state.filterGroup)
+  .flatMap(([g,items])=>items.map(n=>({value:g+'|'+n,label:state.filterGroup?n:g+' / '+n})));
+ category.innerHTML='<option value="">Все категории</option>'+cats.map(c=>'<option value="'+clean(c.value)+'">'+clean(c.label)+'</option>').join("");
+ category.value=state.filterCategory;
+ if(category.value!==state.filterCategory){state.filterCategory="";category.value="";}
+ $$("#filterFlowerSegments button").forEach(b=>{const a=b.dataset.flowering===state.filterFlower;b.classList.toggle("active",a);b.setAttribute("aria-pressed",String(a));});
+ $("#naturalChips").innerHTML=chipHTML(naturalCategories,state.filterNatural,"natural");
+ $("#landscapedChips").innerHTML=chipHTML(landscapedCategories,state.filterLandscaped,"landscaped");
+ $("#naturalSelectedCount").textContent=state.filterNatural.size+"/7";
+ $("#landscapedSelectedCount").textContent=state.filterLandscaped.size+"/5";
+ const total=Number(!!state.filterGroup)+Number(!!state.filterCategory)+Number(!!state.filterFlower)+state.filterNatural.size+state.filterLandscaped.size;
  $("#filterCount").textContent=total?"("+total+")":"";
+ $("#filterPanelCount").textContent=String(total);$("#filterPanelCount").hidden=total===0;
  $("#filterButton").classList.toggle("active",total>0);
- renderUsageCategories();
 }
-$("#filterButton").addEventListener("click",()=>{const p=$("#filterPanel");p.hidden=!p.hidden;$("#filterButton").setAttribute("aria-expanded",String(!p.hidden));if(!p.hidden)renderFilterControls()});
-$("#resetFilters").addEventListener("click",()=>{state.usageSelected.clear();state.filterType="";state.filterFoliage="";state.filterFlower="";state.filterMinHeight="";state.selected.clear();renderFilterControls();renderModels()});
-$("#usageSearch").addEventListener("input",renderUsageCategories);
-$("#usageCategories").addEventListener("change",e=>{const x=e.target.closest("[data-usecategory]");if(!x)return;if(x.checked)state.usageSelected.add(x.dataset.usecategory);else state.usageSelected.delete(x.dataset.usecategory);state.selected.clear();renderFilterControls();renderModels()});
-[["filterType","filterType"],["filterFoliage","filterFoliage"],["filterFlower","filterFlower"],["filterMinHeight","filterMinHeight"]].forEach(([id,key])=>$("#"+id).addEventListener("input",e=>{state[key]=e.target.value;state.selected.clear();renderFilterControls();renderModels()}));
-$("#addDemoCategory").addEventListener("click",()=>{
- const label="Rain Gardens";
- if(!state.usageMore.includes(label))state.usageMore.push(label);
- renderUsageCategories();toast("Category added to this preview. Imported botanical data can extend this list.");
-});
+function resizeFilterPanel(){
+ const area=$(".library-area");if(!area)return;
+ $("#filterPanel").style.setProperty("--filter-max-height",Math.max(125,Math.min(345,Math.round(area.getBoundingClientRect().height*.43)))+"px");
+}
+if(typeof ResizeObserver!=="undefined")new ResizeObserver(resizeFilterPanel).observe($(".library-area"));
+window.addEventListener("resize",resizeFilterPanel);resizeFilterPanel();
+$("#filterButton").addEventListener("click",()=>{const p=$("#filterPanel");p.hidden=!p.hidden;$("#filterButton").setAttribute("aria-expanded",String(!p.hidden));if(!p.hidden){resizeFilterPanel();renderFilterControls();}});
+$("#resetFilters").addEventListener("click",()=>{state.filterGroup="";state.filterCategory="";state.filterFlower="";state.filterNatural.clear();state.filterLandscaped.clear();state.selected.clear();renderFilterControls();renderModels();});
+$("#filterGroup").addEventListener("change",e=>{state.filterGroup=e.target.value;state.filterCategory="";state.selected.clear();renderFilterControls();renderModels();});
+$("#filterCategory").addEventListener("change",e=>{state.filterCategory=e.target.value;if(!state.filterGroup&&state.filterCategory)state.filterGroup=state.filterCategory.split("|")[0];state.selected.clear();renderFilterControls();renderModels();});
+$("#filterFlowerSegments").addEventListener("click",e=>{const b=e.target.closest("[data-flowering]");if(!b)return;state.filterFlower=b.dataset.flowering;state.selected.clear();renderFilterControls();renderModels();});
+$("#filterScroll").addEventListener("click",e=>{const b=e.target.closest("[data-filter-chip]");if(!b)return;const selected=b.dataset.filterChip==="natural"?state.filterNatural:state.filterLandscaped;const v=b.dataset.chipValue;if(selected.has(v))selected.delete(v);else selected.add(v);state.selected.clear();renderFilterControls();renderModels();});
+$("#propertyPanelButton").addEventListener("click",()=>{const h=$(".library-area").classList.toggle("properties-hidden"),b=$("#propertyPanelButton");b.classList.toggle("active",!h);b.setAttribute("aria-pressed",String(!h));});
 
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
 $("#listButton").addEventListener("click",()=>{state.grid=false;$("#listButton").classList.add("active");$("#gridButton").classList.remove("active");renderModels()});
-$("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(!b)return;state.proxy=b.dataset.proxy;state.settings.proxy=state.proxy;save();floraSelectAll("[data-proxy]").forEach(x=>x.classList.toggle("active",x===b));properties();toast("Proxy view: "+state.proxy+" (prototype setting)")});
+$("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(!b)return;state.proxy=b.dataset.proxy;state.settings.proxy=state.proxy;save();$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x===b));properties();toast("Proxy view: "+state.proxy+" (prototype setting)")});
 $("#refreshButton").addEventListener("click",()=>{render();toast("Catalog preview refreshed. Local 3ds Max files are not scanned in the browser.")});
 $("#settingsButton").addEventListener("click",()=>showModal("settings"));
 $("#libraryButton").addEventListener("click",()=>showModal("library"));
@@ -881,17 +931,17 @@ function showModal(kind){
   const count=[...state.basket.values()].filter(Boolean).length;
   body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
  }else if(kind==="explorerData"){
-  title.textContent="Import Descriptions";confirm.textContent="Add to Preview";
-  body.innerHTML='<div class="modal-body-section"><h3>Attach information .floracat</h3><input type="file" multiple accept=".floracat" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
+  title.textContent="Импорт FloraAtlas";confirm.textContent="Закрыть";
+  body.innerHTML='<div class="modal-body-section"><h3>Подключить ботанический FloraAtlas v1</h3><input type="file" multiple accept=".floratlas" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
  }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Save Settings";
-  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Analyze source model geometry or attach botanically descriptive information files.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
+  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Model Analyzer now scans file names and relative paths without opening .max; botanical data comes from FloraAtlas.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
   body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="F:/001_Model/Maxtree" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
  }else if(kind==="catalog"){
   title.textContent="Add Catalog";confirm.textContent="Add to Preview";
-  body.innerHTML='<div class="modal-body-section"><h3>Import .floracat</h3><input type="file" accept=".floracat" id="catalogFile"><p>Installed catalogs are external portable SQLite .floracat files. This prototype can add a visual catalog tab, but cannot parse or install a real catalog.</p></div>';
+  body.innerHTML='<div class="modal-body-section"><h3>Import FloraCOL</h3><input type="file" accept=".floracol" id="catalogFile"><p>Thematic collections use the separate .floracol format. This prototype can add a visual catalog tab, but cannot parse or install a real catalog.</p></div>';
  }else if(kind==="newCollection"){
   title.textContent="New Favorites Collection";confirm.textContent="Create Collection";
   body.innerHTML='<div class="modal-body-section"><h3>Collection Name</h3><input id="collectionNameInput" placeholder="e.g. Riverside Garden" maxlength="55"></div>';
@@ -902,21 +952,21 @@ $("#modalConfirm").addEventListener("click",()=>{
  if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
  if(kind==="basketImport"){toast("No objects imported - preview only. Basket kept intact.")}
  if(kind==="explorerData"){
-  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floracat file first.");return}
-  if(files.some(f=>!f.name.toLowerCase().endsWith(".floracat"))){toast("Only .floracat files are supported.");return}
+  const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floratlas file first.");return}
+  if(files.some(f=>!f.name.toLowerCase().endsWith(".floratlas"))){toast("Only .floratlas files are supported.");return}
   state.explorerDataFiles.push(...files.map(f=>f.name));save();render();toast(files.length+" info file(s) selected for Explorer preview.");
  }
  if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
-  const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracat file first.");return}
-  const id="cat-"+Date.now();const name=file.name.replace(/\.floracat$/i,"");collections.push({id,label:name,builtin:false});themes[id]={name,sections:[{name:"Example Space Types",items:["Sample Planting Composition","Mixed Planting Scheme"]}]};state.catalog=id;state.themeSelection="Sample Planting Composition";state.themeExpanded.add("Example Space Types");state.selected.clear();render();toast("Catalog added to dropdown as a demo. Source database was not parsed.");
+  const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracol file first.");return}
+  const id="cat-"+Date.now();const name=file.name.replace(/\.floracol$/i,"");collections.push({id,label:name,builtin:false});themes[id]={name,sections:[{name:"Example Space Types",items:["Sample Planting Composition","Mixed Planting Scheme"]}]};state.catalog=id;state.themeSelection="Sample Planting Composition";state.themeExpanded.add("Example Space Types");state.selected.clear();render();toast("Catalog added to dropdown as a demo. Source database was not parsed.");
  }
  if(kind==="newCollection"){const v=$("#collectionNameInput").value.trim();if(!v)return;state.favCollections.push(v);save();state.favFilter=v;render();toast("Collection created. Drag model assignment is planned for Flora.");}
  hideModal();
 });
 state.proxy=state.settings.proxy||"Point Cloud";
-floraSelectAll("[data-proxy]").forEach(x=>x.classList.toggle("active",x.dataset.proxy===state.proxy));
+$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x.dataset.proxy===state.proxy));
 render();
 })();</script>
 <script>
