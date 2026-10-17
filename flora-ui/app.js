@@ -109,8 +109,8 @@ const prefWrite=(key,v)=>{try{localStorage.setItem(repoKey+"-"+key,JSON.stringif
 state.selected.add(models.find(m=>m.family==="Acer")?.id||models[0].id);
 state.themeSelection="Modern Residential Courtyard";
 state.themeExpanded=new Set(["Courtyards","Woodland Types","Designed Gardens"]);
-state.filterNatural=new Set();state.filterLandscaped=new Set();
 state.filterGroup="";state.filterCategory="";state.filterFlower="";
+state.filterEnvironment="";state.filterEnvironmentCategory="";
 state.propWidth=prefRead("properties-width",225);
 state.propVisible=prefRead("properties-visible-atlas",propDefault());
 state.propOrder=prefRead("properties-order-atlas",propDefs.flatMap(([_,items])=>items.map(x=>x[0])));
@@ -213,8 +213,10 @@ function visibleModels(){
   if(state.filterGroup&&bot.group!==state.filterGroup)return false;
   if(state.filterCategory&&state.filterCategory!==bot.group+"|"+bot.category)return false;
   if(state.filterFlower&&bot.flowering!==state.filterFlower)return false;
-  if(state.filterNatural.size&&![...state.filterNatural].some(v=>bot.natural.includes(v)))return false;
-  if(state.filterLandscaped.size&&![...state.filterLandscaped].some(v=>bot.landscaped.includes(v)))return false;
+  if(state.filterEnvironmentCategory){
+   const values=state.filterEnvironment==="Природные"?bot.natural:state.filterEnvironment==="Домашние"?bot.landscaped:[];
+   if(!values.includes(state.filterEnvironmentCategory))return false;
+  }
 
   return true;
  });
@@ -474,26 +476,32 @@ $("#modelGrid").addEventListener("click",e=>{
 $("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
 $("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
 /* FloraAtlas v1 filters: simulated data, never represents local 3ds Max analysis. */
-function chipHTML(items,selected,kind){
- return items.map(n=>'<button type="button" class="filter-chip '+(selected.has(n)?'selected':'')+
- '" data-filter-chip="'+kind+'" data-chip-value="'+clean(n)+'" aria-pressed="'+selected.has(n)+'">'+clean(n)+
- (selected.has(n)?'<span class="filter-chip-mark" aria-hidden="true">✓</span>':'')+'</button>').join("");
-}
 function renderFilterControls(){
  const group=$("#filterGroup"),category=$("#filterCategory");
  group.innerHTML='<option value="">Все группы</option>'+Object.keys(floraTaxonomy).map(n=>'<option value="'+clean(n)+'">'+clean(n)+'</option>').join("");
  group.value=state.filterGroup;
- const cats=Object.entries(floraTaxonomy).filter(([g])=>!state.filterGroup||g===state.filterGroup)
-  .flatMap(([g,items])=>items.map(n=>({value:g+'|'+n,label:state.filterGroup?n:g+' / '+n})));
- category.innerHTML='<option value="">Все категории</option>'+cats.map(c=>'<option value="'+clean(c.value)+'">'+clean(c.label)+'</option>').join("");
+ // A plant category can only be chosen within an explicitly selected group.
+ const plantCategories=state.filterGroup?(floraTaxonomy[state.filterGroup]||[]):[];
+ category.disabled=!state.filterGroup;
+ category.innerHTML='<option value="">'+(state.filterGroup?"Все категории":"Сначала выберите группу")+'</option>'+
+  plantCategories.map(name=>'<option value="'+clean(state.filterGroup+"|"+name)+'">'+clean(name)+'</option>').join("");
  category.value=state.filterCategory;
  if(category.value!==state.filterCategory){state.filterCategory="";category.value="";}
- $$("#filterFlowerSegments button").forEach(b=>{const a=b.dataset.flowering===state.filterFlower;b.classList.toggle("active",a);b.setAttribute("aria-pressed",String(a));});
- $("#naturalChips").innerHTML=chipHTML(naturalCategories,state.filterNatural,"natural");
- $("#landscapedChips").innerHTML=chipHTML(landscapedCategories,state.filterLandscaped,"landscaped");
- $("#naturalSelectedCount").textContent=state.filterNatural.size+"/7";
- $("#landscapedSelectedCount").textContent=state.filterLandscaped.size+"/5";
- const total=Number(!!state.filterGroup)+Number(!!state.filterCategory)+Number(!!state.filterFlower)+state.filterNatural.size+state.filterLandscaped.size;
+ // Natural and domestic environments are mutually exclusive UI modes.
+ const environment=$("#filterEnvironment"),environmentCategory=$("#filterEnvironmentCategory");
+ environment.value=state.filterEnvironment;
+ const environmentItems=state.filterEnvironment==="Природные"?naturalCategories:
+  state.filterEnvironment==="Домашние"?landscapedCategories:[];
+ environmentCategory.disabled=!state.filterEnvironment;
+ environmentCategory.innerHTML='<option value="">'+(state.filterEnvironment?"Все категории":"Сначала выберите тип среды")+'</option>'+
+  environmentItems.map(name=>'<option value="'+clean(name)+'">'+clean(name)+'</option>').join("");
+ environmentCategory.value=state.filterEnvironmentCategory;
+ if(environmentCategory.value!==state.filterEnvironmentCategory){state.filterEnvironmentCategory="";environmentCategory.value="";}
+ $$("#filterFlowerSegments button").forEach(b=>{
+  const active=b.dataset.flowering===state.filterFlower;
+  b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));
+ });
+ const total=[state.filterGroup,state.filterCategory,state.filterFlower,state.filterEnvironment,state.filterEnvironmentCategory].filter(Boolean).length;
  $("#filterCount").textContent=total?"("+total+")":"";
  $("#filterPanelCount").textContent=String(total);$("#filterPanelCount").hidden=total===0;
  $("#filterButton").classList.toggle("active",total>0);
@@ -505,11 +513,32 @@ function resizeFilterPanel(){
 if(typeof ResizeObserver!=="undefined")new ResizeObserver(resizeFilterPanel).observe($(".library-area"));
 window.addEventListener("resize",resizeFilterPanel);resizeFilterPanel();
 $("#filterButton").addEventListener("click",()=>{const p=$("#filterPanel");p.hidden=!p.hidden;$("#filterButton").setAttribute("aria-expanded",String(!p.hidden));if(!p.hidden){resizeFilterPanel();renderFilterControls();}});
-$("#resetFilters").addEventListener("click",()=>{state.filterGroup="";state.filterCategory="";state.filterFlower="";state.filterNatural.clear();state.filterLandscaped.clear();state.selected.clear();renderFilterControls();renderModels();});
-$("#filterGroup").addEventListener("change",e=>{state.filterGroup=e.target.value;state.filterCategory="";state.selected.clear();renderFilterControls();renderModels();});
-$("#filterCategory").addEventListener("change",e=>{state.filterCategory=e.target.value;if(!state.filterGroup&&state.filterCategory)state.filterGroup=state.filterCategory.split("|")[0];state.selected.clear();renderFilterControls();renderModels();});
-$("#filterFlowerSegments").addEventListener("click",e=>{const b=e.target.closest("[data-flowering]");if(!b)return;state.filterFlower=b.dataset.flowering;state.selected.clear();renderFilterControls();renderModels();});
-$("#filterScroll").addEventListener("click",e=>{const b=e.target.closest("[data-filter-chip]");if(!b)return;const selected=b.dataset.filterChip==="natural"?state.filterNatural:state.filterLandscaped;const v=b.dataset.chipValue;if(selected.has(v))selected.delete(v);else selected.add(v);state.selected.clear();renderFilterControls();renderModels();});
+$("#resetFilters").addEventListener("click",()=>{
+ state.filterGroup="";state.filterCategory="";state.filterFlower="";
+ state.filterEnvironment="";state.filterEnvironmentCategory="";state.selected.clear();
+ renderFilterControls();renderModels();
+});
+$("#filterGroup").addEventListener("change",e=>{
+ state.filterGroup=e.target.value;state.filterCategory="";state.selected.clear();
+ renderFilterControls();renderModels();
+});
+$("#filterCategory").addEventListener("change",e=>{
+ if(!state.filterGroup)return;
+ state.filterCategory=e.target.value;state.selected.clear();renderFilterControls();renderModels();
+});
+$("#filterFlowerSegments").addEventListener("click",e=>{
+ const b=e.target.closest("[data-flowering]");if(!b)return;
+ state.filterFlower=b.dataset.flowering;state.selected.clear();renderFilterControls();renderModels();
+});
+$("#filterEnvironment").addEventListener("change",e=>{
+ state.filterEnvironment=e.target.value;state.filterEnvironmentCategory="";state.selected.clear();
+ renderFilterControls();renderModels();
+});
+$("#filterEnvironmentCategory").addEventListener("change",e=>{
+ if(!state.filterEnvironment)return;
+ state.filterEnvironmentCategory=e.target.value;state.selected.clear();
+ renderFilterControls();renderModels();
+});
 $("#propertyPanelButton").addEventListener("click",()=>{const h=$(".library-area").classList.toggle("properties-hidden"),b=$("#propertyPanelButton");b.classList.toggle("active",!h);b.setAttribute("aria-pressed",String(!h));});
 
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
