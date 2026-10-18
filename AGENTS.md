@@ -21,3 +21,7 @@ The user confirmed `FLORA_CODEMAP.md` at `C:\Users\Astra\Documents\Codex\2026-10
 ## UI V2 ownership
 
 The [Flora UI-design chat](https://docs.google.com/document/d/1POnwC_A4-ia7DAMOzJTLoR7d-4HgBFgalsYxEYZbSaw/edit) maintains the browser HTML/CSS/JS prototype and design-specific GitHub documents in `flora-ui-v2` after user-approved UX decisions. The architect clarifies requirements and drafts Codex tasks; Codex owns the real PySide6/MAXScript implementation; the project admin maintains master Google Docs. Do not infer that approval or a browser-demo change means the installed 3ds Max plugin already implements the feature. Keep the modular web sources and standalone `Flora-UI.html` in sync when updating the mockup.
+
+## Task context efficiency
+
+Codex tasks must be self-contained in **approved product requirements, exact UI values/states, constraints, and acceptance checks**. Do not require opening every linked project document at the start of every task. For UI work, inspect the relevant areas of the approved `flora-ui-v2` visual prototype; consult FloraAtlas specifications only for actual data-format questions; use `FLORA_CODEMAP.md` only to locate candidate modules, then verify current working sources. Additional references are optional/on-demand, not a mandatory reading checklist. Never save tokens by omitting necessary behavior or regression constraints. Optimize total effort to produce a correct implementation, not just prompt length. No fixed limit on helpful links, no prohibition on technical research or targeted tests.
