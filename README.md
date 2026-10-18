@@ -11,3 +11,5 @@ HTML-прототип демонстрирует оформление и пов�
 **Главный источник требований:** [Flora - Описание плагина](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). [Правила подготовки задач Codex](https://docs.google.com/document/d/14V25SqQXsu0g94dOhcydeVWaOVRo6zTAz7Ghf7KeuBM/edit).
 
 **Разделение работы:** [Инструкция для отдельного чата-архитектора](https://docs.google.com/document/d/1Ohlf7RkIipPuNebNaDxLjsZ6TSHqbooHe0jdwukpR6g/edit). Пользователь утверждает идеи и проверяет результат, архитектор формулирует задания, Codex программирует и сохраняет сборки в локальную папку пользователя, администратор поддерживает документацию. Для файлов, созданных ChatGPT, основной канал выдачи - Google Диск. Дополнительные CI/PR/Issue-процессы не обязательны.
+
+**Сопровождение веб-дизайна:** [инструкция отдельного чата UI-дизайна](https://docs.google.com/document/d/1POnwC_A4-ia7DAMOzJTLoR7d-4HgBFgalsYxEYZbSaw/edit). Его зона ответственности - браузерный прототип в `flora-ui-v2`, а не код плагина. Пользователь и архитектор утверждают UX, дизайнер поддерживает GitHub-макет, Codex реализует функциональность в локальных исходниках.
