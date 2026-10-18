@@ -67,23 +67,12 @@ const floraTaxonomy={"Деревья":["Лиственные","Хвойные","
 const naturalCategories=["Лесная","Луговая","Водная","Прибрежная","Степная","Пустынная","Горная"];
 const landscapedCategories=["Улицы","Парки","Сады","Дворы","Интерьеры"];
 function demoBotanical(m){
+  if(!state.atlasPreviewActive)return null;
  if(m.type==="Deciduous Trees")return {group:"Деревья",category:"Лиственные",natural:["Лесная"],landscaped:["Улицы","Парки","Сады"],flowering:"Нет"};
  if(m.type==="Coniferous Trees")return {group:"Деревья",category:"Хвойные",natural:["Лесная","Горная"],landscaped:["Парки","Сады"],flowering:"Нет"};
  if(m.type==="Shrubs")return {group:"Кусты",category:"Лиственные",natural:["Лесная","Прибрежная"],landscaped:["Парки","Сады","Дворы"],flowering:"Да"};
  if(m.type==="Ornamental Grasses")return {group:"Кусты",category:"Злаки",natural:["Луговая","Степная"],landscaped:["Парки","Сады"],flowering:"Нет"};
  return {group:"Трава",category:"Цветы",natural:["Луговая"],landscaped:["Сады"],flowering:"Да"};
-}
-const useCategories=[
- ["Decorative & Designed Planting",["Lawns","Flowerbeds","Mixed Borders","Border Planting","Groundcovers","Ornamental Grasses","Shrubs","Hedges","Urban Trees","Avenue Planting","Specimen Accents","Container Planting","Vertical Planting","Interior Planting","Conifer Planting","Ornamental Perennials","Low-Growing Conifers","Flowering Shrubs","Bulbs","Palms"]],
- ["Natural & Wild Vegetation",["Field Vegetation","Forest Vegetation","Forest Understory","Wild Shrubs","Steppe Vegetation","Coastal Vegetation","Aquatic Vegetation","Tropical Vegetation","Desert Vegetation","Ferns"]]
-];
-function modelUses(m){
- const type=m.type;
- if(type==="Deciduous Trees")return ["Urban Trees","Avenue Planting","Specimen Accents","Forest Vegetation"];
- if(type==="Coniferous Trees")return ["Conifer Planting","Low-Growing Conifers","Forest Vegetation"];
- if(type==="Shrubs")return ["Shrubs","Hedges","Flowering Shrubs","Forest Understory"];
- if(type==="Ornamental Grasses")return ["Ornamental Grasses","Lawns","Steppe Vegetation","Mixed Borders"];
- return ["Flowerbeds","Groundcovers","Ornamental Perennials","Mixed Borders"];
 }
 const botanicalNames={
  Acer:["Клён пальчатый","Japanese maple"],Betula:["Берёза повислая","Silver birch"],
@@ -100,7 +89,7 @@ function themeIds(){
 }
 const propDefs=[
  ["Названия",[["model","Имя модели",true],["ru","Название на русском",true],["en","Название на английском",true],["lat","Название на латыни",true]]],
- ["Ботанические сведения",[["flowering","Цветение",true],["group","Группа растения",true],["category","Категория растения",true],["natural","Природные",true],["landscaped","Озеленение",true],["similar","Похожие растения",true]]]
+ ["Ботанические сведения",[["flowering","Цветение",true],["group","Группа растения",true],["category","Категория растения",true],["natural","Природные",true],["landscaped","Домашние",true],["similar","Похожие растения",true]]]
 ];
 const propDefault=()=>propDefs.flatMap(([_,items])=>items.filter(a=>a[2]).map(a=>a[0]));
 const prefRead=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(repoKey+"-"+key));return v??fallback}catch{return fallback}};
@@ -112,11 +101,15 @@ state.themeExpanded=new Set(["Courtyards","Woodland Types","Designed Gardens"]);
 state.filterGroup="";state.filterCategory="";state.filterFlower="";
 state.filterEnvironment="";state.filterEnvironmentCategory="";
 state.propWidth=prefRead("properties-width",225);
-state.propVisible=prefRead("properties-visible-atlas",propDefault());
-state.propOrder=prefRead("properties-order-atlas",propDefs.flatMap(([_,items])=>items.map(x=>x[0])));
 state.propCollapsed=new Set(prefRead("properties-collapsed-atlas",[]));
-state.propCustomize=false;
 state.themeMode=false;
+state.atlasPreviewActive=prefRead("atlas-preview-active-v2",true);
+state.tileSize=Math.max(136,Math.min(260,Number(prefRead("tile-size-v2",readTileSize()))||176));
+state.lastGridSize=state.tileSize===260?176:state.tileSize;
+state.grid=state.tileSize!==260;
+state.tableSortKey=prefRead("table-sort-key-v2","model");
+state.tableSortDir=prefRead("table-sort-dir-v2","asc");
+state.propertiesHidden=Boolean(prefRead("properties-hidden-v2",false));
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings));localStorage.setItem(repoKey+"-basket",JSON.stringify([...state.basket].map(([id,checked])=>({id,checked}))));localStorage.setItem(repoKey+"-basket-size",String(state.basketTileSize));localStorage.setItem(repoKey+"-explorer-info",JSON.stringify(state.explorerDataFiles))}catch{}};
@@ -204,128 +197,67 @@ function folderList(){
  
  }
 }
+function similarPlantNames(m){
+ if(!state.atlasPreviewActive)return [];
+ const groups=[...new Set(models.filter(x=>x.family!==m.family&&x.type===m.type).map(x=>x.family))].slice(0,6);
+ return groups.map(f=>({ru:(botanicalNames[f]||[])[0]||"",en:(botanicalNames[f]||[])[1]||"",lat:plants.find(x=>x[1]===f)?.[0]||f}));
+}
+function propertyValue(key,m){
+ if(key==="model")return m.id+".max";
+ if(!state.atlasPreviewActive)return "";
+ const names=botanicalNames[m.family]||[],bot=demoBotanical(m);
+ if(!bot)return "";
+ const values={ru:names[0]||"",en:names[1]||"",lat:m.botanical,
+ flowering:bot.flowering,group:bot.group,category:bot.category,
+ natural:bot.natural.join(", "),landscaped:bot.landscaped.join(", "),
+ similar:similarPlantNames(m).map(x=>x.ru||x.en||x.lat).join(", ")};
+ return values[key]||"";
+}
+function tableValue(key,m){
+ const bot=demoBotanical(m);
+ if(key==="environmentType")return bot?[...(bot.natural.length?["Природные"]:[]),...(bot.landscaped.length?["Домашние"]:[])].join(", "):"";
+ if(key==="environmentCategory")return bot?[...(bot.natural.length?["Природные: "+bot.natural.join(", ")]:[]),...(bot.landscaped.length?["Домашние: "+bot.landscaped.join(", ")]:[])].join("; "):"";
+ return propertyValue(key,m);
+}
 function visibleModels(){
  let arr=models.filter(m=>{
   if(state.catalog==="favorites"&&!state.favorites.has(m.id))return false;
   if(getTheme()&&!themeIds().includes(m.id))return false;
-  if(!getTheme()&&!["explorer","favorites","basket"].includes(state.catalog)&&m.type!==state.category)return false;
   const bot=demoBotanical(m);
-  if(state.filterGroup&&bot.group!==state.filterGroup)return false;
-  if(state.filterCategory&&state.filterCategory!==bot.group+"|"+bot.category)return false;
-  if(state.filterFlower&&bot.flowering!==state.filterFlower)return false;
-  if(state.filterEnvironmentCategory){
-   const values=state.filterEnvironment==="Природные"?bot.natural:state.filterEnvironment==="Домашние"?bot.landscaped:[];
-   if(!values.includes(state.filterEnvironmentCategory))return false;
+  if(state.filterGroup&&bot?.group!==state.filterGroup)return false;
+  if(state.filterCategory&&state.filterCategory!==bot?.group+"|"+bot?.category)return false;
+  if(state.filterFlower&&bot?.flowering!==state.filterFlower)return false;
+  if(state.filterEnvironment){
+   const values=state.filterEnvironment==="Природные"?bot?.natural:bot?.landscaped;
+   if(!values?.length)return false;
+   if(state.filterEnvironmentCategory&&!values.includes(state.filterEnvironmentCategory))return false;
   }
-
   return true;
  });
- const q=state.search.trim().toLowerCase();
- if(q)arr=arr.filter(m=>[m.id,m.botanical,m.type,m.family,...(botanicalNames[m.family]||[]),...modelUses(m)].some(x=>String(x).toLowerCase().includes(q)));
- arr=[...arr].sort((a,b)=>a.id.localeCompare(b.id));
- if(state.sort==="desc")arr.reverse();
+ const q=state.search.trim().toLocaleLowerCase();
+ if(q)arr=arr.filter(m=>[m.id+".max",propertyValue("ru",m),propertyValue("en",m),propertyValue("lat",m),...similarPlantNames(m).flatMap(x=>[x.ru,x.en,x.lat])].some(x=>String(x).toLocaleLowerCase().includes(q)));
+ const key=state.grid?"model":state.tableSortKey;
+ arr.sort((a,b)=>String(tableValue(key,a)).localeCompare(String(tableValue(key,b)),undefined,{numeric:true,sensitivity:"base"}));
+ if((state.grid?state.sort:state.tableSortDir)==="desc")arr.reverse();
  return arr;
 }
-function propertyValue(key,m){
- const names=botanicalNames[m.family]||["",m.family],bot=demoBotanical(m);
- const similar=[...new Set(models.filter(x=>x.family!==m.family&&x.type===m.type).map(x=>x.family))]
-  .slice(0,6).map(f=>(botanicalNames[f]||[])[0]||f);
- const info={model:m.id+".max",ru:names[0]||"",en:names[1]||"",lat:m.botanical,
-  flowering:bot.flowering,group:bot.group,category:bot.category,
-  natural:bot.natural.join(", "),landscaped:bot.landscaped.join(", "),similar:similar.join(", ")};
- return info[key]??"";
-}
 function properties(){
- const container=$("#propertyRows");
- const m=models.find(x=>state.selected.has(x.id));
- const theme=getTheme();
- if(!m){
-  if(theme){
-   const ids=visibleModels(),use=theme.name==="City"?"Urban and landscape spaces":theme.name==="Forest"?"Woodland planting":"Landscape planting";
-   container.innerHTML='<div class="composition-properties"><div class="property-group-title">COLLECTION OVERVIEW</div>'+
-    '<div class="property-row"><span>Name</span><span>'+clean(state.themeSelection)+'</span></div>'+
-    '<div class="property-row"><span>Purpose</span><span>'+clean(use)+'</span></div>'+
-    '<div class="property-row"><span>Description</span><span>Illustrative grouping of compatible plants for a designed space. No automated placement.</span></div>'+
-    '<div class="property-row"><span>Available models</span><span>'+ids.length+'</span></div>'+
-    '<div class="property-row"><span>Plant layers</span><span>'+roles.map(r=>clean(r.key)).join("<br>")+'</span></div></div>';
-  }else container.innerHTML='<p class="empty-property">Select a plant model to inspect properties.</p>';
-  renderPropertyCustomize();return;
- }
- const groups=propDefs.map(([group,defs])=>{
-  const fields=[...defs].sort((a,b)=>state.propOrder.indexOf(a[0])-state.propOrder.indexOf(b[0])).filter(d=>state.propVisible.includes(d[0]));
-  if(!fields.length)return "";
+ const selected=models.filter(m=>state.selected.has(m.id));
+ $("#propertyRows").innerHTML=propDefs.map(([group,defs])=>{
   const collapsed=state.propCollapsed.has(group);
-  const items=collapsed?"":fields.map(([key,label])=>{
-
-   const value=propertyValue(key,m);
-   return '<div class="property-row"><span>'+clean(label)+'</span><span>'+
-    (Array.isArray(value)?'<div class="property-tags">'+value.map(v=>'<span class="property-tag">'+clean(v)+'</span>').join("")+'</div>':
-      (value==="Not available"?'<i class="property-missing">Not available</i>':clean(value)))+
-    '</span></div>';
+  const content=collapsed?"":defs.map(([key,label])=>{
+   const vals=selected.map(m=>propertyValue(key,m));
+   const value=vals.length&&vals.every(v=>v===vals[0])?vals[0]:"";
+   return '<div class="property-row"><span>'+clean(label)+'</span><span>'+clean(value)+'</span></div>';
   }).join("");
-  return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'"><span>'+ (collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+items+'</section>';
+  return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'" aria-expanded="'+(!collapsed)+'"><span>'+(collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+content+'</section>';
  }).join("");
- container.innerHTML=groups;
- 
-renderPropertyCustomize();
 }
-function renderPropertyCustomize(){
- const panel=$("#propertiesCustomPanel");
- panel.hidden=!state.propCustomize;
- $("#propertiesCustomize").classList.toggle("active",state.propCustomize);
- if(!state.propCustomize)return;
- panel.innerHTML='<div class="property-custom-top"><strong>Customize Properties</strong><button type="button" data-propaction="close">×</button></div>'+
- '<div class="property-custom-actions"><button type="button" data-propaction="default">Reset to Default</button><button type="button" data-propaction="all">Show All</button></div>'+
- propDefs.map(([group,items])=>'<div class="property-custom-group"><div>'+clean(group)+'</div>'+
- [...items].sort((a,b)=>state.propOrder.indexOf(a[0])-state.propOrder.indexOf(b[0])).map(([key,label])=>'<div class="property-custom-field" draggable="true" data-propitem="'+clean(key)+'">'+
- '<label><input type="checkbox" data-propvisible="'+clean(key)+'" '+(state.propVisible.includes(key)?'checked':'')+'>'+clean(label)+'</label>'+
- '<span class="property-order-controls"><button type="button" data-propmove="'+clean(key)+'" data-dir="-1" title="Move up">↑</button><button type="button" data-propmove="'+clean(key)+'" data-dir="1" title="Move down">↓</button></span></div>').join("")+'</div>').join("")+
- '<p class="property-hint">Drag a row or use arrows to change field order. Saved locally.</p>';
-}
-$("#propertiesCustomize").addEventListener("click",()=>{state.propCustomize=!state.propCustomize;renderPropertyCustomize()});
 $("#propertyRows").addEventListener("click",e=>{
- const group=e.target.closest("[data-propgroup]");
- if(group){const name=group.dataset.propgroup;if(state.propCollapsed.has(name))state.propCollapsed.delete(name);else state.propCollapsed.add(name);prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);properties();return}
- const similar=e.target.closest("[data-similar]");
- if(similar){state.selected=new Set([similar.dataset.similar]);renderModels()}
-});
-$("#propertiesCustomPanel").addEventListener("change",e=>{
- const box=e.target.closest("[data-propvisible]");if(!box)return;
- const key=box.dataset.propvisible;
- if(box.checked&&!state.propVisible.includes(key))state.propVisible.push(key);
- else if(!box.checked)state.propVisible=state.propVisible.filter(x=>x!==key);
- prefWrite("properties-visible-atlas",state.propVisible);properties();
-});
-$("#propertiesCustomPanel").addEventListener("click",e=>{
- const move=e.target.closest("[data-propmove]");
- if(move){
-  const key=move.dataset.propmove,i=state.propOrder.indexOf(key);
-  const group=propDefs.find(([_,defs])=>defs.some(d=>d[0]===key));
-  const next=i+Number(move.dataset.dir);
-  if(group&&next>=0&&next<state.propOrder.length&&group[1].some(d=>d[0]===state.propOrder[next])){
-   [state.propOrder[i],state.propOrder[next]]=[state.propOrder[next],state.propOrder[i]];
-   prefWrite("properties-order-atlas",state.propOrder);properties();
-  }
-  return;
- }
- const a=e.target.closest("[data-propaction]");if(!a)return;
- if(a.dataset.propaction==="close")state.propCustomize=false;
- if(a.dataset.propaction==="all")state.propVisible=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));
- if(a.dataset.propaction==="default"){state.propVisible=propDefault();state.propOrder=propDefs.flatMap(([_,defs])=>defs.map(d=>d[0]));state.propCollapsed=new Set();prefWrite("properties-order-atlas",state.propOrder);prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);}
- prefWrite("properties-visible-atlas",state.propVisible);properties();
-});
-let draggedProperty=null;
-$("#propertiesCustomPanel").addEventListener("dragstart",e=>{const row=e.target.closest("[data-propitem]");draggedProperty=row?.dataset.propitem||null});
-$("#propertiesCustomPanel").addEventListener("dragover",e=>{if(e.target.closest("[data-propitem]"))e.preventDefault()});
-$("#propertiesCustomPanel").addEventListener("drop",e=>{
- const row=e.target.closest("[data-propitem]");if(!row||!draggedProperty)return;
- e.preventDefault();const key=row.dataset.propitem;
- if(propDefs.some(([_,defs])=>defs.some(d=>d[0]===key)&&defs.some(d=>d[0]===draggedProperty))){
-  state.propOrder=state.propOrder.filter(x=>x!==draggedProperty);
-  state.propOrder.splice(state.propOrder.indexOf(key),0,draggedProperty);
-  prefWrite("properties-order-atlas",state.propOrder);properties();
- }
- draggedProperty=null;
+ const header=e.target.closest("[data-propgroup]");if(!header)return;
+ const group=header.dataset.propgroup;
+ if(state.propCollapsed.has(group))state.propCollapsed.delete(group);else state.propCollapsed.add(group);
+ prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);properties();
 });
 (function(){
  const resizer=$("#propertiesResize"),shell=$("#resultsShell");
@@ -337,22 +269,72 @@ $("#propertiesCustomPanel").addEventListener("drop",e=>{
  resizer.addEventListener("pointerup",()=>{if(moving){moving=false;prefWrite("properties-width",state.propWidth)}});
  resizer.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="ArrowRight"){state.propWidth=Math.max(180,Math.min(440,state.propWidth+(e.key==="ArrowLeft"?12:-12)));shell.style.setProperty("--properties-width",state.propWidth+"px");prefWrite("properties-width",state.propWidth);e.preventDefault()}});
 })();
+const TABLE_COLS=[
+ ["model","Имя модели",205],["ru","Название на русском",155],
+ ["en","Название на английском",155],["lat","Название на латыни",180],
+ ["flowering","Цветение",92],["group","Группа растения",125],
+ ["category","Категория растения",145],["environmentType","Тип среды",135],
+ ["environmentCategory","Категория среды",255]
+];
+const tableKeys=TABLE_COLS.map(c=>c[0]);
+const savedTableOrder=prefRead("table-order-v2",tableKeys);
+state.tableOrder=[...new Set([...(Array.isArray(savedTableOrder)?savedTableOrder:[]).filter(x=>tableKeys.includes(x)),...tableKeys])];
+state.tableWidths=prefRead("table-widths-v2",{});
+function tableColumns(){return state.tableOrder.map(k=>TABLE_COLS.find(c=>c[0]===k));}
+function tableWidth(k){return Math.max(80,Math.min(440,Number(state.tableWidths[k])||TABLE_COLS.find(c=>c[0]===k)[2]));}
 function modelCard(m,i){
  const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'" title="'+clean(m.botanical)+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="'+(inBasket?'Already in Basket':'Add to Basket')+'" aria-label="Add to Basket" draggable="false">'+(inBasket?'✓':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 2 11h10l2-11H5zM8 9l4-6 4 6M9 13v4m6-4v4"/></svg>')+'</button><div class="card-caption"><span class="card-name">'+clean(m.id)+'</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Toggle favorite" title="Favorite">'+(fav?'★':'☆')+'</button></div><span class="card-botanical">'+clean(m.botanical)+'</span><span class="card-height">H '+m.height+' cm</span></article>';
+ const ru=propertyValue("ru",m),en=propertyValue("en",m);
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket" draggable="false">'+(inBasket?'✓':'＋')+'</button><div class="card-caption"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(fav?'★':'☆')+'</button></div>'+(ru?'<span class="card-secondary">'+clean(ru)+'</span>':"")+(en?'<span class="card-secondary">'+clean(en)+'</span>':"")+'</article>';
+}
+function modelTable(arr){
+ const cols=tableColumns();
+ const head=cols.map(c=>'<th scope="col" draggable="true" data-colhead="'+c[0]+'"><button type="button" data-sortcol="'+c[0]+'">'+clean(c[1])+(state.tableSortKey===c[0]?(state.tableSortDir==="asc"?' ↑':' ↓'):'')+'</button><span class="table-resize" data-resizecol="'+c[0]+'" title="Изменить ширину"></span></th>').join("");
+ const rows=arr.map((m,i)=>'<tr class="model-row '+(state.selected.has(m.id)?'selected':'')+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'">'+cols.map(c=>{
+  const value=tableValue(c[0],m);
+  const actions=c[0]==="model"?'<span class="table-actions"><button type="button" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(state.favorites.has(m.id)?'★':'☆')+'</button><button type="button" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket">'+(state.basket.has(m.id)?'✓':'＋')+'</button></span>':"";
+  return '<td title="'+clean(value)+'"><span class="table-cell-value">'+clean(value)+'</span>'+actions+'</td>';
+ }).join("")+'</tr>').join("");
+ return '<table class="flora-table" style="width:'+cols.reduce((s,c)=>s+tableWidth(c[0]),0)+'px"><colgroup>'+cols.map(c=>'<col data-colwidth="'+c[0]+'" style="width:'+tableWidth(c[0])+'px">').join("")+'</colgroup><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
+}
+function applyGridSizing(count){
+ const host=$("#modelGrid");if(!state.grid)return;
+ const width=Math.max(0,host.clientWidth-8),size=state.tileSize,gap=6;
+ if(!width)return;
+ const columns=Math.max(1,Math.floor((width+gap)/(size+gap)));
+ const actual=Math.max(1,Math.min(columns,count));
+ const value=count<=columns?'repeat('+actual+', minmax(0, '+Math.min(size,width)+'px))':'repeat('+columns+', minmax(0, 1fr))';
+ if(host.style.gridTemplateColumns!==value)host.style.gridTemplateColumns=value;
+}
+function syncTileControls(){
+ $("#tileSize").value=state.tileSize;$("#basketTileSize").value=state.tileSize;
+ const label=state.tileSize===260?"Table":state.tileSize+" px";
+ $("#tileSizeValue").textContent=label;$("#basketTileValue").textContent=label;
+ $("#gridButton").classList.toggle("active",state.grid);
+ $("#listButton").classList.toggle("active",!state.grid);
+}
+function setTileSize(value){
+ state.tileSize=Math.max(136,Math.min(260,Number(value)||176));
+ if(state.tileSize<260)state.lastGridSize=state.tileSize;
+ state.grid=state.tileSize!==260;state.basketTileSize=state.tileSize;
+ prefWrite("tile-size-v2",state.tileSize);save();syncTileControls();
+ if(state.catalog==="basket")renderBasket();else renderModels();
 }
 function renderModels(){
  const arr=visibleModels(),host=$("#modelGrid");
- host.classList.toggle("list-view",!state.grid);
- if(getTheme()){
-  const grouped=roles.map(r=>{
-   const subset=arr.filter(m=>getRole(m)===r.title);
-   if(!subset.length)return "";
-   return '<div class="role-heading">'+clean(r.title)+' <span>'+subset.length+' models</span></div>'+subset.map(m=>modelCard(m,arr.indexOf(m))).join("");
-  }).join("");
-  host.innerHTML=grouped||'<div class="empty-state">No plants match your selected filters.</div>';
+ host.classList.toggle("table-mode",!state.grid);
+ if(state.grid){
+  host.setAttribute("role","list");
+  if(getTheme()){
+   const grouped=roles.map(r=>{const subset=arr.filter(m=>getRole(m)===r.title);
+    return subset.length?'<div class="role-heading">'+clean(r.title)+' <span>'+subset.length+' models</span></div>'+subset.map(m=>modelCard(m,arr.indexOf(m))).join(""):"";
+   }).join("");
+   host.innerHTML=grouped||'<div class="empty-state">Нет моделей по выбранным условиям.</div>';
+  }else host.innerHTML=arr.length?arr.map((m,i)=>modelCard(m,i)).join(""):'<div class="empty-state">Нет моделей по выбранным условиям.</div>';
+  applyGridSizing(arr.length);
  }else{
-  host.innerHTML=arr.length?arr.map((m,i)=>modelCard(m,i)).join(""):'<div class="empty-state">No plants match the current filter.</div>';
+  host.removeAttribute("role");host.style.gridTemplateColumns="";
+  host.innerHTML=arr.length?modelTable(arr):'<div class="empty-state">Нет моделей по выбранным условиям.</div>';
  }
  let title,path;
  if(state.catalog==="explorer"){title="Explorer";path="F:/001_Model/Maxtree";}
@@ -362,17 +344,17 @@ function renderModels(){
  $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;
  $("#contentTag").hidden=["explorer","favorites"].includes(state.catalog);
  const intro=$("#collectionDescription");intro.hidden=!getTheme();
- if(getTheme()){
-  const purpose=getTheme().name==="City"?"Urban and residential landscaping":getTheme().name==="Forest"?"Layered woodland planting":"Designed outdoor planting";
-  intro.innerHTML='<strong>Purpose:</strong> '+clean(purpose)+' <span> · Sample compatible plant groups, not automatic planting or an approved botanical recommendation.</span>';
- }
+ if(getTheme()){const purpose=getTheme().name==="City"?"Urban and residential landscaping":getTheme().name==="Forest"?"Layered woodland planting":"Designed outdoor planting";
+  intro.innerHTML='<strong>Purpose:</strong> '+clean(purpose)+' <span> · Sample groups, not automatic planting.</span>';}
  $("#modelCount").textContent=arr.length+" models";
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
 }
+if(typeof ResizeObserver!=="undefined")new ResizeObserver(()=>applyGridSizing(visibleModels().length)).observe($("#modelGrid"));
 function render(){
  const basket=state.catalog==="basket";
  $("#catalogBody").hidden=basket;$("#catalogFooter").hidden=basket;$("#basketWorkspace").hidden=!basket;
+ syncTileControls();
  showCatalogTabs();
  $("#explorerInfoButton").hidden=true;
  const info=$("#explorerInfoStatus");info.hidden=state.catalog!=="explorer"||state.explorerDataFiles.length===0;
@@ -396,9 +378,9 @@ function basketTargetIds(id){
 }
 function renderBasket(){
  const grid=$("#basketGrid");
- grid.style.setProperty("--basket-card-size",state.basketTileSize+"px");
- $("#basketTileSize").value=state.basketTileSize;
- $("#basketTileValue").textContent=state.basketTileSize+" px";
+ grid.style.setProperty("--basket-card-size",state.tileSize+"px");
+ grid.classList.toggle("basket-table-view",!state.grid);
+ syncTileControls();
  const entries=[...state.basket].map(([id,checked])=>({model:models.find(m=>m.id===id),checked})).filter(x=>x.model);
  const selected=entries.filter(x=>x.checked).length;
  $("#basketCount").textContent=entries.length+" plant"+(entries.length===1?"":"s");
@@ -406,13 +388,19 @@ function renderBasket(){
  $("#basketSelectedCount").textContent=selected+" checked";
  $("#basketImport").disabled=selected===0;
  $("#basketClear").disabled=entries.length===0;
+ if(!state.grid&&entries.length){
+ const cols=tableColumns();
+ grid.innerHTML='<table class="flora-table basket-table" style="width:'+cols.reduce((sum,c)=>sum+tableWidth(c[0]),0)+'px"><colgroup>'+cols.map(c=>'<col style="width:'+tableWidth(c[0])+'px">').join("")+'</colgroup><thead><tr>'+cols.map(c=>'<th scope="col">'+clean(c[1])+'</th>').join("")+'</tr></thead><tbody>'+entries.map(({model:m,checked})=>'<tr data-basketid="'+clean(m.id)+'">'+cols.map(c=>'<td>'+(c[0]==="model"?'<label><input type="checkbox" data-basketcheck="'+clean(m.id)+'" '+(checked?"checked":"")+'> <span>'+clean(tableValue("model",m))+'</span></label><button class="basket-remove-table" type="button" data-basketremove="'+clean(m.id)+'" aria-label="Удалить">×</button>':clean(tableValue(c[0],m)))+'</td>').join("")+'</tr>').join("")+'</tbody></table>';
+ return;
+ }
  grid.innerHTML=entries.length?entries.map(({model:m,checked})=>
   '<article class="basket-card" role="listitem" data-basketid="'+clean(m.id)+'">'+
   '<div class="basket-preview">'+leafSVG(m)+
   '<label class="basket-check" title="Include in import"><input type="checkbox" data-basketcheck="'+clean(m.id)+'" '+(checked?'checked':'')+' aria-label="Include '+clean(m.id)+' in import"><span>Include</span></label>'+
   '<button type="button" class="basket-remove" data-basketremove="'+clean(m.id)+'" title="Remove from Basket" aria-label="Remove '+clean(m.id)+'">×</button></div>'+
-  '<div class="basket-card-title" title="'+clean(m.id)+'">'+clean(m.id)+'</div>'+
-  '<div class="basket-card-description">'+clean(m.botanical)+'</div>'+
+  '<div class="basket-card-title" title="'+clean(m.id)+'">'+clean(m.id)+'.max</div>'+
+  (propertyValue('ru',m)?'<div class="basket-card-description">'+clean(propertyValue('ru',m))+'</div>':'')+
+   (propertyValue('en',m)?'<div class="basket-card-description">'+clean(propertyValue('en',m))+'</div>':'')+
   '</article>').join(""):
   '<div class="basket-empty"><strong>Basket is empty</strong><p>Add plants from Explorer, Favorites or a catalog with the hover icon, right-click menu, or Shift + right-click.</p></div>';
 }
@@ -425,7 +413,7 @@ $("#basketGrid").addEventListener("click",e=>{
  state.basket.delete(button.dataset.basketremove);save();render();
 });
 $("#basketTileSize").addEventListener("input",e=>{
- state.basketTileSize=Number(e.target.value);save();renderBasket();
+ setTileSize(e.target.value);
 });
 $("#basketClear").addEventListener("click",()=>showModal("basketClear"));
 $("#basketImport").addEventListener("click",()=>{if([...state.basket.values()].some(Boolean))showModal("basketImport")});
@@ -434,7 +422,7 @@ const contextMenu=$("#plantContextMenu");
 let contextIds=[];
 function hideContextMenu(){contextMenu.hidden=true;contextIds=[]}
 $("#modelGrid").addEventListener("contextmenu",e=>{
- const card=e.target.closest(".model-card");
+ const card=e.target.closest("[data-model]");
  if(!card)return;
  e.preventDefault();e.stopPropagation();
  const id=card.dataset.model,ids=basketTargetIds(id);
@@ -470,11 +458,38 @@ $("#modelGrid").addEventListener("click",e=>{
  if(add){e.preventDefault();e.stopPropagation();addModelsToBasket([add.dataset.addbasket]);return;}
  const fav=e.target.closest("[data-favorite]");
  if(fav){const id=fav.dataset.favorite;if(state.favorites.has(id))state.favorites.delete(id);else state.favorites.add(id);save();render();return;}
- const card=e.target.closest(".model-card");
+ const card=e.target.closest("[data-model]");
  if(card)selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey);
 });
-$("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest(".model-card")){const card=e.target.closest(".model-card");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
-$("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
+$("#modelGrid").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.closest("[data-model]")){const card=e.target.closest("[data-model]");selectModel(card.dataset.model,Number(card.dataset.index),e.shiftKey,e.ctrlKey||e.metaKey)}});
+$("#modelGrid").addEventListener("dragstart",e=>{if(e.target.closest("[data-colhead]")){e.dataTransfer.setData("text/flora-column",e.target.closest("[data-colhead]").dataset.colhead);return}if(e.target.closest("[data-addbasket]")){e.preventDefault();return}const card=e.target.closest("[data-model]");if(!card)return;const id=card.dataset.model;e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="copy";toast("Drag & Drop is a design preview. Actual placement works inside 3ds Max.")});
+$("#modelGrid").addEventListener("click",e=>{
+ const sort=e.target.closest("[data-sortcol]");if(!sort)return;
+ const key=sort.dataset.sortcol;
+ state.tableSortDir=state.tableSortKey===key&&state.tableSortDir==="asc"?"desc":"asc";
+ state.tableSortKey=key;prefWrite("table-sort-key-v2",key);prefWrite("table-sort-dir-v2",state.tableSortDir);renderModels();
+});
+$("#modelGrid").addEventListener("dragover",e=>{if(e.target.closest("[data-colhead]"))e.preventDefault()});
+$("#modelGrid").addEventListener("drop",e=>{
+ const target=e.target.closest("[data-colhead]");
+ const source=e.dataTransfer.getData("text/flora-column");
+ if(!target||!tableKeys.includes(source)||source===target.dataset.colhead)return;
+ e.preventDefault();state.tableOrder=state.tableOrder.filter(k=>k!==source);
+ state.tableOrder.splice(state.tableOrder.indexOf(target.dataset.colhead),0,source);
+ prefWrite("table-order-v2",state.tableOrder);renderModels();
+});
+$("#modelGrid").addEventListener("pointerdown",e=>{
+ const grip=e.target.closest("[data-resizecol]");if(!grip)return;
+ e.preventDefault();e.stopPropagation();
+ const key=grip.dataset.resizecol,initial=tableWidth(key),x=e.clientX;
+ const col=$("#modelGrid").querySelector('[data-colwidth="'+key+'"]');
+ const table=$("#modelGrid").querySelector(".flora-table");
+ const startingWidth=table.getBoundingClientRect().width;
+ function moving(ev){const next=Math.max(80,Math.min(440,initial+ev.clientX-x));col.style.width=next+"px";table.style.width=(startingWidth+next-initial)+"px";state.tableWidths[key]=next;}
+ function done(){window.removeEventListener("pointermove",moving);window.removeEventListener("pointerup",done);prefWrite("table-widths-v2",state.tableWidths);renderModels();}
+ window.addEventListener("pointermove",moving);window.addEventListener("pointerup",done,{once:true});
+});
+$("#tileSize").addEventListener("input",e=>setTileSize(e.target.value));
 /* FloraAtlas v1 filters: simulated data, never represents local 3ds Max analysis. */
 function renderFilterControls(){
  const group=$("#filterGroup"),category=$("#filterCategory");
@@ -539,12 +554,15 @@ $("#filterEnvironmentCategory").addEventListener("change",e=>{
  state.filterEnvironmentCategory=e.target.value;state.selected.clear();
  renderFilterControls();renderModels();
 });
-$("#propertyPanelButton").addEventListener("click",()=>{const h=$(".library-area").classList.toggle("properties-hidden"),b=$("#propertyPanelButton");b.classList.toggle("active",!h);b.setAttribute("aria-pressed",String(!h));});
+if(state.propertiesHidden)$(".library-area").classList.add("properties-hidden");
+$("#propertyPanelButton").classList.toggle("active",!state.propertiesHidden);
+$("#propertyPanelButton").setAttribute("aria-pressed",String(!state.propertiesHidden));
+$("#propertyPanelButton").addEventListener("click",()=>{state.propertiesHidden=!state.propertiesHidden;prefWrite("properties-hidden-v2",state.propertiesHidden);$(".library-area").classList.toggle("properties-hidden",state.propertiesHidden);const b=$("#propertyPanelButton");b.classList.toggle("active",!state.propertiesHidden);b.setAttribute("aria-pressed",String(!state.propertiesHidden));});
 
 $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
-$("#gridButton").addEventListener("click",()=>{state.grid=true;$("#gridButton").classList.add("active");$("#listButton").classList.remove("active");renderModels()});
-$("#listButton").addEventListener("click",()=>{state.grid=false;$("#listButton").classList.add("active");$("#gridButton").classList.remove("active");renderModels()});
+$("#gridButton").addEventListener("click",()=>setTileSize(state.lastGridSize));
+$("#listButton").addEventListener("click",()=>setTileSize(260));
 $("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(!b)return;state.proxy=b.dataset.proxy;state.settings.proxy=state.proxy;save();$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x===b));properties();toast("Proxy view: "+state.proxy+" (prototype setting)")});
 $("#refreshButton").addEventListener("click",()=>{render();toast("Catalog preview refreshed. Local 3ds Max files are not scanned in the browser.")});
 $("#settingsButton").addEventListener("click",()=>showModal("settings"));
@@ -555,9 +573,18 @@ function hideModal(){modal.hidden=true;state.workingModal=null}
 $("#closeModal").addEventListener("click",hideModal);
 $("#modalCancel").addEventListener("click",hideModal);
 $("#modalBody").addEventListener("click",e=>{
- const b=e.target.closest("[data-open-analyzer]");if(!b)return;
- if(typeof window.openFloraAnalyzer==="function")window.openFloraAnalyzer();
- else window.open("./model-analyzer.html","flora-model-analyzer","popup=yes,width=1170,height=830,resizable=yes,scrollbars=yes");
+ const analyzer=e.target.closest("[data-open-analyzer]");
+ if(analyzer){
+  if(typeof window.openFloraAnalyzer==="function")window.openFloraAnalyzer();
+  else window.open("./model-analyzer.html","flora-model-analyzer","popup=yes,width=1170,height=830,resizable=yes,scrollbars=yes");
+  return;
+ }
+ const action=e.target.closest("[data-settings-action]")?.dataset.settingsAction;
+ if(action==="atlas")showModal("explorerData");
+ if(action==="col")showModal("catalog");
+ if(action==="clear")showModal("clearModelData");
+ if(action==="export")toast("Демо: JSON содержит только name и path. Браузер не читает файловую библиотеку.");
+ if(action==="choose")showModal("library");
 });
 
 modal.addEventListener("click",e=>{if(e.target===modal)hideModal()});
@@ -565,7 +592,10 @@ window.addEventListener("keydown",e=>{if(e.key==="Escape")hideModal()});
 function showModal(kind){
  state.workingModal=kind;modal.hidden=false;
  const body=$("#modalBody"),title=$("#modalTitle"),confirm=$("#modalConfirm");
- if(kind==="basketClear"){
+ if(kind==="clearModelData"){
+  title.textContent="Очистить данные о моделях?";confirm.textContent="Очистить данные";
+  body.innerHTML='<div class="modal-body-section"><p><b>Подтвердите удаление импортированных метаданных FloraAtlas/FloraCOL и связанных описаний/категорий (демонстрация).</b></p><p>Избранное, коллекции, Basket, настройки, библиотека, исходные .max, изображения, .cgeo, внешние файлы каталогов и сцена не затрагиваются. Реальные SQLite-файлы браузер не изменяет.</p></div>';
+ }else if(kind==="basketClear"){
   title.textContent="Clear Basket?";confirm.textContent="Clear Basket";
   body.innerHTML='<div class="modal-body-section"><p>Remove all models from the Basket? Favorites, library files, installed catalogs and scene objects remain unchanged.</p></div>';
  }else if(kind==="basketImport"){
@@ -574,10 +604,14 @@ function showModal(kind){
   body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
  }else if(kind==="explorerData"){
   title.textContent="Импорт FloraAtlas";confirm.textContent="Закрыть";
-  body.innerHTML='<div class="modal-body-section"><h3>Подключить ботанический FloraAtlas v1</h3><input type="file" multiple accept=".floratlas" id="explorerInfoFiles"><p>Select one or more Explorer information files. These supplement existing .max models without creating new catalog tabs. The actual plugin matches by model filename and uses the most recently imported record on a conflict.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
+  body.innerHTML='<div class="modal-body-section"><h3>Подключить ботанический FloraAtlas v1</h3><input type="file" multiple accept=".floratlas" id="explorerInfoFiles"><p>Выберите файл FloraAtlas v1. В рабочем плагине он сопоставляется с .max по относительному пути. В браузере содержимое SQLite не разбирается.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
  }else if(kind==="settings"){
-  title.textContent="Flora Settings";confirm.textContent="Save Settings";
-  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> <b>Use Scene Materials</b></label><p>Enabled: native 3ds Max <code>#useSceneMtlDups</code>. Disabled: <code>#renameMtlDups</code>. This control is part of the planned material import policy.</p></div><div class="modal-body-section"><h3>Catalog</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Explorer reads local folders in 3ds Max. This browser prototype uses sample model data.</p></div><div class="modal-body-section"><h3>Library</h3><p>Model Analyzer now scans file names and relative paths without opening .max; botanical data comes from FloraAtlas.</p><button type="button" class="toolbar-button" data-open-analyzer>Open Model Analyzer</button><small class="modal-meta">Model Analyzer is a separate design-preview window.</small></div><small class="modal-meta">3ds Max 2026 · Corona Renderer 14 · UI prototype</small>';
+  title.textContent="Flora Settings";confirm.textContent="Сохранить настройки";
+  body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> Use Scene Materials</label><p>ON: #useSceneMtlDups; OFF: #renameMtlDups (в работающем плагине).</p></div>'+
+  '<div class="modal-body-section"><h3>Library</h3><p>Браузерная демонстрация, без доступа к локальной библиотеке и SQLite.</p><div class="settings-actions"><button type="button" class="toolbar-button" data-settings-action="choose">Choose Library</button><button type="button" class="toolbar-button" data-open-analyzer>Model Analyzer</button><button type="button" class="toolbar-button" data-settings-action="export">Export JSON</button><button type="button" class="toolbar-button" data-settings-action="atlas">Import FloraAtlas (.floratlas)</button><button type="button" class="toolbar-button" data-settings-action="col">Import FloraCOL (.floracol)</button></div></div>'+
+  '<div class="modal-body-section"><h3>Отображение</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Tile Size, Table View, ширина таблицы и Properties сохраняются в браузере.</p><details class="font-settings"><summary>Fonts</summary><p>Интерфейс: Inter / Segoe UI / Arial (референс).</p></details></div>'+
+  '<div class="modal-body-section"><h3>Импортированные данные</h3><p>Очистить только импортированные метаданные и каталоги. Не затрагивать библиотеку и пользовательские данные.</p><button type="button" class="toolbar-button danger-button" data-settings-action="clear">Очистить данные о моделях</button></div>'+
+  '<small class="modal-meta">Только UI-макет - изменения 3ds Max/SQLite не выполняются.</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
   body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="F:/001_Model/Maxtree" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
@@ -591,12 +625,19 @@ function showModal(kind){
 }
 $("#modalConfirm").addEventListener("click",()=>{
  const kind=state.workingModal;
- if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
+ if(kind==="clearModelData"){
+   state.explorerDataFiles=[];state.atlasPreviewActive=false;prefWrite("atlas-preview-active-v2",false);
+   for(let i=collections.length-1;i>=0;i--)if(collections[i].id.startsWith("cat-")){delete themes[collections[i].id];collections.splice(i,1);}
+   if(!collections.some(c=>c.id===state.catalog))state.catalog="explorer";
+   state.filterGroup="";state.filterCategory="";state.filterFlower="";state.filterEnvironment="";state.filterEnvironmentCategory="";
+   state.selected.clear();save();render();toast("Демо-метаданные очищены. Избранное и файлы не изменены.");
+  }
+  if(kind==="basketClear"){state.basket.clear();save();render();toast("Basket cleared in this preview.")}
  if(kind==="basketImport"){toast("No objects imported - preview only. Basket kept intact.")}
  if(kind==="explorerData"){
   const files=[...$("#explorerInfoFiles").files];if(!files.length){toast("Choose a .floratlas file first.");return}
   if(files.some(f=>!f.name.toLowerCase().endsWith(".floratlas"))){toast("Only .floratlas files are supported.");return}
-  state.explorerDataFiles.push(...files.map(f=>f.name));save();render();toast(files.length+" info file(s) selected for Explorer preview.");
+  state.explorerDataFiles.push(...files.map(f=>f.name));state.atlasPreviewActive=true;prefWrite("atlas-preview-active-v2",true);save();render();toast("Только имена файлов сохранены. Показаны встроенные тестовые метаданные, SQLite не читалась.");
  }
  if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
@@ -609,5 +650,5 @@ $("#modalConfirm").addEventListener("click",()=>{
 });
 state.proxy=state.settings.proxy||"Point Cloud";
 $$("[data-proxy]").forEach(x=>x.classList.toggle("active",x.dataset.proxy===state.proxy));
-render();
+syncTileControls();render();
 })();
