@@ -17,3 +17,7 @@ Architect instructions: https://docs.google.com/document/d/1Ohlf7RkIipPuNebNaDxL
 ## Installed-code navigation map (2026-10-18)
 
 The user confirmed `FLORA_CODEMAP.md` at `C:\Users\Astra\Documents\Codex\2026-10-13\files-pasted-by-the-user-flora\outputs\FLORA_CODEMAP.md` (Windows local path, inside an `outputs` directory). The same file is available on Google Drive: https://drive.google.com/file/d/1ZJgC6JR-IvMgWInNLY3fnfuUfMpjSPlk/view . The screenshot does NOT establish that `outputs` is the current source repository root. Verify file visibility and the actual working-tree root in each Codex environment. The map describes the extracted **Flora 1.0.0.26-atlas installer**, not independently verified current source. Use it to navigate, then validate actual local file paths before edits; do not treat it as implementation authority.
+
+## UI V2 ownership
+
+The [Flora UI-design chat](https://docs.google.com/document/d/1POnwC_A4-ia7DAMOzJTLoR7d-4HgBFgalsYxEYZbSaw/edit) maintains the browser HTML/CSS/JS prototype and design-specific GitHub documents in `flora-ui-v2` after user-approved UX decisions. The architect clarifies requirements and drafts Codex tasks; Codex owns the real PySide6/MAXScript implementation; the project admin maintains master Google Docs. Do not infer that approval or a browser-demo change means the installed 3ds Max plugin already implements the feature. Keep the modular web sources and standalone `Flora-UI.html` in sync when updating the mockup.
