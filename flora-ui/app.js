@@ -461,20 +461,24 @@ $("#modelGrid").addEventListener("contextmenu",e=>{
  if(e.shiftKey){hideContextMenu();addModelsToBasket(ids);return}
  contextIds=ids;
  $("#contextAddBasket").textContent="Add to Basket"+(ids.length>1?" ("+ids.length+" models)":"");
+ $("#contextAddBasket").disabled=Boolean(sceneModels().some(m=>m.id===id&&m.missing));
  contextMenu.hidden=false;
  contextMenu.style.left=Math.max(6,Math.min(e.clientX,window.innerWidth-214))+"px";
  contextMenu.style.top=Math.max(6,Math.min(e.clientY,window.innerHeight-62))+"px";
 });
 $("#contextAddBasket").addEventListener("click",()=>{const ids=[...contextIds];hideContextMenu();addModelsToBasket(ids)});
+$("#contextSelectModel").addEventListener("click",()=>{const n=contextIds.length;hideContextMenu();toast("Select Model: демо для "+n+" источника(ов). Выделение узлов доступно только в 3ds Max.")});
 document.addEventListener("click",e=>{if(!e.target.closest("#plantContextMenu"))hideContextMenu()});
 window.addEventListener("blur",hideContextMenu);
 
 function selectModel(id,index,shift,ctrl){
- const ids=visibleModels().map(m=>m.id);
- if(shift && state.lastClicked>=0){if(!ctrl)state.selected.clear();const a=Math.min(state.lastClicked,index),b=Math.max(state.lastClicked,index);for(let i=a;i<=b;i++)state.selected.add(ids[i]);}
- else if(ctrl){if(state.selected.has(id))state.selected.delete(id);else state.selected.add(id);state.lastClicked=index;}
- else{state.selected.clear();state.selected.add(id);state.lastClicked=index;}
- renderModels();
+ guardPropertyChange(()=>{
+  const ids=visibleModels().map(m=>m.id);
+  if(shift&&state.lastClicked>=0){if(!ctrl)state.selected.clear();const a=Math.min(state.lastClicked,index),b=Math.max(state.lastClicked,index);for(let i=a;i<=b;i++)if(ids[i])state.selected.add(ids[i]);}
+  else if(ctrl){if(state.selected.has(id))state.selected.delete(id);else state.selected.add(id);state.lastClicked=index;}
+  else{state.selected.clear();state.selected.add(id);state.lastClicked=index;}
+  renderModels();
+ });
 }
 $("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
 $(".catalog-actions").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
@@ -596,8 +600,11 @@ $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>setTileSize(state.lastGridSize));
 $("#listButton").addEventListener("click",()=>setTileSize(260));
-$("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(!b)return;state.proxy=b.dataset.proxy;state.settings.proxy=state.proxy;save();$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x===b));properties();toast("Proxy view: "+state.proxy+" (prototype setting)")});
-$("#refreshButton").addEventListener("click",()=>{render();toast("Catalog preview refreshed. Local 3ds Max files are not scanned in the browser.")});
+function setImportMode(mode){if(!["Geometry","Proxy"].includes(mode))return;state.proxy=mode;state.settings.proxy=mode;save();$("[data-proxy]").forEach(b=>{b.classList.toggle("active",b.dataset.proxy===mode);b.setAttribute("aria-pressed",String(b.dataset.proxy===mode))})}
+$("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Import Mode: "+state.proxy+" · демо без импорта в 3ds Max.")}});
+$("#basketProxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Basket использует общий Import Mode: "+state.proxy)}});
+
+$("#refreshButton").addEventListener("click",()=>{render();toast(state.catalog==="scene"?"Scene обновлена по демо-узлам. Реальная сцена 3ds Max недоступна.":"Данные библиотеки не сканируются браузером.")});
 $("#settingsButton").addEventListener("click",()=>showModal("settings"));
 $("#libraryButton").addEventListener("click",()=>showModal("library"));
 
@@ -681,7 +688,7 @@ $("#modalConfirm").addEventListener("click",()=>{
  if(kind==="newCollection"){const v=$("#collectionNameInput").value.trim();if(!v)return;state.favCollections.push(v);save();state.favFilter=v;render();toast("Collection created. Drag model assignment is planned for Flora.");}
  hideModal();
 });
-state.proxy=state.settings.proxy||"Point Cloud";
-$$("[data-proxy]").forEach(x=>x.classList.toggle("active",x.dataset.proxy===state.proxy));
+state.proxy=state.settings.proxy||"Geometry";
+setImportMode(state.proxy);
 syncTileControls();render();
 })();
