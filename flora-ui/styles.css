@@ -264,3 +264,45 @@ button:disabled{opacity:.43;cursor:not-allowed}
 .basket-remove-table{border:0;background:transparent;color:#dcb5ae;padding:1px 5px}
 @media(max-width:1000px){.search-toolbar{flex-wrap:wrap}.tile-size-control{order:2;flex:1 1 135px}.search-holder{flex:2 1 220px}}
 @media(max-width:600px){.tile-size-control{min-width:0;flex:1 1 130px}.model-grid:not(.table-mode){padding-right:3px}.flora-table{font-size:10px}}
+
+
+/* Flora UI V2 | 20.10.2026 - flat, responsive workspace. */
+.catalog-actions{display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.catalog-actions .catalog-tab.icon-nav{height:32px;width:36px;padding:6px;display:inline-flex;align-items:center;justify-content:center;position:relative;border:1px solid transparent;border-radius:6px}
+.icon-nav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-nav:hover,.icon-nav:focus-visible{background:var(--hover)}
+.icon-nav.active{background:var(--selected);border-color:var(--border2);color:var(--green)}
+.icon-count{position:absolute;right:-4px;top:-4px;min-width:15px;height:15px;line-height:15px;background:var(--selected);border:1px solid var(--border2);font-size:9px;text-align:center;border-radius:8px}
+.catalog-nav{min-width:0}.catalog-tabs{overflow:visible;flex:0 0 auto}
+.catalog-nav .fill{min-width:4px}
+.catalogs-trigger{gap:0}.catalogs-menu{right:0;left:auto;min-width:215px}
+.filter-panel{background:#1b3023;width:100%;max-width:none;min-width:0}
+.filter-content{width:100%;max-width:none;min-width:0}
+.filter-controls{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}
+.filter-environment-controls{max-width:none}
+.search-holder{min-width:0;flex:1 1 auto}
+.results-shell{min-width:0}
+.model-grid{border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:7px;min-width:0}
+.model-card{border:1px solid transparent}
+.model-card.selected{border-color:var(--green)}
+.plant-image,.basket-preview{background:#252b2a}
+.model-grid.table-mode{padding:0}
+.scene-sidebar-note{padding:11px;color:var(--muted);line-height:1.6}
+.scene-sidebar-note strong{color:var(--text);font-size:12px}.scene-sidebar-note p{margin:9px 0}
+.scene-node-count{color:var(--green);font-size:10px;padding:4px 2px}
+.missing-preview{color:var(--muted);font-size:11px;border:1px dashed var(--border2);padding:22px 10px;border-radius:6px}
+.property-heading{display:flex;align-items:center;gap:3px;background:#213929;border-radius:4px;margin-bottom:4px}
+.property-heading .property-group-title{margin:0;flex:1;min-width:0}
+.property-edit-actions{display:flex;align-items:center;gap:2px;padding:0 4px}
+.property-edit-actions button{border:1px solid transparent;background:transparent;color:var(--green);font-size:13px;border-radius:4px;width:23px;height:23px;padding:0}
+.property-edit-actions button:hover{border-color:var(--border2);background:var(--selected)}
+.property-edit-field{min-width:0;width:100%;border:1px solid var(--border2);background:#193226;color:var(--text);border-radius:4px;padding:5px;font-size:10px}
+.property-row:has(.property-edit-field){align-items:center}
+.property-row:has(.property-edit-field)>span:first-child{flex:0 0 42%}
+.property-row .property-edit-field{flex:1}
+.prototype-note{font-size:9px;color:var(--muted);white-space:nowrap}
+#basketProxyControls{flex-shrink:0}
+.modal-body-section input:not([type="checkbox"]){max-width:100%;background:#193226;border:1px solid var(--border2);color:var(--text);border-radius:5px;padding:7px}
+@container (max-width:660px){.filter-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:360px){.filter-controls{grid-template-columns:minmax(0,1fr)}.filter-environment-controls{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:540px){.catalog-actions{gap:2px}.catalog-actions .catalog-tab.icon-nav{width:31px;height:31px}.catalog-tabs .catalog-tab{padding:8px 11px}.prototype-note{display:none}.basket-footer .footer-label{display:none}}
