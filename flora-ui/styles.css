@@ -306,3 +306,76 @@ button:disabled{opacity:.43;cursor:not-allowed}
 @container (max-width:660px){.filter-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container (max-width:360px){.filter-controls{grid-template-columns:minmax(0,1fr)}.filter-environment-controls{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:540px){.catalog-actions{gap:2px}.catalog-actions .catalog-tab.icon-nav{width:31px;height:31px}.catalog-tabs .catalog-tab{padding:8px 11px}.prototype-note{display:none}.basket-footer .footer-label{display:none}}
+
+
+/* Flora UI V2 approved corrections | pass 2 */
+/* Consistent navigation and spacing without changing the dark-green palette. */
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif}
+button,input,select,textarea{font-family:inherit}
+button,select,input{line-height:1.35}
+.catalog-nav{flex:0 0 62px;min-height:62px;padding:5px 10px;gap:8px;align-items:center}
+.catalog-tabs{align-items:center;flex:0 0 auto;overflow:visible}
+.catalog-tabs .catalog-tab{min-height:32px;padding:7px 14px;font-size:11px;font-weight:650;line-height:1.2}
+.catalog-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;min-width:0;flex:0 0 auto}
+.catalogs-dropdown{flex:0 0 auto;position:relative}
+.catalog-actions .catalog-tab.icon-nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:69px;height:52px;padding:5px 4px 4px;border-radius:6px;font-size:10px;font-weight:550;line-height:1.1;text-align:center;color:#bdcebf;border:1px solid transparent;white-space:nowrap}
+.catalog-actions .catalog-tab.icon-nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.catalog-actions .catalog-tab.icon-nav .nav-label{display:block;font-size:10px;line-height:12px;font-weight:550;letter-spacing:0}
+.catalog-actions .catalog-tab.icon-nav:hover{background:var(--hover);color:var(--text)}
+.catalog-actions .catalog-tab.icon-nav.active{background:var(--selected);border-color:var(--border2);color:#def5c9}
+.catalog-actions .icon-count{right:1px;top:1px;font-weight:700}
+.catalogs-menu{left:auto;right:0;top:calc(100% + 5px)}
+/* Search and results separation. */
+.library-area{padding:12px 12px 11px;gap:10px;min-width:0}
+.content-heading{gap:12px;min-height:37px;align-items:center}
+.content-heading h1{font-size:15px;line-height:1.3;margin:0 0 5px;font-weight:680}
+.content-heading p{font-size:10px;line-height:1.4}
+.content-actions{gap:8px}
+.search-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 0 13px;margin:0 0 2px;border-bottom:1px solid var(--border);min-width:0}
+.search-holder{height:34px;min-width:130px;flex:1 1 230px;padding:0 10px;gap:8px}
+.search-holder input{font-size:11px}
+.search-toolbar select{height:34px;flex:0 0 106px;font-size:10px}
+.search-toolbar .toolbar-button{height:34px;flex-shrink:0;font-size:11px}
+.search-toolbar .icon-button{min-width:34px}
+/* Exactly one popup slider (two triggers never visible together). */
+.tile-trigger{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:102px;padding:5px 9px;white-space:nowrap;font-size:10px}
+.tile-trigger svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tile-trigger svg:last-child{width:12px;height:12px;opacity:.8}
+.tile-trigger[aria-expanded="true"]{border-color:var(--green);background:var(--selected);color:var(--text)}
+.tile-size-popover{position:fixed;left:0;top:0;z-index:310;width:232px;padding:13px 14px 11px;border:1px solid var(--border2);border-radius:8px;background:#1b3023;box-shadow:0 10px 25px #0008}
+.tile-popover-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--text);font-weight:650}
+.tile-popover-heading output{color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile-size-popover input[type=range]{display:block;width:100%;margin:12px 0 8px;accent-color:var(--green);cursor:pointer}
+.tile-popover-hint{font-size:10px;line-height:1.4;color:var(--muted)}
+/* Card actions below preview; scene presence in previous + location only. */
+.filter-panel{margin:0 0 2px;padding:10px 11px 8px}
+.results-shell{gap:10px;min-height:0}
+.model-grid{padding:7px;gap:8px}
+.model-card{min-width:0;padding:6px;overflow:hidden}
+.model-card .plant-image{position:relative;overflow:hidden}
+.scene-presence-dot{position:absolute;top:9px;right:9px;display:block;width:11px;height:11px;border:2px solid #243b2b;border-radius:50%;background:#9ee27b;box-shadow:0 0 0 1px #608e54}
+.card-details{display:grid;grid-template-columns:minmax(0,1fr) 25px;gap:4px;padding:7px 1px 1px;min-height:65px}
+.card-copy{display:flex;flex-direction:column;min-width:0;min-height:0;gap:1px}
+.card-copy .card-name{display:block;flex:none;font-size:10px;font-weight:680;line-height:16px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-copy .card-secondary{display:block;min-height:14px;padding:0;color:#9fb8a0;font-size:10px;font-weight:400;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-actions{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;min-width:25px}
+.card-actions button{display:flex;align-items:center;justify-content:center;width:25px;height:25px;padding:3px;border:0;border-radius:4px;background:transparent;color:#a3b9a4;line-height:1;cursor:pointer}
+.card-actions button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.card-actions .star-button.active{color:#b9e687}
+.card-actions .card-basket-button.is-added{color:#b9e687}
+.card-actions button:hover,.card-actions button:focus-visible{color:#e2f6d5;background:var(--hover)}
+.scene-node-count{font-size:10px;line-height:14px;padding:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.property-heading .property-group-title{font-size:11px;line-height:1.35}
+.property-row{font-size:10px;line-height:1.4;gap:7px}
+.property-row>span{line-height:1.4}
+.basket-workspace{gap:11px}
+.basket-toolbar{padding:11px 13px;min-height:56px;gap:12px}
+.basket-toolbar-info{gap:4px}
+.basket-toolbar .tile-trigger{height:34px;min-height:34px}
+.basket-grid{gap:9px}
+.basket-card-title{font-size:10px;line-height:1.45}
+.model-grid.table-mode{padding:0}
+@media(max-width:970px){.search-toolbar{gap:7px}.search-holder{flex:1 1 100%;min-width:0}.search-toolbar select{flex:1 1 120px}.catalog-actions .catalog-tab.icon-nav{width:64px}}
+@media(max-width:600px){.catalog-nav{padding:5px 6px;gap:3px;flex-basis:59px;min-height:59px}.catalog-tabs .catalog-tab{padding:7px 10px;font-size:10px}.catalog-actions{gap:2px}.catalog-actions .catalog-tab.icon-nav{width:52px;height:48px;gap:1px;padding:5px 2px 3px}.catalog-actions .catalog-tab.icon-nav svg{width:19px;height:19px}.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:9px;line-height:12px}.library-area{padding:10px;gap:9px}.search-toolbar{padding-bottom:12px}.search-holder{flex-basis:100%}.search-toolbar select{width:auto;flex:1 1 106px}.tile-trigger{min-width:90px;padding:5px 7px}}
+@media(max-width:370px){.catalog-actions .catalog-tab.icon-nav{width:45px}.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:8.5px}.catalog-tabs .catalog-tab{padding:7px 7px}.tile-trigger span{display:none}.tile-trigger{min-width:54px}}
+@media(max-height:620px){.catalog-nav{flex-basis:56px;min-height:56px}.catalog-actions .catalog-tab.icon-nav{height:46px}.library-area{gap:8px}}
