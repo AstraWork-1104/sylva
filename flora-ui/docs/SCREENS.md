@@ -2,7 +2,7 @@
 
 | Экран | Реализовано в HTML | За пределами браузера |
 |---|---|---|
-| Navigation | Explorer слева, Catalogs/Scene/Favorites/Basket справа, подсказки и aria-label, счётчик Basket | Реальный Qt UI |
+| Navigation | Explorer слева, Catalogs/Scene/Favorites/Basket справа с иконками и видимыми текстовыми подписями, подсказки, aria-label, счётчик Basket | Реальный Qt UI |
 | Explorer | Дерево папок, поиск, Grid/Table, Tile Size, выбор и контекстное меню | Чтение .max |
 | Scene | FloraSource demo, группировка Geometry+Proxy, ×N, placeholder, Refresh, Select Model | Перебор/выбор настоящих узлов |
 | Properties | «Названия»/«Ботанические сведения», Edit/Save/Cancel, валидация, сохранение per-source и защита несохранённых изменений | SQLite properties_overrides.sqlite |
