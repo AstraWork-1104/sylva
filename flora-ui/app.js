@@ -631,7 +631,13 @@ $("#propertyPanelButton").classList.toggle("active",!state.propertiesHidden);
 $("#propertyPanelButton").setAttribute("aria-pressed",String(!state.propertiesHidden));
 $("#propertyPanelButton").addEventListener("click",()=>{state.propertiesHidden=!state.propertiesHidden;prefWrite("properties-hidden-v2",state.propertiesHidden);$(".library-area").classList.toggle("properties-hidden",state.propertiesHidden);const b=$("#propertyPanelButton");b.classList.toggle("active",!state.propertiesHidden);b.setAttribute("aria-pressed",String(!state.propertiesHidden));});
 
-$("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state.selected.clear();renderModels()});
+$("#modelSearch").addEventListener("input",e=>{
+ const next=e.target.value;
+ if(hasUnsavedProperties()){
+  e.target.value=state.search;
+  guardPropertyChange(()=>{state.search=next;$("#modelSearch").value=next;state.selected.clear();renderModels()});
+ }else{state.search=next;state.selected.clear();renderModels()}
+});
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>setTileSize(state.lastGridSize));
 $("#listButton").addEventListener("click",()=>setTileSize(260));
