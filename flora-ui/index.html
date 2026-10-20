@@ -11,7 +11,7 @@
 <body>
 <div class="stage">
   <div class="desktop-window" id="floraApp">
-    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora 1.0.0.26 <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
+    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora UI V2 · Prototype <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
     <div class="application">
       <header class="top-header">
         <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
@@ -33,11 +33,16 @@
       <section id="catalogWorkspace" class="workspace-container">
         <nav class="catalog-nav" aria-label="Catalog sections">
           <div id="catalogTabs" class="catalog-tabs"></div>
-          <div class="catalogs-dropdown" id="catalogsDropdown">
-            <button type="button" class="catalog-tab catalogs-trigger" id="catalogsButton" aria-expanded="false" aria-haspopup="true">Catalogs <span aria-hidden="true">▾</span></button>
-            <div id="catalogsMenu" class="catalogs-menu" hidden role="menu"></div>
-          </div>
           <span class="fill"></span>
+          <div class="catalog-actions" aria-label="Разделы Flora">
+            <div class="catalogs-dropdown" id="catalogsDropdown">
+              <button type="button" class="catalog-tab icon-nav catalogs-trigger" id="catalogsButton" title="Catalogs" aria-label="Catalogs" aria-expanded="false" aria-haspopup="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h7l2 2h9v4H3zM7 10v4m0 0h9m-9 0v4m9-4v4m-12 0h7l2 2h8v2H3z"/></svg></button>
+              <div id="catalogsMenu" class="catalogs-menu" hidden role="menu"></div>
+            </div>
+            <button type="button" class="catalog-tab icon-nav" data-catalog="scene" title="Scene" aria-label="Scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 5-3 5 3-5 3zm0 0v6l5 3 5-3V7m-5 3v6m7 0 5-3 5 3-5 3zm0 0v6l5 3 5-3v-6m-5 3v6"/></svg></button>
+            <button type="button" class="catalog-tab icon-nav" data-catalog="favorites" title="Favorites" aria-label="Favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.2 6.5 7.2 1-5.2 5.1 1.2 7.1-6.4-3.4-6.4 3.4 1.2-7.1L1.6 9.5l7.2-1z"/></svg></button>
+            <button type="button" class="catalog-tab icon-nav" data-catalog="basket" title="Basket" aria-label="Basket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 10 4-7m10 7-4-7M3 10h18l-2 11H5zM8 13v5m4-5v5m4-5v5"/></svg><span id="navBasketCount" class="icon-count" hidden></span></button>
+          </div>
         </nav>
         <main class="catalog-body" id="catalogBody">
           <aside class="sidebar">
@@ -98,9 +103,9 @@
         </main>
         <footer class="statusbar" id="catalogFooter">
           <span class="selected-pill" id="selectionCount">0 selected</span><span id="statusHint">Drag selected models into 3ds Max viewport</span>
-          <span class="fill"></span><span class="footer-label">PROXY VIEW</span>
-          <div class="segmented" id="proxyControls"><button type="button" data-proxy="Geometry">Geometry</button><button type="button" data-proxy="Point Cloud" class="active">Point Cloud</button></div>
-          <span class="ready"><span class="live-dot"></span> Proxies added</span>
+          <span class="fill"></span><span class="footer-label">IMPORT MODE</span>
+          <div class="segmented" id="proxyControls" role="group" aria-label="Import Mode"><button type="button" data-proxy="Geometry" class="active">Geometry</button><button type="button" data-proxy="Proxy">Proxy</button></div>
+          <span class="prototype-note">UI PROTOTYPE</span>
         </footer>
       <section id="basketWorkspace" class="basket-workspace" hidden aria-labelledby="basketHeading">
         <div class="basket-top">
@@ -118,8 +123,9 @@
         <div id="basketGrid" class="basket-grid" role="list" aria-label="Models in import basket"></div>
         <footer class="statusbar basket-footer">
           <span class="selected-pill" id="basketSelectedCount">0 checked</span>
-          <span class="basket-footer-hint">Origin: 0, 0, 0 · Layer: Flora Import · Original model names</span>
+          <span class="basket-footer-hint">Merge or Corona Proxy · origin (0, 0, 0) · original source names</span>
           <span class="fill"></span>
+          <span class="footer-label">IMPORT MODE</span><div class="segmented" id="basketProxyControls" role="group" aria-label="Basket Import Mode"><button type="button" data-proxy="Geometry" class="active">Geometry</button><button type="button" data-proxy="Proxy">Proxy</button></div>
           <span class="basket-demo-label">UI PROTOTYPE</span>
           <button id="basketImport" type="button" class="primary" disabled>Import</button>
         </footer>
@@ -140,6 +146,7 @@
 
 <div id="plantContextMenu" class="plant-context-menu" role="menu" hidden>
   <button type="button" id="contextAddBasket" role="menuitem">Add to Basket</button>
+  <button type="button" id="contextSelectModel" role="menuitem">Select Model</button>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
