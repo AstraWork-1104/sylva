@@ -694,16 +694,19 @@ function showModal(kind){
  }else if(kind==="basketImport"){
   title.textContent="Import Basket - Preview";confirm.textContent="Close Preview";
   const count=[...state.basket.values()].filter(Boolean).length;
-  body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>Inside 3ds Max, these models would be imported with pivots at <b>(0, 0, 0)</b>, with original names and scales, into the shared layer <b>Flora Import</b>.</p><p>One <b>Import duplicate?</b> dialog would handle object-name conflicts found anywhere in the scene. Material merging and Corona Proxy conversion would use the same Flora settings as normal drag-and-drop.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
+  body.innerHTML='<div class="modal-body-section"><h3>'+count+' model(s) selected</h3><p>В режиме Geometry одиночная модель размещается по Pivot в (0,0,0), многообъектные исходники сохраняют мировые координаты. В режиме Proxy подходящая одиночная геометрия использует существующий кэш или Corona Proxy, остальные файлы используют штатный Merge.</p><p>Режим: <b>'+clean(state.proxy)+'</b>. Use Scene Materials сохраняется. Никакая операция с реальной сценой не выполняется.</p><p><b>Browser prototype only:</b> the scene cannot be checked here. No actual import or clearing will occur.</p></div>';
  }else if(kind==="explorerData"){
   title.textContent="Импорт FloraAtlas";confirm.textContent="Закрыть";
   body.innerHTML='<div class="modal-body-section"><h3>Подключить ботанический FloraAtlas v1</h3><input type="file" multiple accept=".floratlas" id="explorerInfoFiles"><p>Выберите файл FloraAtlas v1. В рабочем плагине он сопоставляется с .max по относительному пути. В браузере содержимое SQLite не разбирается.</p><p><b>Prototype:</b> only selected filenames are remembered. SQLite content is not parsed here.</p><p>'+(state.explorerDataFiles.length?'Selected: '+clean(state.explorerDataFiles.join(", ")):'No files selected yet.')+'</p></div>';
  }else if(kind==="settings"){
   title.textContent="Flora Settings";confirm.textContent="Сохранить настройки";
   body.innerHTML='<div class="modal-body-section"><h3>Material Import</h3><label><input id="sceneMaterials" type="checkbox" '+(state.settings.useSceneMaterials?'checked':'')+'> Use Scene Materials</label><p>ON: #useSceneMtlDups; OFF: #renameMtlDups (в работающем плагине).</p></div>'+
-  '<div class="modal-body-section"><h3>Library</h3><p>Браузерная демонстрация, без доступа к локальной библиотеке и SQLite.</p><div class="settings-actions"><button type="button" class="toolbar-button" data-settings-action="choose">Choose Library</button><button type="button" class="toolbar-button" data-open-analyzer>Model Analyzer</button><button type="button" class="toolbar-button" data-settings-action="export">Export JSON</button><button type="button" class="toolbar-button" data-settings-action="atlas">Import FloraAtlas (.floratlas)</button><button type="button" class="toolbar-button" data-settings-action="col">Import FloraCOL (.floracol)</button></div></div>'+
+  '<div class="modal-body-section"><h3>Import</h3><label><input id="useInstances" type="checkbox" '+(state.settings.useInstances?'checked':'')+'> Использовать инстансы</label><p>По умолчанию OFF. Повторное использование узла с совпадающими FloraSource/FloraMode работает только в 3ds Max.</p></div>'+
+   '<div class="modal-body-section"><h3>Corona Proxy</h3><label><input id="proxyPointCloud" type="checkbox" '+(state.settings.pointCloud?'checked':'')+'> Viewport: Point Cloud</label><p>Новые Corona Proxy показываются как Point Cloud, не Wire Bounding Box. API Corona недоступно HTML.</p><div class="settings-actions"><button type="button" class="toolbar-button" data-settings-action="cache">Proxy Cache...</button></div></div>'+
+   '<div class="modal-body-section"><h3>Library</h3><p>Браузерная демонстрация, без доступа к локальной библиотеке и SQLite.</p><div class="settings-actions"><button type="button" class="toolbar-button" data-settings-action="choose">Choose Library</button><button type="button" class="toolbar-button" data-open-analyzer>Model Analyzer</button><button type="button" class="toolbar-button" data-settings-action="export">Export JSON</button><button type="button" class="toolbar-button" data-settings-action="atlas">Import FloraAtlas (.floratlas)</button><button type="button" class="toolbar-button" data-settings-action="col">Import FloraCOL (.floracol)</button></div></div>'+
   '<div class="modal-body-section"><h3>Отображение</h3><label><input id="autoRefresh" type="checkbox" '+(state.settings.autoRefresh?'checked':'')+'> Refresh library when opened</label><p>Tile Size, Table View, ширина таблицы и Properties сохраняются в браузере.</p><details class="font-settings"><summary>Fonts</summary><p>Интерфейс: Inter / Segoe UI / Arial (референс).</p></details></div>'+
   '<div class="modal-body-section"><h3>Импортированные данные</h3><p>Очистить только импортированные метаданные и каталоги. Не затрагивать библиотеку и пользовательские данные.</p><button type="button" class="toolbar-button danger-button" data-settings-action="clear">Очистить данные о моделях</button></div>'+
+   '<div class="modal-body-section"><h3>Удаление плагина</h3><p>Отдельное подтверждение с сохранением внешних файлов и Proxy Cache.</p><button type="button" class="toolbar-button danger-button" data-settings-action="uninstall">Удалить Flora...</button></div>'+
   '<small class="modal-meta">Только UI-макет - изменения 3ds Max/SQLite не выполняются.</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
@@ -718,6 +721,10 @@ function showModal(kind){
 }
 $("#modalConfirm").addEventListener("click",()=>{
  const kind=state.workingModal;
+  if(kind==="unsavedProps"){if(!savePropertyEdit())return;const action=state.pendingAction;state.pendingAction=null;hideModal();if(action)action();return}
+  if(kind==="proxyCache"){state.settings.proxyCachePath=$("#cachePath").value.trim()||"FloraProxyCache";save();toast("Демо-путь Proxy Cache сохранён. Файлы не переносились.")}
+  if(kind==="clearProxyCache")toast("Proxy Cache НЕ удалён. Операция доступна только в установленном плагине.");
+  if(kind==="uninstall")toast("Flora НЕ удалена. Операция доступна только в установленном плагине.");
  if(kind==="clearModelData"){
    state.explorerDataFiles=[];state.atlasPreviewActive=false;prefWrite("atlas-preview-active-v2",false);
    for(let i=collections.length-1;i>=0;i--)if(collections[i].id.startsWith("cat-")){delete themes[collections[i].id];collections.splice(i,1);}
@@ -732,7 +739,7 @@ $("#modalConfirm").addEventListener("click",()=>{
   if(files.some(f=>!f.name.toLowerCase().endsWith(".floratlas"))){toast("Only .floratlas files are supported.");return}
   state.explorerDataFiles.push(...files.map(f=>f.name));state.atlasPreviewActive=true;prefWrite("atlas-preview-active-v2",true);save();render();toast("Только имена файлов сохранены. Показаны встроенные тестовые метаданные, SQLite не читалась.");
  }
- if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;save();toast("Design settings saved locally.");}
+ if(kind==="settings"){state.settings.useSceneMaterials=$("#sceneMaterials").checked;state.settings.autoRefresh=$("#autoRefresh").checked;state.settings.useInstances=$("#useInstances").checked;state.settings.pointCloud=$("#proxyPointCloud").checked;save();toast("Настройки демо сохранены локально.");}
  if(kind==="library"){toast("Library root saved for preview. Actual folder access requires 3ds Max.")}
  if(kind==="catalog"){
   const file=$("#catalogFile").files[0];if(!file){toast("Choose a .floracol file first.");return}
