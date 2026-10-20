@@ -644,9 +644,12 @@ $("#settingsButton").addEventListener("click",()=>showModal("settings"));
 $("#libraryButton").addEventListener("click",()=>showModal("library"));
 
 const modal=$("#modalBackdrop");
-function hideModal(){modal.hidden=true;state.workingModal=null}
+function hideModal(){modal.hidden=true;state.workingModal=null;$("#modalCancel").textContent="Cancel"}
 $("#closeModal").addEventListener("click",hideModal);
-$("#modalCancel").addEventListener("click",hideModal);
+$("#modalCancel").addEventListener("click",()=>{
+ if(state.workingModal==="unsavedProps"){const action=state.pendingAction;state.pendingAction=null;exitPropertyEdit();hideModal();if(action)action();return}
+ hideModal();
+});
 $("#modalBody").addEventListener("click",e=>{
  const analyzer=e.target.closest("[data-open-analyzer]");
  if(analyzer){
@@ -660,6 +663,9 @@ $("#modalBody").addEventListener("click",e=>{
  if(action==="clear")showModal("clearModelData");
  if(action==="export")toast("Демо: JSON содержит только name и path. Браузер не читает файловую библиотеку.");
  if(action==="choose")showModal("library");
+ if(action==="cache")showModal("proxyCache");
+ if(action==="clearCache")showModal("clearProxyCache");
+ if(action==="uninstall")showModal("uninstall");
 });
 
 modal.addEventListener("click",e=>{if(e.target===modal)hideModal()});
@@ -667,7 +673,19 @@ window.addEventListener("keydown",e=>{if(e.key==="Escape")hideModal()});
 function showModal(kind){
  state.workingModal=kind;modal.hidden=false;
  const body=$("#modalBody"),title=$("#modalTitle"),confirm=$("#modalConfirm");
- if(kind==="clearModelData"){
+ if(kind==="unsavedProps"){
+   title.textContent="Несохранённые изменения Properties";confirm.textContent="Сохранить";$("#modalCancel").textContent="Отбросить";
+   body.innerHTML='<div class="modal-body-section"><p>Сохранить, отбросить или остаться в редакторе (×)?</p></div>';
+  }else if(kind==="proxyCache"){
+   title.textContent="Proxy Cache";confirm.textContent="Сохранить путь";
+   body.innerHTML='<div class="modal-body-section"><h3>FloraProxyCache</h3><label>Путь <input id="cachePath" value="'+clean(state.settings.proxyCachePath||"FloraProxyCache")+'"></label><p>CGEO / MAX / index.json. Моделей: - · Размер: - (не доступны браузеру).</p><button class="toolbar-button danger-button" type="button" data-settings-action="clearCache">Clear Cache...</button></div>';
+  }else if(kind==="clearProxyCache"){
+   title.textContent="Очистить Proxy Cache?";confirm.textContent="Подтвердить (демо)";
+   body.innerHTML='<div class="modal-body-section"><p>Удаление .cgeo может нарушить Corona Proxy в сохранённых сценах. Браузер не удаляет файлы.</p></div>';
+  }else if(kind==="uninstall"){
+   title.textContent="Удалить Flora?";confirm.textContent="Подтвердить (демо)";
+   body.innerHTML='<div class="modal-body-section"><p>Удаление установленного плагина и его данных отличается от очистки метаданных. Внешние .max, .floratlas, .floracol и Proxy Cache сохраняются. В браузере ничего не удаляется.</p></div>';
+  }else if(kind==="clearModelData"){
   title.textContent="Очистить данные о моделях?";confirm.textContent="Очистить данные";
   body.innerHTML='<div class="modal-body-section"><p><b>Подтвердите удаление импортированных метаданных FloraAtlas/FloraCOL и связанных описаний/категорий (демонстрация).</b></p><p>Избранное, коллекции, Basket, настройки, библиотека, исходные .max, изображения, .cgeo, внешние файлы каталогов и сцена не затрагиваются. Реальные SQLite-файлы браузер не изменяет.</p></div>';
  }else if(kind==="basketClear"){
