@@ -1,20 +1,23 @@
-# Flora UI V2 - браузерный макет
+# Flora UI V2 - интерактивный веб-макет
 
-Ветка: `flora-ui-v2`. [Исходники в GitHub](https://github.com/AstraWork-1104/sylva/tree/flora-ui-v2/flora-ui).
+Ветка: `flora-ui-v2`. [Файлы макета](https://github.com/AstraWork-1104/sylva/tree/flora-ui-v2/flora-ui).
 
-Для автономного просмотра скачайте [архив ветки](https://github.com/AstraWork-1104/sylva/archive/refs/heads/flora-ui-v2.zip) и откройте `flora-ui/Flora-UI.html`. Модульная версия: `index.html`, `styles.css`, `app.js`; отдельные окна `model-analyzer.html`, `material-manager.html`.
+## Открыть макет
+- `index.html` с `styles.css` и `app.js` - модульная версия.
+- `Flora-UI.html` - автономная версия без внешних CSS/JS, со встроенными вспомогательными окнами.
+- `material-manager.html` и `model-analyzer.html` - отдельные окна модульной версии.
 
-## Реализовано в HTML
-
-- Explorer, Favorites, Basket и демонстрационные тематические каталоги; выбор, Ctrl/Shift, избранное, корзина, меню добавления.
-- Общий Tile Size в Explorer/Favorites/каталогах/Basket; крайнее положение включает компактную Table View. Grid адаптируется по ширине доступной области, не загружая данные повторно.
-- Grid показывает имя исходного файла и RU/EN при наличии, без Vol/габаритов. Table содержит девять согласованных столбцов, без Preview и старой классификации. Есть сортировка по колонкам, их перетаскивание и изменение ширины; положение/ширина сохраняются локально.
-- Search по имени файла, RU/EN/Latin, именам похожих растений. Filters: зависимые группы/среды, AND, цветение, отключённая высота, сброс, 4/2/1 колонки и собственная прокрутка.
-- Properties без внутренней шапки и настройки полей. Фиксированные раскрываемые группы «Названия»/«Ботанические сведения», совпадающие значения при мультивыделении. «Домашние» соответствует `landscaped_json`.
-- Settings > Library показывает FloraAtlas (.floratlas), FloraCOL (.floracol), Model Analyzer, Export JSON и подтверждаемую очистку тестовых метаданных и добавленных демо-каталогов. Отдельное окно Model Analyzer показывает только filename/relative path.
+## Реализовано в HTML на 20.10.2026
+- Навигация Explorer слева, справа Catalogs (дерево папок), Scene (кубы), Favorites (звезда), Basket (корзина). Есть подписи доступности, подсказки, активные состояния, счётчик Basket.
+- Scene демонстрирует записи узлов с FloraSource, группировку Geometry/Proxy по нормализованному источнику, ×N узлов на карточке и в Table, placeholder для отсутствующего файла и контекстную команду Select Model. Записи сцены - встроенные тестовые данные, не результаты реального сканирования.
+- Geometry/Proxy Import Mode - единый переключатель в Explorer и Basket, состояние сохраняется в браузере. Drag/Basket не импортируют объекты в 3ds Max.
+- Properties - фиксированные группы «Названия»/«Ботанические сведения», карандаш, Save/Cancel, валидация классификации, несохранённые изменения и собственные overrides по нормализованному пути источника. Исходное имя файла недоступно для редактирования.
+- Grid/Table - filename, RU/EN без Vol, 9 утверждённых столбцов, сортировка, перестановка/ширина, общий Tile Size. Поиск/фильтры учитывают локально изменённые метаданные.
+- Filters - зависимые русские группы/категории и среды, AND, цветение, неактивная высота, reset, адаптивное заполнение центральной области. Вокруг Grid общая рамка без постоянных дополнительных рамок каждой карточки.
+- Settings - Use Instances (OFF по умолчанию), Point Cloud для новых Corona Proxy, Proxy Cache с путём/неизвестной браузеру статистикой и предупреждением Clear Cache, отдельное подтверждение Uninstall.
+- Favorites, Basket, тематические каталоги FloraCOL, Model Analyzer и Material Manager сохранены в качестве интерактивных демонстраций.
 
 ## Ограничения
+**Это только HTML/CSS/JS-прототип.** Данные моделей, превью и Scene условные. Настройки и ручные Properties сохраняются в localStorage, а не в рабочий INI/SQLite. HTML не открывает .max, .cgeo, .floratlas, .floracol, не вызывает Corona API, не создаёт 3ds Max Instances/Proxy, не изменяет сцену и не выполняет Merge, Cache Clear или Uninstall. Функциональные тесты реального Python/PySide6-плагина этим макетом не подтверждаются.
 
-**Это UI-макет, не работающий плагин.** Растения, превью, ботаника и тематические каталоги тестовые. Браузер не читает реальные .max, .floratlas, .floracol, папки, сцену 3ds Max; выбор файла сохраняет только имя, его содержимое не анализируется. Сброс данных лишь демонстрирует состояние UI. Favorites/Basket и интерфейсные параметры локальны браузеру. Proxy/Merge/Import в сцену не исполняются.
-
-Актуальные требования: [описание Flora](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). Состояние реального Python/PySide6-плагина не подтверждается этими изменениями. См. [DESIGN](docs/DESIGN.md) и [SCREENS](docs/SCREENS.md).
+[Дизайн](docs/DESIGN.md) · [Экраны](docs/SCREENS.md) · [Утверждённые требования](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit)
