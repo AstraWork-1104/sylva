@@ -189,7 +189,7 @@ function selectCatalog(id){
  if(id===state.catalog)return;
  guardPropertyChange(()=>{state.catalog=id;state.selected.clear();state.search="";$("#modelSearch").value="";
  if(themes[id]){state.themeSelection=themes[id].sections[0].items[0];state.themeExpanded.add(themes[id].sections[0].name);}
- hideContextMenu();render();});
+ hideContextMenu();closeTilePopover();render();});
 }
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
@@ -347,11 +347,14 @@ function modelCard(m,i){
  const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
  const ru=propertyValue("ru",m),en=propertyValue("en",m);
  const preview=m.missing?'<div class="missing-preview">Нет превью</div>':leafSVG(m);
- const add=m.missing?"":'<button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket" draggable="false">'+(inBasket?'✓':'＋')+'</button>';
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="'+(!m.missing)+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+preview+'</div>'+add+
- '<div class="card-caption"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(fav?'★':'☆')+'</button></div>'+
+ const presence=sceneCount(m)>0?'<span class="scene-presence-dot" role="img" aria-label="Модель присутствует в сцене (демо)" title="В сцене (демо)"></span>':'';
+ const favorite='<button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" title="Favorites" aria-label="'+(fav?'Убрать из Favorites':'Добавить в Favorites')+'" aria-pressed="'+fav+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.28 6.94 1.01-5.02 4.9 1.18 6.92L12 17.84l-6.2 3.27 1.18-6.92-5.02-4.9 6.94-1.01z"/></svg></button>';
+ const basket=m.missing?'':'<button type="button" class="card-basket-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" title="Basket" aria-label="'+(inBasket?'Уже в Basket':'Добавить в Basket')+'" aria-pressed="'+inBasket+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 10 4-7m10 7-4-7M3 10h18l-2 11H5L3 10Z"/><path d="M8 13v5m4-5v5m4-5v5"/></svg></button>';
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="'+(!m.missing)+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+preview+presence+'</div>'+
+ '<div class="card-details"><div class="card-copy"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span>'+
  (state.catalog==="scene"?'<span class="scene-node-count">×'+sceneCount(m)+' узлов · Demo</span>':'')+
- '<span class="card-secondary">'+clean(ru)+'</span><span class="card-secondary">'+clean(en)+'</span></article>';
+ '<span class="card-secondary">'+clean(ru)+'</span><span class="card-secondary">'+clean(en)+'</span></div>'+
+ '<div class="card-actions">'+favorite+basket+'</div></div></article>';
 }
 function modelTable(arr){
  const cols=tableColumns();
@@ -373,11 +376,8 @@ function applyGridSizing(count){
  if(host.style.gridTemplateColumns!==value)host.style.gridTemplateColumns=value;
 }
 function syncTileControls(){
- $("#tileSize").value=state.tileSize;$("#basketTileSize").value=state.tileSize;
- const label=state.tileSize===260?"Table":state.tileSize+" px";
- $("#tileSizeValue").textContent=label;$("#basketTileValue").textContent=label;
- $("#gridButton").classList.toggle("active",state.grid);
- $("#listButton").classList.toggle("active",!state.grid);
+ $("#tileSize").value=state.tileSize;
+ $("#tileSizeValue").textContent=state.tileSize===260?"Table View":state.tileSize+" px";
 }
 function setTileSize(value){
  state.tileSize=Math.max(136,Math.min(260,Number(value)||176));
@@ -479,9 +479,7 @@ $("#basketGrid").addEventListener("click",e=>{
  const button=e.target.closest("[data-basketremove]");if(!button)return;
  state.basket.delete(button.dataset.basketremove);save();render();
 });
-$("#basketTileSize").addEventListener("input",e=>{
- setTileSize(e.target.value);
-});
+
 $("#basketClear").addEventListener("click",()=>showModal("basketClear"));
 $("#basketImport").addEventListener("click",()=>{if([...state.basket.values()].some(Boolean))showModal("basketImport")});
 $("#explorerInfoButton").addEventListener("click",()=>showModal("explorerData"));
@@ -561,6 +559,32 @@ $("#modelGrid").addEventListener("pointerdown",e=>{
  function done(){window.removeEventListener("pointermove",moving);window.removeEventListener("pointerup",done);prefWrite("table-widths-v2",state.tableWidths);renderModels();}
  window.addEventListener("pointermove",moving);window.addEventListener("pointerup",done,{once:true});
 });
+/* One shared, contextual Tile Size popover across all sections. */
+const tilePopover=$("#tileSizePopover");
+let tileAnchor=null;
+function closeTilePopover(){
+ tilePopover.hidden=true;
+ for(const b of [$("#tileSizeButton"),$("#basketTileSizeButton")])b.setAttribute("aria-expanded","false");
+ tileAnchor=null;
+}
+function positionTilePopover(){
+ if(tilePopover.hidden||!tileAnchor)return;
+ const rect=tileAnchor.getBoundingClientRect(),width=tilePopover.offsetWidth||232,height=tilePopover.offsetHeight||118;
+ const vw=document.documentElement.clientWidth||window.innerWidth,vh=document.documentElement.clientHeight||window.innerHeight;
+ tilePopover.style.left=Math.max(8,Math.min(rect.right-width,vw-width-8))+"px";
+ tilePopover.style.top=(rect.bottom+height+8>vh?Math.max(8,rect.top-height-8):rect.bottom+8)+"px";
+}
+function toggleTilePopover(button){
+ if(tileAnchor===button&&!tilePopover.hidden){closeTilePopover();return}
+ closeTilePopover();tileAnchor=button;tilePopover.hidden=false;
+ button.setAttribute("aria-expanded","true");syncTileControls();positionTilePopover();
+}
+for(const button of [$("#tileSizeButton"),$("#basketTileSizeButton")])button.addEventListener("click",()=>toggleTilePopover(button));
+document.addEventListener("pointerdown",e=>{
+ if(!tilePopover.hidden&&!e.target.closest("#tileSizePopover,#tileSizeButton,#basketTileSizeButton"))closeTilePopover();
+});
+window.addEventListener("keydown",e=>{if(e.key==="Escape"&&!tilePopover.hidden)closeTilePopover()});
+window.addEventListener("resize",positionTilePopover);
 $("#tileSize").addEventListener("input",e=>setTileSize(e.target.value));
 /* FloraAtlas v1 filters: simulated data, never represents local 3ds Max analysis. */
 function renderFilterControls(){
@@ -639,8 +663,8 @@ $("#modelSearch").addEventListener("input",e=>{
  }else{state.search=next;state.selected.clear();renderModels()}
 });
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
-$("#gridButton").addEventListener("click",()=>setTileSize(state.lastGridSize));
-$("#listButton").addEventListener("click",()=>setTileSize(260));
+
+
 function setImportMode(mode){if(!["Geometry","Proxy"].includes(mode))return;state.proxy=mode;state.settings.proxy=mode;save();$$("[data-proxy]").forEach(b=>{b.classList.toggle("active",b.dataset.proxy===mode);b.setAttribute("aria-pressed",String(b.dataset.proxy===mode))})}
 $("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Import Mode: "+state.proxy+" · демо без импорта в 3ds Max.")}});
 $("#basketProxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Basket использует общий Import Mode: "+state.proxy)}});
