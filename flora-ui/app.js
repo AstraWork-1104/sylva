@@ -267,23 +267,58 @@ function visibleModels(){
  if((state.grid?state.sort:state.tableSortDir)==="desc")arr.reverse();
  return arr;
 }
+function editPropertyModel(){const m=allSelectedModels();return m.length===1&&!m[0].missing?m[0]:null}
+function validatePropertyEdit(){
+ const d=state.editDraft;if(!d)return "Нет данных для сохранения.";
+ if(d.flowering&&!["Да","Нет"].includes(d.flowering))return "Цветение: Да или Нет.";
+ if(d.group&&!floraTaxonomy[d.group])return "Выберите существующую группу растения.";
+ if(d.category&&!(floraTaxonomy[d.group]||[]).includes(d.category))return "Категория не соответствует группе растения.";
+ if(!d.group&&d.category)return "Сначала задайте группу растения.";
+ for(const key of ["natural","landscaped"]){
+  const valid=key==="natural"?naturalCategories:landscapedCategories;
+  const values=d[key].split(",").map(x=>x.trim()).filter(Boolean);
+  if(values.some(x=>!valid.includes(x)))return "Недопустимая категория среды: "+key;
+ }
+ return "";
+}
+function savePropertyEdit(){
+ const error=validatePropertyEdit();if(error){toast(error);return false}
+ const m=editPropertyModel();if(!m||m.id!==state.editModelId){toast("Выберите исходную модель.");return false}
+ state.propertyOverrides[propertyPath(m)]={...state.editDraft};
+ prefWrite("property-overrides-v2",state.propertyOverrides);exitPropertyEdit();renderModels();
+ toast("Properties сохранены только в браузере.");return true;
+}
 function properties(){
- const selected=models.filter(m=>state.selected.has(m.id));
+ const selected=allSelectedModels(),m=editPropertyModel();
+ const editing=Boolean(m&&state.editModelId===m.id&&state.editDraft);
  $("#propertyRows").innerHTML=propDefs.map(([group,defs])=>{
   const collapsed=state.propCollapsed.has(group);
   const content=collapsed?"":defs.map(([key,label])=>{
-   const vals=selected.map(m=>propertyValue(key,m));
-   const value=vals.length&&vals.every(v=>v===vals[0])?vals[0]:"";
-   return '<div class="property-row"><span>'+clean(label)+'</span><span>'+clean(value)+'</span></div>';
+   const vals=selected.map(item=>propertyValue(key,item));
+   const value=editing&&key!=="model"?state.editDraft[key]:(vals.length&&vals.every(v=>v===vals[0])?vals[0]:"");
+   const field=editing&&key!=="model"?'<input class="property-edit-field" data-prop-field="'+clean(key)+'" aria-label="'+clean(label)+'" value="'+clean(value)+'">':'<span>'+clean(value)+'</span>';
+   return '<div class="property-row"><span>'+clean(label)+'</span>'+field+'</div>';
   }).join("");
-  return '<section class="property-group"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'" aria-expanded="'+(!collapsed)+'"><span>'+(collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+content+'</section>';
+  const actions=group==="Названия"&&m?'<span class="property-edit-actions">'+(editing?'<button type="button" title="Save" aria-label="Save Properties" data-prop-save>✓</button><button type="button" title="Cancel" aria-label="Cancel Properties" data-prop-cancel>×</button>':'<button type="button" title="Edit Properties" aria-label="Edit Properties" data-prop-edit>✎</button>')+'</span>':"";
+  return '<section class="property-group"><div class="property-heading"><button type="button" class="property-group-title" data-propgroup="'+clean(group)+'" aria-expanded="'+(!collapsed)+'"><span>'+(collapsed?'▸':'▾')+'</span>'+clean(group)+'</button>'+actions+'</div>'+content+'</section>';
  }).join("");
 }
 $("#propertyRows").addEventListener("click",e=>{
+ if(e.target.closest("[data-prop-edit]")){
+  const m=editPropertyModel();if(!m)return;state.editModelId=m.id;state.editDraft={};
+  for(const [,items] of propDefs)for(const [key] of items)if(key!=="model")state.editDraft[key]=propertyValue(key,m);
+  state.editOriginal={...state.editDraft};state.propCollapsed.delete("Названия");properties();return;
+ }
+ if(e.target.closest("[data-prop-save]")){savePropertyEdit();return}
+ if(e.target.closest("[data-prop-cancel]")){exitPropertyEdit();properties();return}
  const header=e.target.closest("[data-propgroup]");if(!header)return;
  const group=header.dataset.propgroup;
  if(state.propCollapsed.has(group))state.propCollapsed.delete(group);else state.propCollapsed.add(group);
  prefWrite("properties-collapsed-atlas",[...state.propCollapsed]);properties();
+});
+$("#propertyRows").addEventListener("input",e=>{
+ const field=e.target.closest("[data-prop-field]");if(!field||!state.editDraft)return;
+ state.editDraft[field.dataset.propField]=field.value;
 });
 (function(){
  const resizer=$("#propertiesResize"),shell=$("#resultsShell");
