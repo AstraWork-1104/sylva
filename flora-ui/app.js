@@ -6,7 +6,7 @@ const $$ = selector => [...document.querySelectorAll(selector)];
 const repoKey = "flora-ui-design-v1";
 const collections = [
   {id:"explorer",label:"Explorer",builtin:true},
-  {id:"favorites",label:"★ Favorites",builtin:true},
+  {id:"favorites",label:"Favorites",builtin:true},
   {id:"basket",label:"Basket",builtin:true},
   {id:"landscape",label:"Landscape",builtin:false},
   {id:"city",label:"City",builtin:false},
@@ -39,7 +39,7 @@ const readBasket=()=>{try{
 }catch{return new Map()}};
 const readDataFiles=()=>{try{const a=JSON.parse(localStorage.getItem(repoKey+"-explorer-info")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string").slice(0,40):[]}catch{return []}};
 const readTileSize=()=>{try{return Math.max(136,Math.min(250,Number(localStorage.getItem(repoKey+"-basket-size"))||176))}catch{return 176}};
-const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Point Cloud",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Point Cloud"},workingModal:null};
+const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Geometry",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Geometry",useInstances:false,pointCloud:true,proxyCachePath:"FloraProxyCache"},workingModal:null};
 
 /* Concept design v2: data is illustrative, not a definitive thematic catalog file schema. */
 const themes={
@@ -111,6 +111,26 @@ state.tableSortKey=prefRead("table-sort-key-v2","model");
 state.tableSortDir=prefRead("table-sort-dir-v2","asc");
 state.propertiesHidden=Boolean(prefRead("properties-hidden-v2",false));
 try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-settings")||"{}"))}catch{}
+if(!["Geometry","Proxy"].includes(state.settings.proxy))state.settings.proxy="Geometry";
+state.propertyOverrides=prefRead("property-overrides-v2",{});
+state.editModelId=null;state.editDraft=null;state.editOriginal=null;state.pendingAction=null;
+const orphanSceneModel={id:"Missing_Source_Pinus_07",family:"",type:"",botanical:"",color:"#66876c",imageSeed:9271,missing:true};
+const sceneEntries=[
+ {id:models[0].id,mode:"Geometry",count:21,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[0].id+".max"},
+ {id:models[0].id,mode:"Proxy",count:3,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[0].id+".max"},
+ {id:models[14].id,mode:"Proxy",count:8,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[14].id+".max"},
+ {id:orphanSceneModel.id,mode:"Geometry",count:2,floraSource:"D:/Archive/Missing_Source_Pinus_07.max"}
+];
+function sceneCounts(){const out=new Map();for(const rec of sceneEntries){if(!rec.floraSource)continue;const k=rec.floraSource.replace(/\\/g,"/").toLocaleLowerCase();const current=out.get(k)||{id:rec.id,count:0};current.count+=rec.count;out.set(k,current)}return out}
+function sceneModels(){const ids=new Set([...sceneCounts().values()].map(x=>x.id));return [...models,orphanSceneModel].filter(m=>ids.has(m.id))}
+function sceneCount(m){const rec=[...sceneCounts().values()].find(x=>x.id===m.id);return rec?.count||0}
+function allSelectedModels(){return [...models,orphanSceneModel].filter(m=>state.selected.has(m.id))}
+function hasUnsavedProperties(){return state.editDraft!==null&&JSON.stringify(state.editDraft)!==JSON.stringify(state.editOriginal)}
+function propertyPath(m){return (m.path||"F:/001_Model/Maxtree/MT - Volume 34/"+m.id+".max").replace(/\\/g,"/").toLocaleLowerCase()}
+function exitPropertyEdit(){state.editModelId=null;state.editDraft=null;state.editOriginal=null}
+function guardPropertyChange(action){if(hasUnsavedProperties()){state.pendingAction=action;showModal("unsavedProps");return}exitPropertyEdit();action()}
+window.addEventListener("beforeunload",e=>{if(hasUnsavedProperties()){e.preventDefault();e.returnValue=""}});
+
 const clean=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const save=()=>{try{localStorage.setItem(repoKey+"-favorites",JSON.stringify([...state.favorites]));localStorage.setItem(repoKey+"-collections",JSON.stringify(state.favCollections));localStorage.setItem(repoKey+"-settings",JSON.stringify(state.settings));localStorage.setItem(repoKey+"-basket",JSON.stringify([...state.basket].map(([id,checked])=>({id,checked}))));localStorage.setItem(repoKey+"-basket-size",String(state.basketTileSize));localStorage.setItem(repoKey+"-explorer-info",JSON.stringify(state.explorerDataFiles))}catch{}};
 let toastTimer;
@@ -144,15 +164,16 @@ function leafSVG(model) {
  return '<svg viewBox="0 0 200 186" xmlns="http://www.w3.org/2000/svg" aria-label="'+clean(model.botanical)+' preview illustration"><defs><radialGradient id="ground'+model.imageSeed+'"><stop stop-color="#1b211e"/><stop offset="1" stop-color="#1b211e" stop-opacity="0"/></radialGradient></defs><ellipse cx="100" cy="163" rx="79" ry="12" fill="url(#ground'+model.imageSeed+')"/><g>'+stems+leaves+petals+'</g><g stroke="#536052" stroke-width="1.2" opacity=".55"><path d="M181 18v144M178 48h4M178 91h4M178 134h4"/></g><g font-family="Arial,sans-serif" font-size="8" fill="#657167"><text x="166" y="50">30</text><text x="166" y="94">20</text><text x="166" y="137">10</text></g></svg>';
 }
 function showCatalogTabs(){
- const builtin=collections.filter(x=>["explorer","favorites","basket"].includes(x.id));
- $("#catalogTabs").innerHTML=builtin.map(x=>'<button class="catalog-tab '+(state.catalog===x.id?'active':'')+'" data-catalog="'+clean(x.id)+'">'+clean(x.label)+(x.id==="basket"?'<span class="basket-tab-count" '+(state.basket.size?'':'hidden')+'>'+state.basket.size+'</span>':'')+'</button>').join("");
- const thematic=!builtin.some(x=>x.id===state.catalog);
+ $("#catalogTabs").innerHTML='<button type="button" class="catalog-tab '+(state.catalog==="explorer"?"active":"")+'" data-catalog="explorer">Explorer</button>';
  const selected=collections.find(x=>x.id===state.catalog);
+ const thematic=!["explorer","favorites","basket","scene"].includes(state.catalog);
  $("#catalogsButton").classList.toggle("active",thematic);
- $("#catalogsButton").innerHTML='Catalogs <span aria-hidden="true">▾</span>'+(thematic?'<small class="catalog-selected-name">'+clean(selected?.label||"")+'</small>':'');
+ $("#catalogsButton").title=thematic?"Catalogs / "+(selected?.label||""):"Catalogs";
  $("#catalogsMenu").innerHTML='<div class="catalog-menu-heading">INSTALLED CATALOGS</div>'+
- collections.filter(x=>!builtin.includes(x)).map(x=>'<button type="button" role="menuitem" class="catalog-menu-item '+(x.id===state.catalog?'active':'')+'" data-catalog="'+clean(x.id)+'"><span class="catalog-menu-dot"></span>'+clean(x.label)+'</button>').join("")+
- '<div class="catalog-menu-divider"></div><button type="button" class="catalog-menu-add" id="addCatalogButton">+ Add Catalog</button>';
+  collections.filter(x=>!x.builtin).map(x=>'<button type="button" role="menuitem" class="catalog-menu-item '+(x.id===state.catalog?'active':'')+'" data-catalog="'+clean(x.id)+'"><span class="catalog-menu-dot"></span>'+clean(x.label)+'</button>').join("")+
+  '<div class="catalog-menu-divider"></div><button type="button" class="catalog-menu-add" id="addCatalogButton">+ Add Catalog</button>';
+ $$(".catalog-actions [data-catalog]").forEach(b=>{const active=b.dataset.catalog===state.catalog;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active))});
+ const count=$("#navBasketCount");count.textContent=String(state.basket.size);count.hidden=!state.basket.size;
 }
 function closeCatalogMenu(){$("#catalogsMenu").hidden=true;$("#catalogsButton").setAttribute("aria-expanded","false")}
 $("#catalogsButton").addEventListener("click",()=>{
@@ -166,9 +187,9 @@ $("#catalogsMenu").addEventListener("click",e=>{
 document.addEventListener("click",e=>{if(!e.target.closest("#catalogsDropdown"))closeCatalogMenu()});
 function selectCatalog(id){
  if(id===state.catalog)return;
- state.catalog=id;state.selected.clear();state.search="";$("#modelSearch").value="";
+ guardPropertyChange(()=>{state.catalog=id;state.selected.clear();state.search="";$("#modelSearch").value="";
  if(themes[id]){state.themeSelection=themes[id].sections[0].items[0];state.themeExpanded.add(themes[id].sections[0].name);}
- hideContextMenu();render();
+ hideContextMenu();render();});
 }
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
@@ -177,7 +198,10 @@ function folderList(){
   const demoFolders=[1,8,9,19,21,23,27,28,34,40,41,49,51,61,63,65,66,67,69,74,77,82,83,85,86,100];
   host.innerHTML='<button type="button" class="tree-item" data-folder="1">'+iconFolder()+'<span class="tree-name">IstWood</span></button>'+
    demoFolders.map(n=>'<button type="button" class="tree-item '+(state.folder===n?'active':'')+'" data-folder="'+n+'">'+iconFolder()+'<span class="tree-name">MT - Volume '+n+'</span></button>').join("");
- }else if(state.catalog==="favorites"){
+ }else if(state.catalog==="scene"){
+   head.textContent="SCENE";foot.textContent="FloraSource · browser demo";
+   host.innerHTML='<div class="scene-sidebar-note"><strong>Демо Scene</strong><p>Условные узлы с меткой FloraSource. Реальная сцена 3ds Max недоступна браузеру.</p><p>Geometry и Proxy одного исходника сгруппированы.</p></div>';
+  }else if(state.catalog==="favorites"){
   head.textContent="FAVORITES";foot.textContent=state.favorites.size+" saved plants";
   host.innerHTML='<button class="tree-item '+(state.favFilter==="All Favorites"?'active':'')+'" data-fav="All Favorites"><span class="twisty">★</span><span class="tree-name">All Favorites</span></button>'+
    state.favCollections.map(f=>'<button class="tree-item child '+(state.favFilter===f?'active':'')+'" data-fav="'+clean(f)+'"><span class="twisty">›</span>'+iconFolder()+'<span class="tree-name">'+clean(f)+'</span></button>').join("")+
@@ -444,7 +468,8 @@ function selectModel(id,index,shift,ctrl){
  else{state.selected.clear();state.selected.add(id);state.lastClicked=index;}
  renderModels();
 }
-$("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(!b)return;selectCatalog(b.dataset.catalog)});
+$("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
+$(".catalog-actions").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
 $("#sidebarContent").addEventListener("click",e=>{
  if(e.target.closest("[data-folder]")){state.folder=Number(e.target.closest("[data-folder]").dataset.folder);state.selected.clear();render();}
  if(e.target.closest("[data-fav]")){state.favFilter=e.target.closest("[data-fav]").dataset.fav;render();}
