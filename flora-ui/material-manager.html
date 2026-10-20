@@ -91,15 +91,15 @@
 const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const svg=(id)=>'<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#ic-'+id+'"/></svg>';
-let scope='Flora Plants',roots=['F:/001_Model/Maxtree','D:/Libraries/Plant Textures','E:/Assets/Textures'];
+let scope='Flora Plants',roots=['Demo Library','D:/Libraries/Plant Textures','E:/Assets/Textures'];
 const textures=[
- ['MT_PM_V34_Catharanthus_diffuse.jpg','Bitmap','Found','F:/001_Model/Maxtree/Textures/Catharanthus/diffuse.jpg',''],
- ['MT_PM_V34_Catharanthus_roughness.jpg','CoronaBitmap','Found','F:/001_Model/Maxtree/Textures/Catharanthus/roughness.jpg','gray'],
- ['MT_PM_V34_Catharanthus_normal.jpg','CoronaBitmap','Found','F:/001_Model/Maxtree/Textures/Catharanthus/normal.jpg','purple'],
- ['MT_PM_V34_Catharanthus_bump.jpg','Bitmap','Not Found','','gray'],
- ['MT_PM_V34_Clerodendrum_diffuse.jpg','CoronaBitmap','Found','D:/Libraries/Plant Textures/Clerodendrum/diffuse.jpg',''],
- ['MT_PM_V34_Clerodendrum_specular.jpg','Bitmap','Not Found','','gray'],
- ['MT_PM_V34_Cuphea_mask.jpg','CoronaBitmap','Ambiguous','2 matching files','gray']
+ ['Catharanthus_diffuse.jpg','Bitmap','Found','Demo Library/Textures/Catharanthus/diffuse.jpg',''],
+ ['Catharanthus_roughness.jpg','CoronaBitmap','Found','Demo Library/Textures/Catharanthus/roughness.jpg','gray'],
+ ['Catharanthus_normal.jpg','CoronaBitmap','Found','Demo Library/Textures/Catharanthus/normal.jpg','purple'],
+ ['Catharanthus_bump.jpg','Bitmap','Not Found','','gray'],
+ ['Clerodendrum_diffuse.jpg','CoronaBitmap','Found','D:/Libraries/Plant Textures/Clerodendrum/diffuse.jpg',''],
+ ['Clerodendrum_specular.jpg','Bitmap','Not Found','','gray'],
+ ['Cuphea_mask.jpg','CoronaBitmap','Ambiguous','2 matching files','gray']
 ];
 const duplicates=[
  ['leaf_diffuse.jpg','CoronaBitmap',8,'Same UVW, gamma and mapping',true,''],

@@ -13,25 +13,27 @@ const collections = [
   {id:"forest",label:"Forest",builtin:false}
 ];
 const plants = [
- ["Catharanthus roseus","Catharanthus","Flowerbed Plants",6,"#df83c1",65],
- ["Clerodendrum thomsoniae","Clerodendrum","Shrubs",6,"#ede8d5",145],
- ["Cuphea hyssopifolia","Cuphea","Flowerbed Plants",6,"#ae7cd2",80],
- ["Hydrangea paniculata","Hydrangea","Shrubs",6,"#ede9d6",190],
- ["Rhododendron ponticum","Rhododendron","Shrubs",6,"#e9a7d4",215],
- ["Lavandula angustifolia","Lavandula","Flowerbed Plants",6,"#9e8cca",70],
- ["Acer palmatum","Acer","Deciduous Trees",6,"#d68c77",420],
- ["Betula pendula","Betula","Deciduous Trees",6,"#a2b27c",690],
- ["Juniperus communis","Juniperus","Coniferous Trees",6,"#b7c7a4",235],
- ["Picea abies","Picea","Coniferous Trees",6,"#719b7a",780],
- ["Pennisetum alopecuroides","Pennisetum","Ornamental Grasses",6,"#d7c690",110],
- ["Miscanthus sinensis","Miscanthus","Ornamental Grasses",6,"#cac0a0",160]
+ ["Catharanthus roseus","Catharanthus","Flowerbed Plants",3,"#df83c1",65],
+ ["Clerodendrum thomsoniae","Clerodendrum","Shrubs",3,"#ede8d5",145],
+ ["Cuphea hyssopifolia","Cuphea","Flowerbed Plants",3,"#ae7cd2",80],
+ ["Hydrangea paniculata","Hydrangea","Shrubs",3,"#ede9d6",190],
+ ["Rhododendron ponticum","Rhododendron","Shrubs",3,"#e9a7d4",215],
+ ["Lavandula angustifolia","Lavandula","Flowerbed Plants",3,"#9e8cca",70],
+ ["Acer palmatum","Acer","Deciduous Trees",3,"#d68c77",420],
+ ["Betula pendula","Betula","Deciduous Trees",3,"#a2b27c",690],
+ ["Juniperus communis","Juniperus","Coniferous Trees",3,"#b7c7a4",235],
+ ["Picea abies","Picea","Coniferous Trees",3,"#719b7a",780],
+ ["Pennisetum alopecuroides","Pennisetum","Ornamental Grasses",3,"#d7c690",110],
+ ["Miscanthus sinensis","Miscanthus","Ornamental Grasses",3,"#cac0a0",160]
 ];
-const models=plants.flatMap(([bot,genus,type,num,color,height],group)=>Array.from({length:num},(_,j)=>({
- id:"MT_PM_V34_"+genus+"_"+String(j+1).padStart(2,"0"),botanical:bot,
- family:genus,type,color,height:height+j*4,volume:34,imageSeed:group*17+j*13,
+const demoFolders=[{"id":"all","label":"All Plants"},{"id":"trees","label":"Canopy Trees"},{"id":"conifers","label":"Evergreen Conifers"},{"id":"shrubs","label":"Garden Shrubs"},{"id":"flowers","label":"Flowering Beds"},{"id":"perennials","label":"Perennial Border"},{"id":"grasses","label":"Ornamental Grasses"},{"id":"climbers","label":"Climbing Plants"}];
+const genusFolder={"Acer":"trees","Betula":"trees","Juniperus":"conifers","Picea":"conifers","Hydrangea":"shrubs","Rhododendron":"shrubs","Catharanthus":"flowers","Cuphea":"flowers","Lavandula":"perennials","Pennisetum":"grasses","Miscanthus":"grasses","Clerodendrum":"climbers"};
+const models=plants.flatMap(([bot,genus,type,num,color,height],group)=>Array.from({length:num},(_,k)=>({
+ id:bot.replace(/\s+/g,"_")+"_"+String(k+1).padStart(2,"0"),botanical:bot,family:genus,
+ type,color,height:height+k*4,folder:genusFolder[genus],imageSeed:group*17+k*13,
  width:Math.round(height*.65),season:group<=5?"Summer":"All seasons"
 })));
-const favoritesStorage=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-favorites")||"[]")}catch{return []}};
+const favoritesStorage=()=>{try{const ids=JSON.parse(localStorage.getItem(repoKey+"-favorites")||"[]");return Array.isArray(ids)?ids.filter(id=>models.some(m=>m.id===id)):[]}catch{return []}};
 const readCollections=()=>{try{return JSON.parse(localStorage.getItem(repoKey+"-collections")||'["My Garden","Courtyard","Park Ideas"]')}catch{return ["My Garden","Courtyard","Park Ideas"]}};
 const readBasket=()=>{try{
  const saved=JSON.parse(localStorage.getItem(repoKey+"-basket")||"[]");
@@ -39,7 +41,7 @@ const readBasket=()=>{try{
 }catch{return new Map()}};
 const readDataFiles=()=>{try{const a=JSON.parse(localStorage.getItem(repoKey+"-explorer-info")||"[]");return Array.isArray(a)?a.filter(x=>typeof x==="string").slice(0,40):[]}catch{return []}};
 const readTileSize=()=>{try{return Math.max(136,Math.min(250,Number(localStorage.getItem(repoKey+"-basket-size"))||176))}catch{return 176}};
-const state={catalog:"explorer",folder:34,favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Geometry",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Geometry",useInstances:false,pointCloud:true,proxyCachePath:"FloraProxyCache"},workingModal:null};
+const state={catalog:"explorer",folder:"all",favFilter:"All Favorites",category:"Flowerbed Plants",expandFav:true,treeOpen:true,grid:true,search:"",sort:"asc",selected:new Set(),lastClicked:-1,favorites:new Set(favoritesStorage()),favCollections:readCollections(),basket:readBasket(),basketTileSize:readTileSize(),explorerDataFiles:readDataFiles(),proxy:"Geometry",settings:{useSceneMaterials:true,autoRefresh:true,proxy:"Geometry",useInstances:false,pointCloud:true,proxyCachePath:"FloraProxyCache"},workingModal:null};
 
 /* Concept design v2: data is illustrative, not a definitive thematic catalog file schema. */
 const themes={
@@ -75,10 +77,15 @@ function demoBotanical(m){
  return {group:"Трава",category:"Цветы",natural:["Луговая"],landscaped:["Сады"],flowering:"Да"};
 }
 const botanicalNames={
+ Catharanthus:["Катарантус розовый","Madagascar periwinkle"],
+ Clerodendrum:["Клеродендрум Томсона","Bleeding heart vine"],
+ Cuphea:["Куфея иссополистная","Mexican heather"],
+ Hydrangea:["Гортензия метельчатая","Panicle hydrangea"],
+ Rhododendron:["Рододендрон понтийский","Pontic rhododendron"],
+ Lavandula:["Лаванда узколистная","English lavender"],
  Acer:["Клён пальчатый","Japanese maple"],Betula:["Берёза повислая","Silver birch"],
- Juniperus:["Можжевельник","Common juniper"],Picea:["Ель европейская","Norway spruce"],
- Hydrangea:["Гортензия","Hydrangea"],Lavandula:["Лаванда","Lavender"],
- Miscanthus:["Мискантус","Miscanthus"],Pennisetum:["Пеннисетум","Fountain grass"]
+ Juniperus:["Можжевельник обыкновенный","Common juniper"],Picea:["Ель европейская","Norway spruce"],
+ Miscanthus:["Мискантус китайский","Chinese silver grass"],Pennisetum:["Пеннисетум лисохвостный","Fountain grass"]
 };
 function getTheme(){return themes[state.catalog]}
 function getRole(m){return roles.find(r=>r.types.includes(m.type))?.title||"OTHER PLANTS"}
@@ -114,19 +121,18 @@ try{Object.assign(state.settings,JSON.parse(localStorage.getItem(repoKey+"-setti
 if(!["Geometry","Proxy"].includes(state.settings.proxy))state.settings.proxy="Geometry";
 state.propertyOverrides=prefRead("property-overrides-v2",{});
 state.editModelId=null;state.editDraft=null;state.editOriginal=null;state.pendingAction=null;
-const orphanSceneModel={id:"Missing_Source_Pinus_07",family:"",type:"",botanical:"",color:"#66876c",imageSeed:9271,missing:true};
+const orphanSceneModel={id:"Unlinked_Cedar_01",family:"Cedrus",type:"Coniferous Trees",botanical:"Cedrus atlantica",folder:"conifers",color:"#66876c",imageSeed:9271,missing:true};
 const sceneEntries=[
- {id:models[0].id,mode:"Geometry",count:21,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[0].id+".max"},
- {id:models[0].id,mode:"Proxy",count:3,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[0].id+".max"},
- {id:models[14].id,mode:"Proxy",count:8,floraSource:"F:/001_Model/Maxtree/MT - Volume 34/"+models[14].id+".max"},
- {id:orphanSceneModel.id,mode:"Geometry",count:2,floraSource:"D:/Archive/Missing_Source_Pinus_07.max"}
-];
+ [0,"Geometry",3],[0,"Proxy",2],[4,"Proxy",1],[10,"Geometry",4],[14,"Proxy",2],
+ [18,"Geometry",3],[23,"Proxy",1],[27,"Geometry",2],[32,"Proxy",4],[35,"Geometry",1]
+].map(([index,mode,count])=>({id:models[index].id,mode,count,floraSource:"Demo Library/"+models[index].folder+"/"+models[index].id+".max"}));
+sceneEntries.push({id:orphanSceneModel.id,mode:"Geometry",count:1,floraSource:"Demo Library/Unlinked/"+orphanSceneModel.id+".max"});
 function sceneCounts(){const out=new Map();for(const rec of sceneEntries){if(!rec.floraSource)continue;const k=rec.floraSource.replace(/\\/g,"/").toLocaleLowerCase();const current=out.get(k)||{id:rec.id,count:0};current.count+=rec.count;out.set(k,current)}return out}
 function sceneModels(){const ids=new Set([...sceneCounts().values()].map(x=>x.id));return [...models,orphanSceneModel].filter(m=>ids.has(m.id))}
 function sceneCount(m){const rec=[...sceneCounts().values()].find(x=>x.id===m.id);return rec?.count||0}
 function allSelectedModels(){return [...models,orphanSceneModel].filter(m=>state.selected.has(m.id))}
 function hasUnsavedProperties(){return state.editDraft!==null&&JSON.stringify(state.editDraft)!==JSON.stringify(state.editOriginal)}
-function propertyPath(m){return (m.path||"F:/001_Model/Maxtree/MT - Volume 34/"+m.id+".max").replace(/\\/g,"/").toLocaleLowerCase()}
+function propertyPath(m){return (m.path||"Demo Library/"+(m.folder||"Unlinked")+"/"+m.id+".max").replace(/\\/g,"/").toLocaleLowerCase()}
 function exitPropertyEdit(){state.editModelId=null;state.editDraft=null;state.editOriginal=null}
 function guardPropertyChange(action){if(hasUnsavedProperties()){state.pendingAction=action;showModal("unsavedProps");return}exitPropertyEdit();action()}
 window.addEventListener("beforeunload",e=>{if(hasUnsavedProperties()){e.preventDefault();e.returnValue=""}});
@@ -194,10 +200,11 @@ function selectCatalog(id){
 function folderList(){
  const host=$("#sidebarContent"),head=$("#sidebarHeading"),foot=$("#sidebarFooter");
  if(state.catalog==="explorer"){
-  head.textContent="FOLDERS";foot.textContent="F:/001_Model/Maxtree";
-  const demoFolders=[1,8,9,19,21,23,27,28,34,40,41,49,51,61,63,65,66,67,69,74,77,82,83,85,86,100];
-  host.innerHTML='<button type="button" class="tree-item" data-folder="1">'+iconFolder()+'<span class="tree-name">IstWood</span></button>'+
-   demoFolders.map(n=>'<button type="button" class="tree-item '+(state.folder===n?'active':'')+'" data-folder="'+n+'">'+iconFolder()+'<span class="tree-name">MT - Volume '+n+'</span></button>').join("");
+  head.textContent="FOLDERS";foot.textContent=models.length+" demo models";
+  host.innerHTML=demoFolders.map(folder=>
+   '<button type="button" class="tree-item '+(state.folder===folder.id?'active':'')+'" data-folder="'+clean(folder.id)+'">'+
+   iconFolder()+'<span class="tree-name">'+clean(folder.label)+'</span></button>'
+  ).join("");
  }else if(state.catalog==="scene"){
    head.textContent="SCENE";foot.textContent="FloraSource · browser demo";
    host.innerHTML='<div class="scene-sidebar-note"><strong>Демо Scene</strong><p>Условные узлы с меткой FloraSource. Реальная сцена 3ds Max недоступна браузеру.</p><p>Geometry и Proxy одного исходника сгруппированы.</p></div>';
@@ -247,6 +254,7 @@ function tableValue(key,m){
 }
 function visibleModels(){
  let arr=(state.catalog==="scene"?sceneModels():models).filter(m=>{
+  if(state.catalog==="explorer"&&state.folder!=="all"&&m.folder!==state.folder)return false;
   if(state.catalog==="favorites"&&!state.favorites.has(m.id))return false;
   if(getTheme()&&!themeIds().includes(m.id))return false;
   const group=propertyValue("group",m),category=propertyValue("category",m);
@@ -403,12 +411,12 @@ function renderModels(){
   host.innerHTML=arr.length?modelTable(arr):'<div class="empty-state">Нет моделей по выбранным условиям.</div>';
  }
  let title,path;
- if(state.catalog==="explorer"){title="Explorer";path="F:/001_Model/Maxtree";}
+ if(state.catalog==="explorer"){title="Explorer";path="";}
  else if(state.catalog==="scene"){title="Scene";path="Демонстрация FloraSource · реальные узлы 3ds Max недоступны";}
   else if(state.catalog==="favorites"){title=state.favFilter;path="Favorites / Saved plants";}
  else if(getTheme()){title=state.themeSelection;path=getTheme().name+" / "+getTheme().sections.find(x=>x.items.includes(state.themeSelection))?.name+" / "+state.themeSelection;}
  else{const meta=collections.find(x=>x.id===state.catalog);title=meta?.label||"Catalog";path="Imported / "+title;}
- $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;
+ $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;$("#collectionPath").hidden=state.catalog==="explorer";
  $("#contentTag").hidden=["explorer","favorites","scene"].includes(state.catalog);
  const intro=$("#collectionDescription");intro.hidden=!getTheme();
  if(getTheme()){const purpose=getTheme().name==="City"?"Urban and residential landscaping":getTheme().name==="Forest"?"Layered woodland planting":"Designed outdoor planting";
@@ -516,7 +524,7 @@ function selectModel(id,index,shift,ctrl){
 $("#catalogTabs").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
 $(".catalog-actions").addEventListener("click",e=>{const b=e.target.closest("[data-catalog]");if(b)selectCatalog(b.dataset.catalog)});
 $("#sidebarContent").addEventListener("click",e=>{
- if(e.target.closest("[data-folder]")){state.folder=Number(e.target.closest("[data-folder]").dataset.folder);state.selected.clear();render();}
+ if(e.target.closest("[data-folder]")){const id=e.target.closest("[data-folder]").dataset.folder;if(demoFolders.some(f=>f.id===id))guardPropertyChange(()=>{state.folder=id;state.selected.clear();render()});}
  if(e.target.closest("[data-fav]")){state.favFilter=e.target.closest("[data-fav]").dataset.fav;render();}
  if(e.target.closest("[data-theme-section]")){const t=e.target.closest("[data-theme-section]").dataset.themeSection;if(state.themeExpanded.has(t))state.themeExpanded.delete(t);else state.themeExpanded.add(t);folderList();return;}
  if(e.target.closest("[data-theme-comp]")){state.themeSelection=e.target.closest("[data-theme-comp]").dataset.themeComp;state.selected.clear();render();return;}
@@ -740,7 +748,7 @@ function showModal(kind){
   '<small class="modal-meta">Только UI-макет - изменения 3ds Max/SQLite не выполняются.</small>';
  }else if(kind==="library"){
   title.textContent="Library";confirm.textContent="Save";
-  body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="F:/001_Model/Maxtree" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
+  body.innerHTML='<div class="modal-body-section"><h3>Library Root</h3><input id="libraryPathInput" value="Demo Library" aria-label="Local library root"><p>Select the source library in the installed Flora plugin. The browser mockup does not access folders on your computer.</p></div>';
  }else if(kind==="catalog"){
   title.textContent="Add Catalog";confirm.textContent="Add to Preview";
   body.innerHTML='<div class="modal-body-section"><h3>Import FloraCOL</h3><input type="file" accept=".floracol" id="catalogFile"><p>Thematic collections use the separate .floracol format. This prototype can add a visual catalog tab, but cannot parse or install a real catalog.</p></div>';

@@ -379,3 +379,27 @@ button,select,input{line-height:1.35}
 @media(max-width:600px){.catalog-nav{padding:5px 6px;gap:3px;flex-basis:59px;min-height:59px}.catalog-tabs .catalog-tab{padding:7px 10px;font-size:10px}.catalog-actions{gap:2px}.catalog-actions .catalog-tab.icon-nav{width:52px;height:48px;gap:1px;padding:5px 2px 3px}.catalog-actions .catalog-tab.icon-nav svg{width:19px;height:19px}.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:9px;line-height:12px}.library-area{padding:10px;gap:9px}.search-toolbar{padding-bottom:12px}.search-holder{flex-basis:100%}.search-toolbar select{width:auto;flex:1 1 106px}.tile-trigger{min-width:90px;padding:5px 7px}}
 @media(max-width:370px){.catalog-actions .catalog-tab.icon-nav{width:45px}.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:8.5px}.catalog-tabs .catalog-tab{padding:7px 7px}.tile-trigger span{display:none}.tile-trigger{min-width:54px}}
 @media(max-height:620px){.catalog-nav{flex-basis:56px;min-height:56px}.catalog-actions .catalog-tab.icon-nav{height:46px}.library-area{gap:8px}}
+
+
+/* Compact Explorer, 36-model neutral demo library, Oct 20 2026. */
+.catalog-nav{height:48px;flex:0 0 48px;min-height:48px;padding:3px 9px;align-items:center}
+.catalog-actions .catalog-tab.icon-nav{height:40px;width:60px;gap:0;padding:2px 3px 1px;justify-content:center}
+.catalog-actions .catalog-tab.icon-nav svg{width:18px;height:18px}
+.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:9px;line-height:12px;font-weight:550}
+.catalog-actions .icon-count{right:0;top:0}
+.catalog-tabs .catalog-tab{min-height:30px;padding:6px 12px}
+.library-area{gap:6px}
+.content-heading{min-height:25px;gap:8px}
+.content-heading h1{font-size:15px;line-height:1.25;margin:0}
+.content-heading p[hidden]{display:none!important}
+.search-toolbar{padding-bottom:6px;margin-bottom:0}
+.results-shell{gap:10px}
+@media(max-width:600px){
+.catalog-nav{height:46px;flex-basis:46px;min-height:46px;padding:3px 6px}
+.catalog-actions .catalog-tab.icon-nav{height:38px;width:50px;gap:0}
+.catalog-actions .catalog-tab.icon-nav svg{width:17px;height:17px}
+.catalog-actions .catalog-tab.icon-nav .nav-label{font-size:8.5px;line-height:11px}
+.library-area{gap:5px}.search-toolbar{padding-bottom:5px}
+}
+@media(max-width:370px){.catalog-actions .catalog-tab.icon-nav{width:44px}}
+@media(max-height:620px){.catalog-nav{height:46px;flex-basis:46px;min-height:46px}.catalog-actions .catalog-tab.icon-nav{height:38px}}
