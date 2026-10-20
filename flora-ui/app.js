@@ -635,7 +635,7 @@ $("#modelSearch").addEventListener("input",e=>{state.search=e.target.value;state
 $("#sortSelect").addEventListener("change",e=>{state.sort=e.target.value;renderModels()});
 $("#gridButton").addEventListener("click",()=>setTileSize(state.lastGridSize));
 $("#listButton").addEventListener("click",()=>setTileSize(260));
-function setImportMode(mode){if(!["Geometry","Proxy"].includes(mode))return;state.proxy=mode;state.settings.proxy=mode;save();$("[data-proxy]").forEach(b=>{b.classList.toggle("active",b.dataset.proxy===mode);b.setAttribute("aria-pressed",String(b.dataset.proxy===mode))})}
+function setImportMode(mode){if(!["Geometry","Proxy"].includes(mode))return;state.proxy=mode;state.settings.proxy=mode;save();$$("[data-proxy]").forEach(b=>{b.classList.toggle("active",b.dataset.proxy===mode);b.setAttribute("aria-pressed",String(b.dataset.proxy===mode))})}
 $("#proxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Import Mode: "+state.proxy+" · демо без импорта в 3ds Max.")}});
 $("#basketProxyControls").addEventListener("click",e=>{const b=e.target.closest("[data-proxy]");if(b){setImportMode(b.dataset.proxy);toast("Basket использует общий Import Mode: "+state.proxy)}});
 
