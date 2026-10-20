@@ -311,7 +311,12 @@ function tableWidth(k){return Math.max(80,Math.min(440,Number(state.tableWidths[
 function modelCard(m,i){
  const fav=state.favorites.has(m.id),selected=state.selected.has(m.id),inBasket=state.basket.has(m.id);
  const ru=propertyValue("ru",m),en=propertyValue("en",m);
- return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="true" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+leafSVG(m)+'</div><button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket" draggable="false">'+(inBasket?'✓':'＋')+'</button><div class="card-caption"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(fav?'★':'☆')+'</button></div>'+(ru?'<span class="card-secondary">'+clean(ru)+'</span>':"")+(en?'<span class="card-secondary">'+clean(en)+'</span>':"")+'</article>';
+ const preview=m.missing?'<div class="missing-preview">Нет превью</div>':leafSVG(m);
+ const add=m.missing?"":'<button type="button" class="basket-add-button '+(inBasket?'is-added':'')+'" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket" draggable="false">'+(inBasket?'✓':'＋')+'</button>';
+ return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="'+(!m.missing)+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+preview+'</div>'+add+
+ '<div class="card-caption"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(fav?'★':'☆')+'</button></div>'+
+ (state.catalog==="scene"?'<span class="scene-node-count">×'+sceneCount(m)+' узлов · Demo</span>':'')+
+ (ru?'<span class="card-secondary">'+clean(ru)+'</span>':'')+(en?'<span class="card-secondary">'+clean(en)+'</span>':'')+'</article>';
 }
 function modelTable(arr){
  const cols=tableColumns();
@@ -319,7 +324,7 @@ function modelTable(arr){
  const rows=arr.map((m,i)=>'<tr class="model-row '+(state.selected.has(m.id)?'selected':'')+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'">'+cols.map(c=>{
   const value=tableValue(c[0],m);
   const actions=c[0]==="model"?'<span class="table-actions"><button type="button" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(state.favorites.has(m.id)?'★':'☆')+'</button><button type="button" data-addbasket="'+clean(m.id)+'" aria-label="Добавить в Basket">'+(state.basket.has(m.id)?'✓':'＋')+'</button></span>':"";
-  return '<td title="'+clean(value)+'"><span class="table-cell-value">'+clean(value)+'</span>'+actions+'</td>';
+  return '<td title="'+clean(value)+'"><span class="table-cell-value">'+clean(value)+(c[0]==="model"&&state.catalog==="scene"?" · ×"+sceneCount(m):"")+'</span>'+actions+'</td>';
  }).join("")+'</tr>').join("");
  return '<table class="flora-table" style="width:'+cols.reduce((s,c)=>s+tableWidth(c[0]),0)+'px"><colgroup>'+cols.map(c=>'<col data-colwidth="'+c[0]+'" style="width:'+tableWidth(c[0])+'px">').join("")+'</colgroup><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
 }
