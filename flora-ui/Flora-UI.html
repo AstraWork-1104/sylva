@@ -410,6 +410,42 @@ button,select,input{line-height:1.35}
 }
 @media(max-width:370px){.catalog-actions .catalog-tab.icon-nav{width:44px}}
 @media(max-height:620px){.catalog-nav{height:46px;flex-basis:46px;min-height:46px}.catalog-actions .catalog-tab.icon-nav{height:38px}}
+
+
+/* Flora compact inline navigation - Oct 20 2026.
+   One row: icon LEFT, label RIGHT, matching the original Favorites button. */
+.catalog-nav{height:36px;flex:0 0 36px;min-height:36px;padding:3px 8px;gap:5px}
+.catalog-nav .fill{min-width:0}
+.catalog-actions{display:flex;align-items:center;gap:2px}
+.catalog-actions .catalog-tab.icon-nav{
+ display:inline-flex;flex-direction:row;align-items:center;justify-content:center;
+ width:auto;min-width:0;height:28px;padding:4px 7px;gap:5px;
+ border-radius:5px;font-size:11px;line-height:16px;white-space:nowrap;
+}
+.catalog-actions .catalog-tab.icon-nav svg{width:16px;height:16px;flex:0 0 16px}
+.catalog-actions .catalog-tab.icon-nav .nav-label{
+ display:inline-block;font-size:11px;font-weight:550;line-height:16px;white-space:nowrap;
+}
+.catalog-tabs .catalog-tab{min-height:28px;padding:5px 11px}
+.catalog-actions .icon-count{top:-3px;right:-3px}
+@media(max-width:600px){
+ .catalog-nav{height:34px;flex-basis:34px;min-height:34px;padding:3px 5px;gap:2px}
+ .catalog-actions{gap:1px}
+ .catalog-actions .catalog-tab.icon-nav{height:26px;width:auto;padding:3px 5px;gap:3px;flex-direction:row}
+ .catalog-actions .catalog-tab.icon-nav svg{width:14px;height:14px;flex-basis:14px}
+ .catalog-actions .catalog-tab.icon-nav .nav-label{font-size:9.5px;line-height:14px}
+ .catalog-tabs .catalog-tab{min-height:26px;padding:4px 8px}
+}
+@media(max-width:370px){
+ .catalog-nav{overflow-x:auto}
+ .catalog-actions .catalog-tab.icon-nav{width:auto;height:26px;padding:3px 4px;gap:2px}
+ .catalog-actions .catalog-tab.icon-nav .nav-label{font-size:9px}
+ .catalog-tabs .catalog-tab{padding:4px 6px}
+}
+@media(max-height:620px){
+ .catalog-nav{height:34px;flex-basis:34px;min-height:34px}
+ .catalog-actions .catalog-tab.icon-nav{height:26px;flex-direction:row;width:auto}
+}
 </style>
   
 </head>
