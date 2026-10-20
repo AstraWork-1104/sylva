@@ -228,6 +228,9 @@ function similarPlantNames(m){
 }
 function propertyValue(key,m){
  if(key==="model")return m.id+".max";
+ const override=state.propertyOverrides[propertyPath(m)];
+ if(override&&Object.prototype.hasOwnProperty.call(override,key))return override[key];
+ if(m.missing)return "";
  if(!state.atlasPreviewActive)return "";
  const names=botanicalNames[m.family]||[],bot=demoBotanical(m);
  if(!bot)return "";
@@ -238,28 +241,27 @@ function propertyValue(key,m){
  return values[key]||"";
 }
 function tableValue(key,m){
- const bot=demoBotanical(m);
- if(key==="environmentType")return bot?[...(bot.natural.length?["Природные"]:[]),...(bot.landscaped.length?["Домашние"]:[])].join(", "):"";
- if(key==="environmentCategory")return bot?[...(bot.natural.length?["Природные: "+bot.natural.join(", ")]:[]),...(bot.landscaped.length?["Домашние: "+bot.landscaped.join(", ")]:[])].join("; "):"";
+ if(key==="environmentType")return [propertyValue("natural",m)?"Природные":"",propertyValue("landscaped",m)?"Домашние":""].filter(Boolean).join(", ");
+ if(key==="environmentCategory")return [propertyValue("natural",m)?"Природные: "+propertyValue("natural",m):"",propertyValue("landscaped",m)?"Домашние: "+propertyValue("landscaped",m):""].filter(Boolean).join("; ");
  return propertyValue(key,m);
 }
 function visibleModels(){
- let arr=models.filter(m=>{
+ let arr=(state.catalog==="scene"?sceneModels():models).filter(m=>{
   if(state.catalog==="favorites"&&!state.favorites.has(m.id))return false;
   if(getTheme()&&!themeIds().includes(m.id))return false;
-  const bot=demoBotanical(m);
-  if(state.filterGroup&&bot?.group!==state.filterGroup)return false;
-  if(state.filterCategory&&state.filterCategory!==bot?.group+"|"+bot?.category)return false;
-  if(state.filterFlower&&bot?.flowering!==state.filterFlower)return false;
-  if(state.filterEnvironment){
-   const values=state.filterEnvironment==="Природные"?bot?.natural:bot?.landscaped;
-   if(!values?.length)return false;
-   if(state.filterEnvironmentCategory&&!values.includes(state.filterEnvironmentCategory))return false;
-  }
+  const group=propertyValue("group",m),category=propertyValue("category",m);
+   if(state.filterGroup&&group!==state.filterGroup)return false;
+   if(state.filterCategory&&state.filterCategory!==group+"|"+category)return false;
+   if(state.filterFlower&&propertyValue("flowering",m)!==state.filterFlower)return false;
+   if(state.filterEnvironment){
+    const values=propertyValue(state.filterEnvironment==="Природные"?"natural":"landscaped",m).split(",").map(x=>x.trim()).filter(Boolean);
+    if(!values.length)return false;
+    if(state.filterEnvironmentCategory&&!values.includes(state.filterEnvironmentCategory))return false;
+   }
   return true;
  });
  const q=state.search.trim().toLocaleLowerCase();
- if(q)arr=arr.filter(m=>[m.id+".max",propertyValue("ru",m),propertyValue("en",m),propertyValue("lat",m),...similarPlantNames(m).flatMap(x=>[x.ru,x.en,x.lat])].some(x=>String(x).toLocaleLowerCase().includes(q)));
+ if(q)arr=arr.filter(m=>[m.id+".max",propertyValue("ru",m),propertyValue("en",m),propertyValue("lat",m),propertyValue("similar",m),...similarPlantNames(m).flatMap(x=>[x.ru,x.en,x.lat])].some(x=>String(x).toLocaleLowerCase().includes(q)));
  const key=state.grid?"model":state.tableSortKey;
  arr.sort((a,b)=>String(tableValue(key,a)).localeCompare(String(tableValue(key,b)),undefined,{numeric:true,sensitivity:"base"}));
  if((state.grid?state.sort:state.tableSortDir)==="desc")arr.reverse();
@@ -362,15 +364,16 @@ function renderModels(){
  }
  let title,path;
  if(state.catalog==="explorer"){title="Explorer";path="F:/001_Model/Maxtree";}
- else if(state.catalog==="favorites"){title=state.favFilter;path="Favorites / Saved plants";}
+ else if(state.catalog==="scene"){title="Scene";path="Демонстрация FloraSource · реальные узлы 3ds Max недоступны";}
+  else if(state.catalog==="favorites"){title=state.favFilter;path="Favorites / Saved plants";}
  else if(getTheme()){title=state.themeSelection;path=getTheme().name+" / "+getTheme().sections.find(x=>x.items.includes(state.themeSelection))?.name+" / "+state.themeSelection;}
  else{const meta=collections.find(x=>x.id===state.catalog);title=meta?.label||"Catalog";path="Imported / "+title;}
  $("#collectionTitle").textContent=title;$("#collectionPath").textContent=path;
- $("#contentTag").hidden=["explorer","favorites"].includes(state.catalog);
+ $("#contentTag").hidden=["explorer","favorites","scene"].includes(state.catalog);
  const intro=$("#collectionDescription");intro.hidden=!getTheme();
  if(getTheme()){const purpose=getTheme().name==="City"?"Urban and residential landscaping":getTheme().name==="Forest"?"Layered woodland planting":"Designed outdoor planting";
   intro.innerHTML='<strong>Purpose:</strong> '+clean(purpose)+' <span> · Sample groups, not automatic planting.</span>';}
- $("#modelCount").textContent=arr.length+" models";
+ $("#modelCount").textContent=arr.length+(state.catalog==="scene"?" source models · Demo":" models");
  $("#selectionCount").textContent=state.selected.size+" selected";
  properties();
 }
