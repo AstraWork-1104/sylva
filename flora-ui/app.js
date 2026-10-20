@@ -351,7 +351,7 @@ function modelCard(m,i){
  return '<article class="model-card '+(selected?'selected':'')+'" role="listitem" draggable="'+(!m.missing)+'" tabindex="0" data-model="'+clean(m.id)+'" data-index="'+i+'"><div class="plant-image">'+preview+'</div>'+add+
  '<div class="card-caption"><span class="card-name" title="'+clean(m.id)+'.max">'+clean(m.id)+'.max</span><button type="button" class="star-button '+(fav?'active':'')+'" data-favorite="'+clean(m.id)+'" aria-label="Избранное">'+(fav?'★':'☆')+'</button></div>'+
  (state.catalog==="scene"?'<span class="scene-node-count">×'+sceneCount(m)+' узлов · Demo</span>':'')+
- (ru?'<span class="card-secondary">'+clean(ru)+'</span>':'')+(en?'<span class="card-secondary">'+clean(en)+'</span>':'')+'</article>';
+ '<span class="card-secondary">'+clean(ru)+'</span><span class="card-secondary">'+clean(en)+'</span></article>';
 }
 function modelTable(arr){
  const cols=tableColumns();
