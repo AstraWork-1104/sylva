@@ -18,12 +18,14 @@ th{position:sticky;top:0;background:#373737;color:#cfcfcf}
 @media(max-width:700px){.content{grid-template-columns:1fr}.app{height:auto}}
 
 
-/* 3ds Max Dark: neutral charcoal controls with steel-blue selection. */
-:root{color-scheme:dark;--bg:#303030;--panel:#414141;--line:#5a5a5a;--line2:#555555;--fg:#e0e0e0;--dim:#aeaeae;--green:#80a8c7;--button:#4b4b4b;--ok:#a0c29a;--bad:#d17d7b;--yellow:#c8a45e}
+/* 3ds Max Dark: neutral charcoal controls with green accent states. */
+:root{color-scheme:dark;--bg:#303030;--panel:#414141;--line:#5a5a5a;--line2:#555555;--fg:#e0e0e0;--dim:#aeaeae;--green:#82c0a8;--button:#4b4b4b;--ok:#a0c29a;--bad:#d17d7b;--yellow:#c8a45e}
 body{background:#2b2b2b;color:#e1e1e1}
-button,select,input{accent-color:#80a8c7}
-button:hover{background:#5b5b5b}
-button:focus-visible,input:focus-visible{outline:2px solid #85aacb;outline-offset:1px}
+button,select,input{accent-color:#82c0a8}
+button:hover{background:#53635a}
+button:focus-visible,input:focus-visible{outline:2px solid #8dcbb6;outline-offset:1px}
+input[type=checkbox],progress{accent-color:#82c0a8}
+button.active,button[aria-pressed=true]{background:#436f5e;border-color:#78af99;color:#f2faf5}
 </style></head>
 <body><div class="app"><header><strong>Flora / Model Analyzer</strong><small>UI PROTOTYPE - список исходных .max</small><button id="close">Закрыть</button></header>
 <div class="content"><aside><h2>Library folders</h2><label><input id="all" type="checkbox" checked> Все папки</label><label><input class="folder" type="checkbox" value="Canopy Trees" checked> Canopy Trees</label><label><input class="folder" type="checkbox" value="Evergreen Conifers" checked> Evergreen Conifers</label><label><input class="folder" type="checkbox" value="Garden Shrubs" checked> Garden Shrubs</label><label><input class="folder" type="checkbox" value="Flowering Beds" checked> Flowering Beds</label><label><input class="folder" type="checkbox" value="Perennial Border" checked> Perennial Border</label><label><input class="folder" type="checkbox" value="Ornamental Grasses" checked> Ornamental Grasses</label><label><input class="folder" type="checkbox" value="Climbing Plants" checked> Climbing Plants</label><p>Без открытия сцен, расчёта геометрии и изменения объектов. Список ниже полностью демонстрационный, без доступа к библиотеке.</p></aside>
