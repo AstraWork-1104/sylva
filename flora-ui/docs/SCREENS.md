@@ -2,6 +2,9 @@
 
 Далее указаны функции **существующего HTML-макета**, не принятые изменения рабочего Qt-интерфейса после 1.0.0.44. Более поздние утверждения владельца (вертикальный Edit Properties, единые dropdown, динамические кнопки, новый Basket, сокращённый Filters/Explorer) см. в [основном описании Flora, §20](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). Код веб-макета не обновлялся.
 
+
+**Приоритет для текущего PySide6 (22.10.2026):** пользователь утвердил новый цикл. В первом таске: центрирование/уплотнение навигации, английский Filters, defaults Fonts 16/16/16/15/13/16/17 px + Scale 113%, кнопка скрытия FOLDERS слева от поиска, английская левая колонка Properties с заголовками `Names / Information / Description`, служебные метки Filters английские, реальные категории русские. На скриншоте окно `Flora 1.0.0.46`; commit неизвестен. Последним вторым таском согласованы: нижний бар строго в одну строку - selected слева, три компактных переключателя справа (`USE MATERIAL Scene/Model`, `USE INSTANCES ON/OFF`, `IMPORT MODE Geometry/Proxy`) без Drag подсказки и ready; отсутствие маленьких подзаголовков Scene/All Favorites; Filters Regular/400; прямые пункты Import as Geometry/Proxy и контекстное меню из четырёх закруглённых блоков; Select Model Disabled, если нет узла FloraSource. Результат второго таска **не подтверждён**. [Актуальный контракт, §21](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). Таблица ниже по-прежнему описывает **только действующий HTML**, не рабочую Qt-реализацию.
+
 | Экран | Реализовано в HTML | За пределами браузера |
 |---|---|---|
 | Navigation | Explorer слева, Catalogs/Scene/Favorites/Basket справа с иконками и видимыми текстовыми подписями, подсказки, aria-label, счётчик Basket | Реальный Qt UI |
