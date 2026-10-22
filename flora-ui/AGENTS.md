@@ -4,6 +4,9 @@ Work here only on the **browser prototype** in the `flora-ui-v2` branch, not on 
 
 **READ FIRST:** [`docs/UI_MAP.md`](docs/UI_MAP.md). It maps screens, DOM IDs, state, JS functions, CSS override layers, standalone packaging, and regression checks.
 
+
+The approved newer Qt/PySide6 UI cycle is documented in the [Flora product specification §21](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit) (22 Oct 2026). This includes centered/compact navigation, updated font defaults, collapsible FOLDERS, English property labels and filter controls while preserving Russian classification values, plus a one-row import footer and four-section rounded card context menu. These are **product decisions for the desktop plugin**, not a mandate to modify this HTML prototype; the latest corrective Codex task is not yet verified as completed. The browser mapping below describes current HTML rather than that Qt release.
+
 Primary source files:
 - `index.html` - semantic DOM and static control IDs.
 - `styles.css` - styling and responsive layout; **later overrides can supersede early rules**.
