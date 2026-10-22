@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flora UI - 3ds Max Dark Theme</title>
+  <title>Flora UI - Graphite Studio</title>
   <meta name="description" content="Flora UI 3ds Max inspired dark graphite user interface prototype">
   <style>:root{font-family:Inter,"Segoe UI",Arial,sans-serif;font-synthesis:none;color-scheme:dark;color:#dddddd;background:#2d2d2d;font-size:12px;--bg:#282828;--surface:#2d2d2d;--surface2:#313131;--surface3:#373737;--border:#474747;--border2:#5a5a5a;--text:#e5e5e5;--muted:#a6a6a6;--muted2:#818181;--green:#bababa;--selected:#4d4d4d;--hover:#3c3c3c;--red:#9d9d9d;--amber:#bdbdbd}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #bababa;outline-offset:2px}a{color:inherit;text-decoration:none}[hidden]{display:none!important}
@@ -448,117 +448,97 @@ button,select,input{line-height:1.35}
 }
 
 
-/* =========================================================================
-   3ds Max-inspired dark UI scheme - independently maintained Flora variant.
-   Visual reference: Autodesk 3ds Max 2026 Dark UI.
-   Palette is a visual approximation, not an official Autodesk color file.
-   Layout, 36-model demo dataset and interactions remain unchanged.
-   ========================================================================= */
-:root{
- color-scheme:dark;
- --bg:#303030;
- --surface:#383838;
- --surface2:#424242;
- --surface3:#494949;
- --border:#565656;
- --border2:#6a6a6a;
- --text:#dedede;
- --muted:#aaaaaa;
- --muted2:#898989;
- --green:#78bbaa;
- --selected:#3d6658;
- --hover:#515151;
- --red:#d57c78;
- --amber:#c6a052;
-}
-html,body,.stage{background:#2a2a2a;color:var(--text)}
-.desktop-window{background:#343434;border-color:#646464;box-shadow:0 14px 38px #0006}
-.os-bar{background:#404040;color:#dedede;border-color:#616161}
-.os-actions{color:#bcbcbc}
-.application{background:#373737}
-.logo{background:linear-gradient(145deg,#93c8b8,#4c9580);color:#1e4035}
-.top-header,.catalog-nav,.statusbar{background:#454545;border-color:#5c5c5c}
-.brand-title{color:#ededed}
-.app-version,.prototype-note,.footer-label{color:#adadad}
-.workspace-tab{color:#cecece}
-.workspace-tab:hover{background:#4b5b52;color:#f2f2f2}
-.workspace-tab.active{background:#426b5c;color:#edf7f1}
-.catalog-tab{color:#d0d0d0}
-.catalog-tab:hover,.catalog-actions .catalog-tab.icon-nav:hover{background:#526158;color:#eeeeee}
-.catalog-tab.active,.catalog-actions .catalog-tab.icon-nav.active{background:#436f5e;border-color:#78af99;color:#f2faf5}
-.catalogs-menu,.plant-context-menu{background:#454545;border-color:#666666;box-shadow:0 9px 19px #0006}
-.catalog-menu-item:hover,.catalog-menu-add:hover,.plant-context-menu button:hover{background:#555555}
-.toolbar-button,.sidebar-section-button,.filter-trigger{background:#4a4a4a;color:#dedede;border-color:#676767}
-.toolbar-button:hover,.toolbar-button.active,.sidebar-section-button:hover{background:#53635a;color:#f5f5f5;border-color:#8bac98}
-.toolbar-button.active,.tile-trigger[aria-expanded="true"]{background:#487766;border-color:#87baa4;color:#f3faf5}
-.manager-link{color:#a6d3bf}
-.primary,button.primary{background:#4c9076;color:#ffffff;border-color:#7eb5a0}
-.primary:hover,button.primary:hover{background:#5ca287}
-.sidebar,.library-area{background:#3c3c3c;border-color:#5b5b5b}
-.sidebar-heading{color:#c2c2c2;border-color:#575757}
-.sidebar-footer{color:#a9a9a9}
-.tree-item{color:#c9c9c9}
-.tree-item svg,.tree-item .twisty{color:#b4b4b4}
-.tree-item:hover{background:#4d5d53}
-.tree-item.active{background:#4a7562;color:#f4faf5}
-.content-heading h1{color:#f0f0f0}
-.content-heading p,.model-count{color:#b7b7b7}
-.content-tag{background:#454545;border-color:#696969;color:#d3d3d3}
-.search-toolbar{border-color:#606060}
-.search-holder{background:#474747;border-color:#707070;color:#c3c3c3}
-.search-holder input{color:#ececec}
-.search-holder input::placeholder{color:#a4a4a4}
-select,input[type="number"],input[type="text"],input[type="search"],.property-edit-field{background:#494949;border-color:#666666;color:#e4e4e4}
-select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #8dcbb6;outline-offset:1px}
-select option{background:#424242;color:#e5e5e5}
-.filter-panel{background:#414141;border-color:#636363}
-.filter-header,.filter-section-heading{color:#d4d4d4}
-.filter-segments button,.segmented button{background:#484848;color:#d0d0d0}
-.filter-segments button.active,.segmented button.active{background:#4d7866;color:#f5faf7}
-.filter-segments button:hover,.segmented button:hover{background:#57665c}
-.results-shell{border-color:#575757}
-.model-grid{background:#363636;border-color:#585858}
-.model-card{background:#414141;border-color:transparent}
-.model-card:hover{background:#505a52;border-color:#83ad91}
-.model-card.selected{background:#3f594d;border-color:#83bd9f}
-.plant-image,.basket-preview{background:#323232}
-.card-copy .card-name,.basket-card-title{color:#e8e8e8}
-.card-copy .card-secondary,.basket-card-description{color:#bbbbbb}
-.card-actions button{color:#c6c6c6}
-.card-actions button:hover,.card-actions button:focus-visible{background:#526156;color:#fafafa}
-.card-actions .star-button.active,.card-actions .card-basket-button.is-added{color:#a6d5ae}
-.scene-presence-dot{background:#87b581;border-color:#363636;box-shadow:0 0 0 1px #658761}
-.flora-table{color:#dedede;background:#3c3c3c}
-.flora-table th{background:#484848;color:#dfdfdf}
-.flora-table th>button:hover,.flora-table tbody tr:hover{background:#545454}
-.flora-table th,.flora-table td{border-color:#606060}
-.flora-table tbody tr.selected{background:#456d5b;outline-color:#92c8ae}
-.flora-table td:first-child{color:#e4e4e4}
-.properties-panel{border-color:#616161}
-.property-heading{background:#4a4a4a}
-.property-heading .property-group-title{color:#ededed}
-.property-row{border-color:#545454}
-.property-row>span:first-child{color:#b0b0b0}
-.property-row>span:last-child{color:#e1e1e1}
-.property-edit-field{background:#454545;color:#e8e8e8}
-.basket-top,.basket-toolbar,.basket-card{background:#414141;border-color:#5f5f5f}
-.basket-toolbar-info strong{color:#e5e5e5}
-.basket-grid{background:#393939}
-.tile-size-popover{background:#484848;border-color:#727272}
-.tile-popover-heading,.tile-popover-heading label{color:#f0f0f0}
-.tile-popover-heading output{color:#b5e2ce}
-.tile-size-popover input[type=range],input[type=range],input[type=checkbox]{accent-color:#82c0a8}
-.modal{background:#414141;border-color:#707070;box-shadow:0 16px 42px #0008}
-.modal-header,.modal-footer{background:#484848;border-color:#646464}
-.modal-body-section{background:#414141;border-color:#595959}
-#toast{background:#4d4d4d;color:#f0f0f0;border-color:#777777}
+
+/* GRAPHITE STUDIO - charcoal architecture, matte titanium details */
+:root{color-scheme:dark;font-family:"Segoe UI Variable","Segoe UI",Inter,Arial,sans-serif;--bg:#181a1c;--surface:#25292c;--surface2:#2b3033;--surface3:#363b3e;--border:#40484d;--border2:#697277;--text:#f0f1ef;--muted:#aab2b6;--muted2:#899297;--green:#c0c7c6;--selected:#464d51;--hover:#3d4448}
+html,body{background:#16181b;color:var(--text)}
+.stage{background:radial-gradient(ellipse at 50% 0%,#2c3034,#191c1f 56%,#111315)}
+.desktop-window{background:#1a1e20;border:1px solid #4b5459;border-radius:11px;box-shadow:0 25px 75px #000b,inset 0 1px 0 #ffffff10}
+.os-bar{background:#202427;color:#bbc3c4;border-bottom-color:#3d4448;font-size:11px}
+.logo{background:linear-gradient(145deg,#e2e4df,#a2aba6);color:#303538;box-shadow:inset 0 0 0 1px #ffffff21}
+.brand-title{color:#f8f8f5;letter-spacing:-.25px}
+.application{background:#1f2326}
+.top-header,.catalog-nav,.statusbar{background:#292e31;border:1px solid #424a4e;border-radius:8px;box-shadow:inset 0 1px 0 #ffffff09}
+.catalog-nav{background:#252a2d}
+.workspace-tab,.catalog-tab{color:#bdc6c9}
+.workspace-tab:hover,.catalog-tab:hover,.catalog-actions .catalog-tab.icon-nav:hover{background:#394145;color:#fff}
+.workspace-tab.active,.catalog-tab.active,.catalog-actions .catalog-tab.icon-nav.active{background:#464e52;border:1px solid #879196;color:#fafaf6;box-shadow:inset 0 1px 0 #ffffff16}
+.toolbar-button,.sidebar-section-button,.filter-trigger{background:#353b3f;border:1px solid #535d62;color:#e2e6e4;border-radius:6px;box-shadow:inset 0 1px 0 #ffffff0b;transition:background .16s,border-color .16s}
+.toolbar-button:hover,.sidebar-section-button:hover,.filter-trigger:hover{background:#444d52;border-color:#889398;color:#fff}
+.toolbar-button.active,.tile-trigger[aria-expanded=true]{background:#586166;border-color:#b4bec0;color:#fff}
+.primary,button.primary{background:#bdc4c2;border:1px solid #d5dad7;color:#1f2426;font-weight:700}
+.primary:hover,button.primary:hover{background:#dce0dc;color:#141719}
+.sidebar,.library-area{background:#262b2e;border:1px solid #424b4f;border-radius:9px;box-shadow:inset 0 1px 0 #ffffff07}
+.sidebar{background:#22272a}
+.sidebar-heading{color:#b5bec1;border-bottom-color:#424a4e;letter-spacing:1px}
+.sidebar-footer,.app-version,.prototype-note{color:#909ba0}
+.tree-item{color:#b9c2c4;border:1px solid transparent}
+.tree-item:hover{background:#3a4246;color:#fff}
+.tree-item.active{background:#444d51;border-color:#69757a;color:#f9f9f6;box-shadow:inset 2px 0 0 #d4d8d4}
+.content-heading h1{color:#f7f7f4;letter-spacing:-.2px;font-weight:730}
+.content-heading p,.model-count{color:#aab4b8}
+.search-toolbar{border-color:#3f494d}
+.search-holder{background:#1e2427;border:1px solid #59656b;border-radius:7px;color:#a5b0b5;box-shadow:inset 0 1px 4px #0005}
+.search-holder:focus-within{border-color:#bec8c9;box-shadow:0 0 0 2px #bec8c922}
+.search-holder input{background:transparent!important;border:0!important;color:#f5f6f2!important}
+.search-holder input::placeholder{color:#8e999f}
+select,input[type=number],input[type=text],input[type=search],.property-edit-field{background:#323a3e;border:1px solid #5d686d;color:#edf0ed;border-radius:6px}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #c5cdcc;outline-offset:2px}
+input[type=checkbox],input[type=range],progress{accent-color:#c9cfce}
+.filter-panel{background:#2c3336;border:1px solid #525e63;border-radius:8px;box-shadow:0 9px 24px #0005}
+.filter-segments button,.segmented button{background:#384145;color:#d6dcdb}
+.filter-segments button.active,.segmented button.active{background:#555f64;border-color:#aab5b8;color:#fff}
+.results-shell{border-color:#434c51}
+.model-grid{background:#1d2225;border:1px solid #3c4549;border-radius:8px}
+.model-grid:not(.table-mode){padding:6px 7px 9px 6px}
+.model-card{position:relative;background:#2e363a;border:1px solid #414c51;border-radius:9px;padding:6px;box-shadow:0 2px 8px #0003;transition:background .16s,border-color .16s,box-shadow .16s,transform .16s}
+.model-card:hover{background:#3a4448;border-color:#8a979d;box-shadow:0 7px 18px #0006;transform:translateY(-1px)}
+.model-card.selected{background:#424c50;border-color:#c4ccca;box-shadow:inset 0 0 0 1px #bdc6c577,0 6px 18px #0005}
+.plant-image,.basket-preview{background:radial-gradient(ellipse at 50% 35%,#394347,#2e373b 65%,#252c30);border:1px solid #424d52;border-radius:6px}
+.card-copy .card-name,.basket-card-title{color:#f5f6f2;font-weight:690}
+.card-copy .card-secondary,.basket-card-description{color:#aeb9bd}
+.card-actions button{color:#bac4c7}
+.card-actions button:hover,.card-actions button:focus-visible{background:#505c61;color:#fff}
+.card-actions .star-button.active,.card-actions .card-basket-button.is-added{color:#dce0dc}
+.scene-presence-dot{background:#90bc93;border:2px solid #2c3437;box-shadow:0 0 0 1px #719874}
+.flora-table{background:#292f33;color:#ecefec;border-color:#4d585d}
+.flora-table th{background:#3e484d;color:#e9ece9}
+.flora-table th,.flora-table td{border-color:#485357}
+.flora-table tbody tr:hover{background:#3d474b}
+.flora-table tbody tr.selected{background:#505b60;outline:1px solid #c2cbca}
+.properties-panel{background:#2a3033;border-color:#485257}
+.property-heading{background:#3d474b;border:1px solid #505c61;border-radius:5px}
+.property-heading .property-group-title{color:#f2f3ef}
+.property-row{border-bottom:1px solid #444e53}
+.property-row>span:first-child{color:#aab5b9}
+.property-row>span:last-child{color:#f0f1ee}
+.basket-workspace{background:#24292c}
+.basket-top,.basket-toolbar{background:#2d3438;border:1px solid #4b575c;border-radius:9px}
+.basket-grid{background:#202629}
+.basket-card{background:#30383c;border:1px solid #475459;border-radius:9px;box-shadow:0 2px 9px #0004}
+.basket-card:hover{background:#3f494e;border-color:#89969b}
+.selected-pill{background:#505b60;border:1px solid #738186;color:#f3f4f1}
+.catalogs-menu,.plant-context-menu{background:#323b3f;border:1px solid #6b777c;box-shadow:0 14px 34px #0009}
+.catalog-menu-item:hover,.catalog-menu-add:hover,.plant-context-menu button:hover{background:#485357}
+.tile-size-popover{background:#343d41;border:1px solid #7c898e;box-shadow:0 15px 36px #000a}
+.tile-popover-heading output{color:#e5e8e4}
+.tile-size-popover input[type=range]{accent-color:#c6cecb}
+.modal{background:#323a3e;border:1px solid #79858a;border-radius:12px;box-shadow:0 28px 72px #000b;color:#f3f4f0}
+.modal-header,.modal-footer{background:#3b454a;border-color:#536066}
+.modal-body-section{background:#323a3e;border-color:#4b565b}
+#toast{background:#465256;border:1px solid #88959a;color:#f4f5f1}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#23292c}
+::-webkit-scrollbar-thumb{background:#58656b;border:2px solid #23292c;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#77858b}
+@media(hover:none){.model-card:hover{transform:none;box-shadow:0 2px 8px #0003}}
 </style>
   
 </head>
 <body>
 <div class="stage">
   <div class="desktop-window" id="floraApp">
-    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora UI V2 · 3ds Max Dark <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
+    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora UI V2 · Graphite Studio <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
     <div class="application">
       <header class="top-header">
         <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
