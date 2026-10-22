@@ -21,6 +21,10 @@
 - Settings - Use Instances (OFF по умолчанию), Point Cloud для новых Corona Proxy, Proxy Cache с путём/неизвестной браузеру статистикой и предупреждением Clear Cache, отдельное подтверждение Uninstall.
 - Favorites, Basket, тематические каталоги FloraCOL, Model Analyzer и Material Manager сохранены в качестве интерактивных демонстраций.
 
+## Отличие текущего HTML от новейшего Qt-контракта (22.10.2026)
+
+Этот README фиксирует **фактически реализованный в HTML** дизайн на 20.10.2026. После него для реальной Flora утверждены новые UI-решения: Edit Properties как вертикальная форма во всю ширину, заголовки без стрелок, чекбоксы сред без вложенных списков, общий стиль dropdown, адаптивные кнопки при масштабировании шрифта, новый Basket и компактные Filters/Explorer. Они описаны в [§20 основной спецификации](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit) и **не считаются реализованными в HTML без отдельного изменения кода**. HTML-файлы в рамках этой актуализации не менялись.
+
 ## Ограничения
 **Это только HTML/CSS/JS-прототип.** Данные моделей, превью и Scene условные. Настройки и ручные Properties сохраняются в localStorage, а не в рабочий INI/SQLite. HTML не открывает .max, .cgeo, .floratlas, .floracol, не вызывает Corona API, не создаёт 3ds Max Instances/Proxy, не изменяет сцену и не выполняет Merge, Cache Clear или Uninstall. Функциональные тесты реального Python/PySide6-плагина этим макетом не подтверждаются.
 
