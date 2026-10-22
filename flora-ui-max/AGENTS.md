@@ -1,7 +1,7 @@
-# Flora UI Max - coding agent instructions
+# Flora UI - Graphite Studio
 
-The canonical second Flora UI mockup is this independent **3ds Max-like dark graphite theme** at `/sylva/flora-ui-max/`. Original green variant: `../flora-ui/`, do not edit unless specifically asked.
+This is an independent second Flora mockup at `/sylva/flora-ui-max/`. Graphite Studio uses deep charcoal layers, matte gray cards and satin/platinum highlights, with the green Scene presence dot as the only semantic green accent. The path is retained for compatible URLs; it is no longer an exact 3ds Max-inspired theme.
 
-IMPORTANT: `index.html` and `Flora-UI.html` are byte-identical **self-contained HTML bundles**; this avoids stale CSS/JS cache issues that occurred at the former `flora-ui-warm/` URL. Edit `source.html`, `styles.css`, `app.js` first; rebuild BOTH standalone pages using inline CSS, JS and embedded `material-manager.html` / `model-analyzer.html`.
+Work only in `flora-ui-max/`, not original green `../flora-ui/`. Edit modular sources `source.html`, `styles.css`, `app.js`, `material-manager.html`, `model-analyzer.html` then rebuild both `index.html` and `Flora-UI.html` as byte-identical, self-contained HTML, with CSS, JS and both auxiliary windows embedded.
 
-The Max theme uses neutral grays, subdued 3ds Max-like green active/focus states and green selected-model borders, and the green Scene presence indicator. Keep all 36 demo models, layouts and interactions. Reuse localStorage prefix `flora-ui-warm-v1` to retain previous second-mockup preferences. The old `../flora-ui-warm/` links redirect here. Shared interface map: `../flora-ui/docs/UI_MAP.md`. No actual 3ds Max implementation in this mockup.
+Preserve the 36 demo models, all responsive behavior and controls, and the `flora-ui-warm-v1` localStorage namespace. Shared interface map: `../flora-ui/docs/UI_MAP.md`.
