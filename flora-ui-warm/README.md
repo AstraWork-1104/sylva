@@ -1,17 +1,27 @@
-# Flora UI - Warm Gray
+# Flora UI - 3ds Max Dark
 
-**Separate second interactive mockup** using warm graphite, stone grays, taupe and sand accents. No files in the original `flora-ui/` were replaced.
+**Independent second interactive Flora prototype styled after the Autodesk 3ds Max 2026 dark interface**. This replaces the previous Warm Gray colorway of this *second* variant, while keeping the original green Flora in `../flora-ui/` untouched.
 
-**Open online:** https://astrawork-1104.github.io/sylva/flora-ui-warm/
+**[Open the live mockup](https://astrawork-1104.github.io/sylva/flora-ui-warm/)**
 
-Files:
-- `index.html`, `styles.css`, `app.js` - independent modular version.
-- `Flora-UI.html` - autonomous HTML bundle with embedded CSS/JS and auxiliary popup windows.
-- `material-manager.html`, `model-analyzer.html` - theme-matched auxiliary windows.
-- `AGENTS.md` - guidance for Codex.
+The folder and URL retain the historical name `flora-ui-warm` to preserve existing links. The displayed design is now **3ds Max Dark**, not warm taupe.
 
-The same Explorer, Scene, Favorites, Basket, Catalogs, Filters, Properties, Grid/Table, Tile Size and settings are preserved, along with 36 demonstration models. The warm variant stores UI state under its **own** localStorage namespace `flora-ui-warm-v1` so it cannot overwrite green-theme settings.
+## Visual scheme
 
-Plant preview colors remain natural and the Scene-presence indicator stays muted green for clarity. Other UI accents are warm sand and taupe.
+- Neutral Autodesk-style graphite surfaces, layered gray panels and beveled-looking controls without changing Flora's existing compact flat layout.
+- Steel-blue accents on active tabs, focus rings, selected controls, and interaction states. Amber selection outline on selected model cards.
+- Light gray primary text, subdued gray metadata, matching input controls, table headers, modals, hover and Basket states.
+- The small green Scene-presence dot remains green as an existing semantic indicator.
+- Auxiliary Material Manager and Model Analyzer also use the matching gray palette.
 
-The functional interface architecture is documented in [the original UI map](../flora-ui/docs/UI_MAP.md). Future updates to this variant should change modular sources first, then rebuild the standalone HTML. The original green site remains at https://astrawork-1104.github.io/sylva/.
+The palette is a **visual approximation**, not an extracted, officially endorsed Autodesk theme or `.clrx` color file.
+
+## Files and independence
+
+`index.html`, `styles.css`, `app.js` are the sources. `Flora-UI.html` is the synchronized standalone page containing these sources and bundled auxiliary HTML. `material-manager.html` and `model-analyzer.html` also work as independent windows.
+
+All 36 demo models, 8 folders, Explorer, Scene, Favorites, Basket, Catalogs, Properties, Filters, Grid/Table, Tile Size and Settings are unchanged.
+
+The JS uses its own `flora-ui-warm-v1` localStorage namespace; existing preferences remain untouched by the color update. Architecture map: [UI_MAP.md](../flora-ui/docs/UI_MAP.md).
+
+Browser-only demo - no real 3ds Max, Corona Proxy, filesystem, SQLite, MAXScript or .max import.

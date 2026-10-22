@@ -1,7 +1,11 @@
-# Flora UI Warm Gray - Codex guidance
+# Flora UI - 3ds Max Dark (second independent mockup)
 
-This directory is an independent second color-theme variant of the HTML prototype, not the 3ds Max plugin. The original green theme is at `../flora-ui/` and must stay unchanged when working on this directory.
+This `flora-ui-warm/` folder historically hosted the Warm Gray theme. It now hosts an **independent 3ds Max Dark** colorway at the unchanged GitHub Pages URL `/sylva/flora-ui-warm/`.
 
-Primary sources are `index.html`, `styles.css` and `app.js`. Standalone `Flora-UI.html` must be rebuilt to include the latest markup, CSS, JS and matching embedded `material-manager.html` / `model-analyzer.html`.
+Keep `../flora-ui/` (original green) intact. The dark theme approximates Autodesk 3ds Max 2026: neutral charcoal panels, gray controls, restrained blue focus/active accents, amber model selection border, green Scene-presence indicator. It is not an official Autodesk theme file.
 
-Use [the interface map](../flora-ui/docs/UI_MAP.md) for shared behavior and DOM. The warm version differs in theme colors and uses separate localStorage key `flora-ui-warm-v1`. Preserve the graphite/taupe visual system, muted green Scene dot, UI behavior and responsive layout. The public page lives at `/sylva/flora-ui-warm/`.
+Source files: `index.html`, `styles.css`, `app.js`; bundled release `Flora-UI.html`. Also maintain `material-manager.html` and `model-analyzer.html` and re-embed them into the bundled HTML after source changes.
+
+Shared DOM/function map: `../flora-ui/docs/UI_MAP.md`. UI functionality and 36-model demo dataset remain unchanged. The JS namespace `flora-ui-warm-v1` deliberately stays the same to preserve existing preferences.
+
+Only change colors for theme requests, unless the user explicitly approves structural changes. Validate script parsing, bundle parity, responsiveness and interactions.

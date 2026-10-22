@@ -1,24 +1,29 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Flora - Model Analyzer (Flora UI V2 demo) - Warm Gray</title>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Flora - Model Analyzer (Flora UI V2 demo) - 3ds Max Dark</title>
 <style>
-:root{font:12px Inter,"Segoe UI",Arial,sans-serif;color:#eee8e0;background:#1a1918}
-*{box-sizing:border-box}body{margin:0;padding:12px;background:#1a1918}
+:root{font:12px Inter,"Segoe UI",Arial,sans-serif;color:#e5e5e5;background:#282828}
+*{box-sizing:border-box}body{margin:0;padding:12px;background:#282828}
 .app{display:flex;flex-direction:column;gap:10px;height:calc(100vh - 24px);min-height:450px}
-header,footer,aside,main{background:#252321;border:1px solid #4d4338;border-radius:7px;padding:12px}
+header,footer,aside,main{background:#2d2d2d;border:1px solid #464646;border-radius:7px;padding:12px}
 header,footer{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-header strong{font-size:17px}header small,footer span,p{color:#b0a59a}header small,footer span{margin-right:auto}
+header strong{font-size:17px}header small,footer span,p{color:#a6a6a6}header small,footer span{margin-right:auto}
 .content{display:grid;grid-template-columns:220px minmax(0,1fr);gap:10px;min-height:0;flex:1}
 aside,main{min-width:0;overflow:auto}main{display:flex;flex-direction:column}
-h2{font-size:13px;margin:0 0 13px}button{padding:7px 12px;background:#36312c;color:#e4d9ce;border:1px solid #63584e;border-radius:5px;cursor:pointer}
-button:hover{background:#574a3d}button:disabled{opacity:.5}
-input[type=checkbox],progress{accent-color:#d6b88f}label{display:block;margin:10px 0;color:#cbc6c0}
-table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:10px;border-bottom:1px solid #4b443e}
-th{position:sticky;top:0;background:#36312c;color:#ddd0c2}
+h2{font-size:13px;margin:0 0 13px}button{padding:7px 12px;background:#373737;color:#d8d8d8;border:1px solid #5a5a5a;border-radius:5px;cursor:pointer}
+button:hover{background:#4d4d4d}button:disabled{opacity:.5}
+input[type=checkbox],progress{accent-color:#bababa}label{display:block;margin:10px 0;color:#c5c5c5}
+table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:10px;border-bottom:1px solid #474747}
+th{position:sticky;top:0;background:#373737;color:#cfcfcf}
 .scroll{overflow:auto;flex:1;min-height:0}progress{width:100%;height:10px}
 @media(max-width:700px){.content{grid-template-columns:1fr}.app{height:auto}}
 
-:root{--green:#d6b88f;--line:#514a43;--line2:#49423c;--fg:#eee8e0;--dim:#aca094;--bg:#191817;--panel:#262320;--button:#504338;--ok:#b9cda1;--bad:#df8d82;--yellow:#d8bb8f}
-body{background:#1c1a19;color:#eee8e0}
+
+/* 3ds Max Dark: neutral charcoal controls with steel-blue selection. */
+:root{color-scheme:dark;--bg:#303030;--panel:#414141;--line:#5a5a5a;--line2:#555555;--fg:#e0e0e0;--dim:#aeaeae;--green:#80a8c7;--button:#4b4b4b;--ok:#a0c29a;--bad:#d17d7b;--yellow:#c8a45e}
+body{background:#2b2b2b;color:#e1e1e1}
+button,select,input{accent-color:#80a8c7}
+button:hover{background:#5b5b5b}
+button:focus-visible,input:focus-visible{outline:2px solid #85aacb;outline-offset:1px}
 </style></head>
 <body><div class="app"><header><strong>Flora / Model Analyzer</strong><small>UI PROTOTYPE - список исходных .max</small><button id="close">Закрыть</button></header>
 <div class="content"><aside><h2>Library folders</h2><label><input id="all" type="checkbox" checked> Все папки</label><label><input class="folder" type="checkbox" value="Canopy Trees" checked> Canopy Trees</label><label><input class="folder" type="checkbox" value="Evergreen Conifers" checked> Evergreen Conifers</label><label><input class="folder" type="checkbox" value="Garden Shrubs" checked> Garden Shrubs</label><label><input class="folder" type="checkbox" value="Flowering Beds" checked> Flowering Beds</label><label><input class="folder" type="checkbox" value="Perennial Border" checked> Perennial Border</label><label><input class="folder" type="checkbox" value="Ornamental Grasses" checked> Ornamental Grasses</label><label><input class="folder" type="checkbox" value="Climbing Plants" checked> Climbing Plants</label><p>Без открытия сцен, расчёта геометрии и изменения объектов. Список ниже полностью демонстрационный, без доступа к библиотеке.</p></aside>
