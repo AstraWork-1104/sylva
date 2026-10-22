@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flora UI - 3ds Max Dark Theme</title>
+  <meta name="description" content="Flora UI 3ds Max inspired dark graphite user interface prototype">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<div class="stage">
+  <div class="desktop-window" id="floraApp">
+    <div class="os-bar"><span class="logo logo-mini" aria-hidden="true">◕</span> Flora UI V2 · 3ds Max Dark <span class="os-actions">─ &nbsp; □ &nbsp; ×</span></div>
+    <div class="application">
+      <header class="top-header">
+        <span class="logo" aria-hidden="true">◕</span><strong class="brand-title">Flora</strong>
+        <nav class="workspace-nav" aria-label="Application workspace">
+          <button type="button" class="workspace-tab active" data-workspace="catalog">Catalog</button>
+        </nav>
+        <span class="fill"></span>
+        <button class="toolbar-button" type="button" id="libraryButton">Library...</button>
+        <button class="toolbar-button" type="button" id="refreshButton">Refresh</button>
+        <a href="./material-manager.html" target="flora-material-manager" title="Material Manager - open separate window" aria-label="Open Material Manager" class="toolbar-button icon-button manager-link" id="managerButton">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
+        </a>
+        <button class="toolbar-button icon-button" type="button" title="Settings" aria-label="Open settings" id="settingsButton">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9 7 7m10 10 2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        </button>
+        <span class="app-version">3ds Max 2026 · Corona 14</span>
+      </header>
+
+      <section id="catalogWorkspace" class="workspace-container">
+        <nav class="catalog-nav" aria-label="Разделы библиотеки">
+ <div id="catalogTabs" class="catalog-tabs"></div><span class="fill"></span>
+ <div class="catalog-actions" aria-label="Разделы Flora">
+ <div class="catalogs-dropdown" id="catalogsDropdown"><button type="button" class="catalog-tab icon-nav catalogs-trigger" id="catalogsButton" title="Catalogs" aria-label="Catalogs" aria-expanded="false" aria-haspopup="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18M3 7h3M3 17h3"/><path d="M7.5 3.5h4l1.8 2H21v5.5H7.5z"/><path d="M7.5 13.5h4l1.8 2H21v5H7.5z"/></svg><span class="nav-label">Catalogs</span></button><div id="catalogsMenu" class="catalogs-menu" hidden role="menu"></div></div>
+ <button type="button" class="catalog-tab icon-nav" data-catalog="scene" title="Scene" aria-label="Scene"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 4 2.25v4.5L12 11 8 8.75v-4.5L12 2Z M8 4.25 12 6.5l4-2.25 M12 6.5V11"/><path d="m6 12 4 2.25v4.5L6 21l-4-2.25v-4.5L6 12Z M2 14.25 6 16.5l4-2.25 M6 16.5V21"/><path d="m18 12 4 2.25v4.5L18 21l-4-2.25v-4.5L18 12Z M14 14.25l4 2.25 4-2.25 M18 16.5V21"/></svg><span class="nav-label">Scene</span></button>
+ <button type="button" class="catalog-tab icon-nav" data-catalog="favorites" title="Favorites" aria-label="Favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.28 6.94 1.01-5.02 4.9 1.18 6.92L12 17.84l-6.2 3.27 1.18-6.92-5.02-4.9 6.94-1.01z"/></svg><span class="nav-label">Favorites</span></button>
+ <button type="button" class="catalog-tab icon-nav" data-catalog="basket" title="Basket" aria-label="Basket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 10 4-7m10 7-4-7M3 10h18l-2 11H5L3 10Z"/><path d="M8 13v5m4-5v5m4-5v5"/></svg><span class="nav-label">Basket</span><span id="navBasketCount" class="icon-count" hidden></span></button>
+ </div></nav></nav>
+        <main class="catalog-body" id="catalogBody">
+          <aside class="sidebar">
+            <div class="sidebar-heading" id="sidebarHeading">FOLDERS</div>
+            <div id="sidebarContent" class="sidebar-content" role="tree"></div>
+            <div id="sidebarFooter" class="sidebar-footer">36 demo models</div>
+          </aside>
+          <section class="library-area">
+            <div class="content-heading"><div><h1 id="collectionTitle">Explorer</h1><p id="collectionPath" hidden></p></div><div class="content-actions"><button id="explorerInfoButton" type="button" class="toolbar-button" hidden>Import Descriptions</button><div id="explorerInfoStatus" class="explorer-info-status" hidden></div><div id="contentTag" class="content-tag" hidden>Curated collection · concept</div><span id="modelCount" class="model-count">36 models</span></div></div>
+            <div id="collectionDescription" class="composition-intro" hidden></div>
+            <div class="search-toolbar">
+              <div class="search-holder"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="modelSearch" type="search" placeholder="Поиск: файл, RU / EN / Latin, похожие растения" autocomplete="off" aria-label="Search plant models"></div>
+              <select id="sortSelect" aria-label="Sort models"><option value="asc">Name A-Z</option><option value="desc">Name Z-A</option></select>
+              <button type="button" class="toolbar-button tile-trigger" id="tileSizeButton" title="Tile Size" aria-label="Tile Size" aria-haspopup="dialog" aria-controls="tileSizePopover" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg><span>Tile Size</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+              <button id="filterButton" type="button" class="toolbar-button filter-trigger" aria-expanded="false">Filters <span id="filterCount"></span></button>
+              <button id="propertyPanelButton" type="button" class="toolbar-button icon-button active" title="Show or hide Properties" aria-label="Show or hide Properties" aria-pressed="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18M15 7h6"/></svg></button>
+            </div>
+            <div id="filterPanel" class="filter-panel" hidden aria-label="Фильтры растений">
+              <div class="filter-header"><strong>Фильтры</strong><span id="filterPanelCount" class="filter-active-count" hidden></span><span class="fill"></span><button type="button" id="resetFilters" class="toolbar-button">Сбросить</button></div>
+              <div id="filterScroll" class="filter-scroll" tabindex="0" aria-label="Прокручиваемые фильтры">
+                <div class="filter-content">
+                  <div class="filter-controls">
+                    <label>Группа растения<select id="filterGroup"><option value="">Все группы</option></select></label>
+                    <label>Категория растения<select id="filterCategory" disabled><option value="">Сначала выберите группу</option></select></label>
+                    <fieldset class="filter-flowering"><legend>Цветение</legend><div class="filter-segments" id="filterFlowerSegments">
+                      <button type="button" data-flowering="" class="active" aria-pressed="true">Все</button>
+                      <button type="button" data-flowering="Да" aria-pressed="false">Да</button>
+                      <button type="button" data-flowering="Нет" aria-pressed="false">Нет</button>
+                    </div></fieldset>
+                    <div class="filter-height"><div class="filter-field-label">Высота, см <small>позже</small></div><div class="filter-height-fields"><input id="filterMinHeight" type="number" min="0" placeholder="От" aria-label="Высота от" disabled><input id="filterMaxHeight" type="number" min="0" placeholder="До" aria-label="Высота до" disabled></div></div>
+                  </div>
+                  <section class="filter-environment" aria-label="Фильтрация по среде">
+                    <div class="filter-section-heading"><strong>Среда</strong></div>
+                    <div class="filter-environment-controls">
+                      <label>Тип среды<select id="filterEnvironment">
+                        <option value="">Все среды</option>
+                        <option value="Природные">Природные</option>
+                        <option value="Домашние">Домашние</option>
+                      </select></label>
+                      <label>Категория среды<select id="filterEnvironmentCategory" disabled>
+                        <option value="">Сначала выберите тип среды</option>
+                      </select></label>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <div class="results-shell" id="resultsShell">
+              <div id="modelGrid" class="model-grid" role="list" aria-label="Plant models"></div>
+              <aside id="propertiesPanel" class="properties-panel" aria-label="Properties">
+                <div id="propertiesResize" class="properties-resize" role="separator" aria-label="Resize Properties" tabindex="0" aria-orientation="vertical"></div>
+                <div id="propertyRows" class="property-rows"><p class="empty-property">Select a model or thematic collection to inspect its properties.</p></div>
+              </aside>
+            </div>
+          </section>
+        </main>
+        <footer class="statusbar" id="catalogFooter">
+          <span class="selected-pill" id="selectionCount">0 selected</span><span id="statusHint">Drag selected models into 3ds Max viewport</span>
+          <span class="fill"></span><span class="footer-label">IMPORT MODE</span>
+          <div class="segmented" id="proxyControls" role="group" aria-label="Import Mode"><button type="button" data-proxy="Geometry" class="active">Geometry</button><button type="button" data-proxy="Proxy">Proxy</button></div>
+          <span class="prototype-note">UI PROTOTYPE</span>
+        </footer>
+      <section id="basketWorkspace" class="basket-workspace" hidden aria-labelledby="basketHeading">
+        <div class="basket-top">
+          <div>
+            <div class="basket-eyebrow">FLORA / CATALOG</div>
+            <h1 id="basketHeading">Import Basket <span id="basketCount" class="basket-heading-count">0 plants</span></h1>
+            <p>Collect models from Explorer, Favorites and installed catalogs. Import uses the existing Flora workflow in 3ds Max.</p>
+          </div>
+          <button type="button" class="toolbar-button" id="basketClear">Clear Basket</button>
+        </div>
+        <div class="basket-toolbar">
+          <div class="basket-toolbar-info"><strong id="basketSummary">0 models in basket</strong><span>Checked models will participate in the batch import</span></div>
+          <button type="button" class="toolbar-button tile-trigger" id="basketTileSizeButton" title="Tile Size" aria-label="Tile Size" aria-haspopup="dialog" aria-controls="tileSizePopover" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg><span>Tile Size</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+        </div>
+        <div id="basketGrid" class="basket-grid" role="list" aria-label="Models in import basket"></div>
+        <footer class="statusbar basket-footer">
+          <span class="selected-pill" id="basketSelectedCount">0 checked</span>
+          <span class="basket-footer-hint">Merge or Corona Proxy · origin (0, 0, 0) · original source names</span>
+          <span class="fill"></span>
+          <span class="footer-label">IMPORT MODE</span><div class="segmented" id="basketProxyControls" role="group" aria-label="Basket Import Mode"><button type="button" data-proxy="Geometry" class="active">Geometry</button><button type="button" data-proxy="Proxy">Proxy</button></div>
+          <span class="basket-demo-label">UI PROTOTYPE</span>
+          <button id="basketImport" type="button" class="primary" disabled>Import</button>
+        </footer>
+      </section>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header"><h2 id="modalTitle">Settings</h2><button type="button" id="closeModal" class="close-button" aria-label="Close">×</button></div>
+    <div id="modalBody"></div>
+    <div class="modal-footer"><button id="modalCancel" class="toolbar-button">Cancel</button><button id="modalConfirm" class="primary">Done</button></div>
+  </div>
+</div>
+
+<div id="tileSizePopover" class="tile-size-popover" role="dialog" aria-label="Tile Size" hidden>
+ <div class="tile-popover-heading"><label for="tileSize">Tile Size</label><output id="tileSizeValue" for="tileSize">176 px</output></div>
+ <input id="tileSize" type="range" min="136" max="260" step="2" value="176" aria-label="Размер карточек, крайнее положение: Table View">
+ <div class="tile-popover-hint">Последнее положение - Table View</div>
+</div>
+<div id="plantContextMenu" class="plant-context-menu" role="menu" hidden>
+  <button type="button" id="contextAddBasket" role="menuitem">Add to Basket</button>
+  <button type="button" id="contextSelectModel" role="menuitem">Select Model</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

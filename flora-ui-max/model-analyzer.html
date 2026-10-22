@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Flora - Model Analyzer (Flora UI V2 demo) - 3ds Max Dark</title>
+<style>
+:root{font:12px Inter,"Segoe UI",Arial,sans-serif;color:#e5e5e5;background:#282828}
+*{box-sizing:border-box}body{margin:0;padding:12px;background:#282828}
+.app{display:flex;flex-direction:column;gap:10px;height:calc(100vh - 24px);min-height:450px}
+header,footer,aside,main{background:#2d2d2d;border:1px solid #464646;border-radius:7px;padding:12px}
+header,footer{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header strong{font-size:17px}header small,footer span,p{color:#a6a6a6}header small,footer span{margin-right:auto}
+.content{display:grid;grid-template-columns:220px minmax(0,1fr);gap:10px;min-height:0;flex:1}
+aside,main{min-width:0;overflow:auto}main{display:flex;flex-direction:column}
+h2{font-size:13px;margin:0 0 13px}button{padding:7px 12px;background:#373737;color:#d8d8d8;border:1px solid #5a5a5a;border-radius:5px;cursor:pointer}
+button:hover{background:#4d4d4d}button:disabled{opacity:.5}
+input[type=checkbox],progress{accent-color:#bababa}label{display:block;margin:10px 0;color:#c5c5c5}
+table{width:100%;border-collapse:collapse;font-size:11px}th,td{text-align:left;padding:10px;border-bottom:1px solid #474747}
+th{position:sticky;top:0;background:#373737;color:#cfcfcf}
+.scroll{overflow:auto;flex:1;min-height:0}progress{width:100%;height:10px}
+@media(max-width:700px){.content{grid-template-columns:1fr}.app{height:auto}}
+
+
+/* 3ds Max Dark: neutral charcoal controls with steel-blue selection. */
+:root{color-scheme:dark;--bg:#303030;--panel:#414141;--line:#5a5a5a;--line2:#555555;--fg:#e0e0e0;--dim:#aeaeae;--green:#80a8c7;--button:#4b4b4b;--ok:#a0c29a;--bad:#d17d7b;--yellow:#c8a45e}
+body{background:#2b2b2b;color:#e1e1e1}
+button,select,input{accent-color:#80a8c7}
+button:hover{background:#5b5b5b}
+button:focus-visible,input:focus-visible{outline:2px solid #85aacb;outline-offset:1px}
+</style></head>
+<body><div class="app"><header><strong>Flora / Model Analyzer</strong><small>UI PROTOTYPE - список исходных .max</small><button id="close">Закрыть</button></header>
+<div class="content"><aside><h2>Library folders</h2><label><input id="all" type="checkbox" checked> Все папки</label><label><input class="folder" type="checkbox" value="Canopy Trees" checked> Canopy Trees</label><label><input class="folder" type="checkbox" value="Evergreen Conifers" checked> Evergreen Conifers</label><label><input class="folder" type="checkbox" value="Garden Shrubs" checked> Garden Shrubs</label><label><input class="folder" type="checkbox" value="Flowering Beds" checked> Flowering Beds</label><label><input class="folder" type="checkbox" value="Perennial Border" checked> Perennial Border</label><label><input class="folder" type="checkbox" value="Ornamental Grasses" checked> Ornamental Grasses</label><label><input class="folder" type="checkbox" value="Climbing Plants" checked> Climbing Plants</label><p>Без открытия сцен, расчёта геометрии и изменения объектов. Список ниже полностью демонстрационный, без доступа к библиотеке.</p></aside>
+<main><h2>Имя модели и относительный путь</h2><div><button id="start">Перечислить файлы</button> <span id="counter">0 файлов</span></div><progress id="progress" value="0" max="100"></progress><div class="scroll"><table><thead><tr><th>Имя файла</th><th>Относительный путь</th></tr></thead><tbody id="rows"><tr><td colspan="2">Нажмите «Перечислить файлы».</td></tr></tbody></table></div></main></div>
+<footer><span id="status">Сцена 3ds Max не затрагивается.</span><button id="export" disabled>Export JSON</button></footer></div>
+<script>
+(()=>{
+const $=x=>document.querySelector(x);
+const source=[["Catharanthus_roseus","Flowering Beds"],["Clerodendrum_thomsoniae","Climbing Plants"],["Cuphea_hyssopifolia","Flowering Beds"],["Hydrangea_paniculata","Garden Shrubs"],["Rhododendron_ponticum","Garden Shrubs"],["Lavandula_angustifolia","Perennial Border"],["Acer_palmatum","Canopy Trees"],["Betula_pendula","Canopy Trees"],["Juniperus_communis","Evergreen Conifers"],["Picea_abies","Evergreen Conifers"],["Pennisetum_alopecuroides","Ornamental Grasses"],["Miscanthus_sinensis","Ornamental Grasses"]].flatMap(([base,folder])=>[1,2,3].map(n=>{const name=base+"_"+String(n).padStart(2,"0")+".max";return {name,path:folder+"/"+name}}));
+let rows=[];
+$("#all").addEventListener("change",e=>document.querySelectorAll(".folder").forEach(x=>x.checked=e.target.checked));
+document.querySelectorAll(".folder").forEach(x=>x.addEventListener("change",()=>{$("#all").checked=[...document.querySelectorAll(".folder")].every(x=>x.checked)}));
+$("#start").addEventListener("click",()=>{const folders=[...document.querySelectorAll(".folder")].filter(x=>x.checked).map(x=>x.value);rows=source.filter(m=>folders.some(f=>m.path.includes(f+"/")));$("#rows").innerHTML=rows.length?rows.map(m=>"<tr><td>"+m.name+"</td><td>"+m.path+"</td></tr>").join(""):'<tr><td colspan="2">Нет файлов для выбранных папок.</td></tr>';$("#counter").textContent=rows.length+" файлов";$("#progress").value=100;$("#export").disabled=!rows.length;$("#status").textContent="Готово. Только тестовые данные браузера."});
+$("#export").addEventListener("click",()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({models:rows},null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=url;a.download="Flora_Models_DEMO.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+$("#close").addEventListener("click",()=>window.close());
+})();
+</script></body></html>
