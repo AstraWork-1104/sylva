@@ -1,5 +1,7 @@
 # Flora UI V2 - экраны и состояние демонстрации
 
+Далее указаны функции **существующего HTML-макета**, не принятые изменения рабочего Qt-интерфейса после 1.0.0.44. Более поздние утверждения владельца (вертикальный Edit Properties, единые dropdown, динамические кнопки, новый Basket, сокращённый Filters/Explorer) см. в [основном описании Flora, §20](https://docs.google.com/document/d/19MQLTbmyikvPj2wCLwIvuSqF3sdwJ8YUlSEtsMSkbZ0/edit). Код веб-макета не обновлялся.
+
 | Экран | Реализовано в HTML | За пределами браузера |
 |---|---|---|
 | Navigation | Explorer слева, Catalogs/Scene/Favorites/Basket справа с иконками и видимыми текстовыми подписями, подсказки, aria-label, счётчик Basket | Реальный Qt UI |
